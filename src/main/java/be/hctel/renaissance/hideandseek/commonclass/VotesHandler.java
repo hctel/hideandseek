@@ -56,7 +56,7 @@ public class VotesHandler {
 			}
 			
 		}
-		TextComponent message = new TextComponent(Hide.header + "§7§l" + (6+1) + " §cRandom Map" + getVoteAmountString(currentGameMaps.get(5)));
+		TextComponent message = new TextComponent(Hide.header + "§7§l" + (6) + ". §cRandom Map" + getVoteAmountString(currentGameMaps.get(5)));
 		message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("§aClick to vote for §cRandom Map").create()));
 		message.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/v 6"));
 		for(Player p : Bukkit.getOnlinePlayers()) {
@@ -71,7 +71,7 @@ public class VotesHandler {
 			message.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/v " + (i+1)));
 			player.spigot().sendMessage(message);
 		}
-		TextComponent message = new TextComponent(Hide.header + "§7§l" + (6+1) + " §cRandom Map" + getVoteAmountString(currentGameMaps.get(5)));
+		TextComponent message = new TextComponent(Hide.header + "§7§l" + (6) + ". §cRandom Map" + getVoteAmountString(currentGameMaps.get(5)));
 		message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("§aClick to vote for §cRandom Map").create()));
 		message.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/v 6"));
 		player.spigot().sendMessage(message);
