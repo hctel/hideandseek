@@ -34,14 +34,14 @@ public class PreGameTimer {
 					if(Bukkit.getOnlinePlayers().size() < minPlayers) {
 						if(minPlayers - Bukkit.getOnlinePlayers().size() == 1) {
 							for(Player p : Bukkit.getOnlinePlayers()) {
-								Utils.sendActionBarMessage(p, "§e" + (minPlayers - Bukkit.getOnlinePlayers().size()) + " player needed to start.");
+								Utils.sendActionBarMessage(p, "§e" + (minPlayers - Bukkit.getOnlinePlayers().size()) + " player needed to start...");
 							}
 						} else {
 							for(Player p : Bukkit.getOnlinePlayers()) {
-								Utils.sendActionBarMessage(p, "§e" + (minPlayers - Bukkit.getOnlinePlayers().size()) + " players needed to start.");
+								Utils.sendActionBarMessage(p, "§e" + (minPlayers - Bukkit.getOnlinePlayers().size()) + " players needed to start...");
 							}
 						}
-					} else if(Bukkit.getOnlinePlayers().size() < minPlayers && timer < 36) {
+					} else if(Bukkit.getOnlinePlayers().size() < minPlayers && timer != 36) {
 						Bukkit.broadcastMessage(Hide.header + ChatMessages.STARTCANCELLED.toText());
 						timer = 36;
 						for(Player p : Bukkit.getOnlinePlayers()) {
@@ -72,9 +72,22 @@ public class PreGameTimer {
 									p.getInventory().clear();
 									p.getInventory().setItem(4, ItemsManager.blockSelector());
 								}
+							} else {
+								for(Player p : Bukkit.getOnlinePlayers()) {
+									Utils.sendActionBarMessage(p, "§eChoose your Block! §8| §aStarting in §l" + timer);
+								}
 							}
+						} else if(timer <= 5 && timer != 0) {
+							for(Player p : Bukkit.getOnlinePlayers()) {
+								Utils.sendActionBarMessage(p, "§eChoose your Block! §8| §aStarting in §c§l" + timer);
+								p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1.0f, 1.0f);
+							}
+						} else if(timer == 0) {
+							//GameManager Start
 						}
-						timer--;
+						if(timer != 0) {
+							timer--;
+						}
 					}
 				}
 				
