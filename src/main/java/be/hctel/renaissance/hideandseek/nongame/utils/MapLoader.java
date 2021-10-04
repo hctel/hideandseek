@@ -27,13 +27,13 @@ public class MapLoader {
 		for(GameMap map : GameMap.values()) {
 			worldNames.add(map.getSystemName());
 		}
-		worldNames.add("TEMPWORLD");
 	}
 	public void loadMaps() {
 		for(String name : worldNames) worlds.add(Bukkit.createWorld(new WorldCreator(name)));
 		for(World w: worlds) Bukkit.getWorlds().add(w);
 	}
 	public void loadWorldToTempWorld(GameMap map) {
+		Bukkit.getWorlds().add(Bukkit.createWorld(new WorldCreator("TEMPWORLD")));
 		World sourceWorld = Bukkit.getServer().getWorld(map.getSystemName());
 		File source = sourceWorld.getWorldFolder();
 		World targetWorld = Bukkit.getServer().getWorld("TEMPWORLD");
