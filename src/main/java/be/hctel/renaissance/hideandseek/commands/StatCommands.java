@@ -1,4 +1,4 @@
-package be.renaissance.hideandseek.commands;
+package be.hctel.renaissance.hideandseek.commands;
 
 import java.util.ArrayList;
 

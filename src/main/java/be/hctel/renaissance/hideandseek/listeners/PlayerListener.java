@@ -1,4 +1,4 @@
-package be.renaissance.hideandseek.listeners;
+package be.hctel.renaissance.hideandseek.listeners;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -6,6 +6,8 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -35,6 +37,11 @@ public class PlayerListener implements Listener {
 		Hide.rankManager.unLoad(e.getPlayer());
 	}
 	
+	@EventHandler
+	public void onDamage(EntityDamageEvent e) {
+		if(e.getCause() == DamageCause.FALL) e.setCancelled(true);
+	}
+ 	
 	@EventHandler
 	public void onChat(AsyncPlayerChatEvent e) {
 		/*if(Hide.preStartManager.isStarted) {

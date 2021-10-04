@@ -17,9 +17,9 @@ import be.hctel.renaissance.hideandseek.gamespecific.objects.PreGameTimer;
 import be.hctel.renaissance.hideandseek.nongame.sql.Stats;
 import be.hctel.renaissance.hideandseek.nongame.utils.MapLoader;
 import be.hctel.renaissance.ranks.RankManager;
-import be.renaissance.hideandseek.commands.StatCommands;
-import be.renaissance.hideandseek.listeners.InventoryListener;
-import be.renaissance.hideandseek.listeners.PlayerListener;
+import be.hctel.renaissance.hideandseek.commands.StatCommands;
+import be.hctel.renaissance.hideandseek.listeners.InventoryListener;
+import be.hctel.renaissance.hideandseek.listeners.PlayerListener;
 
 public class Hide extends JavaPlugin {
 	public static boolean testServer = true;

@@ -47,9 +47,9 @@ public enum GameMap {
 		if(this == GameMap.HOTEL) {
 			ItemStack a = new ItemStack(Material.WOOD);
 			toAdd.add(a);
-			ItemStack b = new ItemStack(Material.SNOW);
+			ItemStack b = new ItemStack(Material.SNOW_BLOCK);
 			toAdd.add(b);
-			ItemStack c = new ItemStack(Material.QUARTZ);
+			ItemStack c = new ItemStack(Material.QUARTZ_BLOCK);
 			toAdd.add(c);
 			ItemStack d = new ItemStack(Material.BEACON);
 			toAdd.add(d);

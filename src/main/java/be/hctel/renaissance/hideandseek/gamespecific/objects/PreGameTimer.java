@@ -65,6 +65,7 @@ public class PreGameTimer {
 							}
 						} else if(timer <= 16 && timer > 5) {
 							if(timer == 16) {
+								choosingBlock = true;
 								for(Player p : Bukkit.getOnlinePlayers()) {
 									p.playSound(p.getLocation(), Sound.ENTITY_ENDERDRAGON_GROWL, 1.0f, 1.0f);
 									Utils.sendActionBarMessage(p, "§eChoose your Block! §8| §aStarting in §l" + timer);
