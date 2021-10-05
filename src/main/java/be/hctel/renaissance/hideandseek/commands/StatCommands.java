@@ -21,7 +21,7 @@ public class StatCommands implements CommandExecutor {
 			Player player = (Player) sender;
 			if(cmd.getName().equalsIgnoreCase("stats")) {
 				if(args.length == 0) {
-					Utils.sendCenteredMessage(player, "§6§m---------------- §f§mYour stats §6§m-------------");
+					Utils.sendCenteredMessage(player, "§6§m---------------- §fYour stats §6§m-------------");
 					player.sendMessage(" §3Points: §b" + Hide.stats.getPoints(player));
 					player.sendMessage(" §3Games played: §b" + Hide.stats.getGamesPlayed(player));
 					player.sendMessage(" §3Victories: §b" + Hide.stats.getVictories(player));

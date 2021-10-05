@@ -10,16 +10,17 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import be.hctel.renaissance.hideandseek.commands.RankCommands;
 import be.hctel.renaissance.hideandseek.commands.StaffComands;
+import be.hctel.renaissance.hideandseek.commands.StatCommands;
 import be.hctel.renaissance.hideandseek.commands.VoteCommand;
 import be.hctel.renaissance.hideandseek.commonclass.VotesHandler;
 import be.hctel.renaissance.hideandseek.gamespecific.objects.BlockPicker;
+import be.hctel.renaissance.hideandseek.gamespecific.objects.GameEngine;
 import be.hctel.renaissance.hideandseek.gamespecific.objects.PreGameTimer;
+import be.hctel.renaissance.hideandseek.listeners.InventoryListener;
+import be.hctel.renaissance.hideandseek.listeners.PlayerListener;
 import be.hctel.renaissance.hideandseek.nongame.sql.Stats;
 import be.hctel.renaissance.hideandseek.nongame.utils.MapLoader;
 import be.hctel.renaissance.ranks.RankManager;
-import be.hctel.renaissance.hideandseek.commands.StatCommands;
-import be.hctel.renaissance.hideandseek.listeners.InventoryListener;
-import be.hctel.renaissance.hideandseek.listeners.PlayerListener;
 
 public class Hide extends JavaPlugin {
 	public static boolean testServer = true;
@@ -35,6 +36,7 @@ public class Hide extends JavaPlugin {
 	public static VotesHandler votesHandler;
 	public static BlockPicker blockPicker;
 	public static PreGameTimer preGameTimer;
+	public static GameEngine gameEngine;
 	
 	
 	private String host, user, database, password;

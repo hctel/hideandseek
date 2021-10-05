@@ -52,6 +52,9 @@ public class PreGameTimer {
 							for(Player p : Bukkit.getOnlinePlayers()) {
 								Utils.sendActionBarMessage(p, "§aStarting in §l" + (timer - 16));
 							}
+							if(timer == 22) {
+								Hide.votesHandler.sendMapChoices();
+							}
 						} else if(timer <= 21 && timer > 16) {
 							if(timer == 21) {
 								Hide.votesHandler.endVotes();
@@ -73,6 +76,7 @@ public class PreGameTimer {
 									p.getInventory().clear();
 									p.getInventory().setItem(4, ItemsManager.blockSelector());
 								}
+								Hide.gameEngine = new GameEngine(plugin, Hide.votesHandler.voted);
 							} else {
 								for(Player p : Bukkit.getOnlinePlayers()) {
 									Utils.sendActionBarMessage(p, "§eChoose your Block! §8| §aStarting in §l" + timer);
@@ -84,7 +88,7 @@ public class PreGameTimer {
 								p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1.0f, 1.0f);
 							}
 						} else if(timer == 0) {
-							//GameManager Start
+							Hide.gameEngine.start();
 						}
 						if(timer != 0) {
 							timer--;
