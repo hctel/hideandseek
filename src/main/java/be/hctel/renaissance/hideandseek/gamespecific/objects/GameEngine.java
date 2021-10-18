@@ -80,7 +80,16 @@ public class GameEngine {
 			@Override
 			public void run() {
 				if(isPlaying) {
-					
+					if(timer > 0) {
+						//Game in progress
+						if(timer < 304 && timer > 299) {
+							
+						}
+						timer--;
+					} else if (timer == 0) {
+						//Endgame
+						timer--;
+					}
 				}
 			}			
 		}.runTaskTimer(plugin, 0L, 20L);
