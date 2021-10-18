@@ -11,6 +11,7 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerLoginEvent;
 
 import be.hctel.renaissance.hideandseek.Hide;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.GameRanks;
@@ -18,6 +19,11 @@ import be.hctel.renaissance.hideandseek.gamespecific.enums.JoinMessages;
 import be.hctel.renaissance.hideandseek.nongame.utils.Utils;
 
 public class PlayerListener implements Listener {
+	public void onLogin(PlayerLoginEvent a) {
+		if(Hide.isServerStarting) {
+			a.getPlayer().kickPlayer("Server not started yet.");
+		}
+	}
 	@EventHandler
 	public void onJoin(PlayerJoinEvent e) {
 		Player p = e.getPlayer();
@@ -44,16 +50,16 @@ public class PlayerListener implements Listener {
  	
 	@EventHandler
 	public void onChat(AsyncPlayerChatEvent e) {
-		/*if(Hide.preStartManager.isStarted) {
+		if(Hide.preGameTimer.gameStarted) {
  			String msg = e.getMessage();
 			e.setCancelled(true);
 			Player player = e.getPlayer();
 		  	Bukkit.broadcastMessage(GameRanks.getMatchingRank(Hide.stats.getPoints(player)).getChatColor() + GameRanks.getMatchingRank(Hide.stats.getPoints(player)).getName() +" " + Hide.rankManager.getRankColor(player) + player.getName() + " §8» §f" + msg);
-		 } else {*/
+		 } else {
 			String msg = e.getMessage();
 			e.setCancelled(true);
 			Player player = e.getPlayer();
 			Bukkit.broadcastMessage("§e" + Hide.stats.getPoints(player) + " §8▍ "+ GameRanks.getMatchingRank(Hide.stats.getPoints(player)).getChatColor() + GameRanks.getMatchingRank(Hide.stats.getPoints(player)).getName() +" " + Hide.rankManager.getRankColor(player) + player.getName() + " §8» §f" + msg);
-		//}
+		}
 	}
 }

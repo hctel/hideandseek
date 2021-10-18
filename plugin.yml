@@ -2,6 +2,7 @@ name: HideAndSeek
 author: hctel
 version: a0.1
 main: be.hctel.renaissance.hideandseek.Hide
+softdepend: ['Multiverse-Core']
 commands: 
   stats:
     usage: /stats [player]
@@ -27,3 +28,7 @@ commands:
     usage: /v <#>
     permission: hive.vote
     description: Vote for a map
+  gotoworld:
+    usage: /gotoworld <worldname>
+    permission: hide.staff
+    description: Go to a world

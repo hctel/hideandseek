@@ -58,9 +58,12 @@ public class PreGameTimer {
 						} else if(timer <= 21 && timer > 16) {
 							if(timer == 21) {
 								Hide.votesHandler.endVotes();
-								Bukkit.broadcastMessage(Hide.header + "§3Voting has ended. §bThe map §f" + Hide.votesHandler.voted.getMapName() + " §bhas won.");
-								Hide.mapLoader.loadWorldToTempWorld(Hide.votesHandler.voted);
-								Hide.blockPicker = new BlockPicker(Hide.votesHandler.voted, Hide.stats);
+								Bukkit.broadcastMessage(Hide.header + "§3Voting has ended. §bThe map §f" + Hide.votesHandler.currentGameMaps.get(Hide.votesHandler.voted).getMapName() + " §bhas won.");
+								Bukkit.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+									public void run() {
+									}
+								});
+								Hide.blockPicker = new BlockPicker(Hide.votesHandler.currentGameMaps.get(Hide.votesHandler.voted), Hide.stats);
 							}
 							for(Player p : Bukkit.getOnlinePlayers()) {
 								Utils.sendActionBarMessage(p, "§aStarting in §c§l" + (timer - 16));
@@ -76,7 +79,7 @@ public class PreGameTimer {
 									p.getInventory().clear();
 									p.getInventory().setItem(4, ItemsManager.blockSelector());
 								}
-								Hide.gameEngine = new GameEngine(plugin, Hide.votesHandler.voted);
+								Hide.gameEngine = new GameEngine(plugin, Hide.votesHandler.currentGameMaps.get(Hide.votesHandler.voted));
 							} else {
 								for(Player p : Bukkit.getOnlinePlayers()) {
 									Utils.sendActionBarMessage(p, "§eChoose your Block! §8| §aStarting in §l" + timer);
@@ -90,7 +93,7 @@ public class PreGameTimer {
 						} else if(timer == 0) {
 							Hide.gameEngine.start();
 						}
-						if(timer != 0) {
+						if(timer > -1) {
 							timer--;
 						}
 					}

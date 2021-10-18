@@ -5,8 +5,12 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.MVWorldManager;
 
 import be.hctel.renaissance.hideandseek.commands.RankCommands;
 import be.hctel.renaissance.hideandseek.commands.StaffComands;
@@ -24,10 +28,13 @@ import be.hctel.renaissance.ranks.RankManager;
 
 public class Hide extends JavaPlugin {
 	public static boolean testServer = true;
+	public static boolean isServerStarting = true;
 	
 	public static String header = "§8▍ §bHide§aAnd§eSeek§8 ▏ ";
 	
 	public static Plugin plugin;
+	public static MultiverseCore core;
+	public static MVWorldManager worldManager;
 	
 	public static Stats stats;
 	public static RankManager rankManager;
@@ -46,6 +53,8 @@ public class Hide extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		plugin = this;
+		core = (MultiverseCore) Bukkit.getServer().getPluginManager().getPlugin("Multiverse-Core");
+		worldManager = core.getMVWorldManager();
 		loadSQLCred();
 		openConnection();
 		stats = new Stats(con);
@@ -56,7 +65,6 @@ public class Hide extends JavaPlugin {
 		registerListeners();
 		loadCommands();
 		votesHandler = new VotesHandler(plugin);
-		
 	}
 	
 	
@@ -65,6 +73,7 @@ public class Hide extends JavaPlugin {
 		try {
 			stats.saveAll();
 			rankManager.saveAll();
+			mapLoader.deleteTempWorld();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -76,6 +85,7 @@ public class Hide extends JavaPlugin {
 		getCommand("togglerank").setExecutor(new RankCommands());
 		getCommand("setrank").setExecutor(new RankCommands());
 		getCommand("updateprofile").setExecutor(new StaffComands());
+		getCommand("gotoworld").setExecutor(new StaffComands());
 		getCommand("vote").setExecutor(new VoteCommand());
 		getCommand("v").setExecutor(new VoteCommand());
 	}

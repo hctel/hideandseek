@@ -9,6 +9,10 @@
         <id>spigot-repo</id>
         <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
     </repository>
+    <repository>
+       <id>OnARandomBox</id>
+       <url>https://repo.onarandombox.com/content/groups/public/</url>
+    </repository>
 </repositories>
 <dependencies>
     <dependency>
@@ -28,5 +32,11 @@
     <version>1.12.2-R0.1-SNAPSHOT</version>
     <scope>provided</scope>
 </dependency>
+<dependency>
+        <groupId>com.onarandombox.multiversecore</groupId> <!-- Don't forget to replace this -->
+        <artifactId>Multiverse-Core</artifactId> <!-- Replace this as well -->
+        <version>2.5.0</version> <!-- This too -->
+        <scope>provided</scope>
+    </dependency>
 </dependencies>
 </project>

@@ -10,6 +10,7 @@ import java.util.Random;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import be.hctel.renaissance.hideandseek.Hide;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.GameMap;
@@ -24,9 +25,9 @@ public class VotesHandler {
 	ArrayList<GameMap> maps = new ArrayList<GameMap>();
 	HashMap<GameMap, Integer> votes = new HashMap<GameMap, Integer>();
 	HashMap<Player, Integer> playerVote = new HashMap<Player, Integer>();
-	ArrayList<GameMap> currentGameMaps = new ArrayList<GameMap>();
+	public ArrayList<GameMap> currentGameMaps = new ArrayList<GameMap>();
 	boolean acceptingVotes = true;
-	public GameMap voted;
+	public int voted;
 	public VotesHandler(Plugin plugin) {
 		this.plugin = plugin;
 		for(GameMap map : GameMap.values()) {
@@ -44,6 +45,14 @@ public class VotesHandler {
 		}
 		currentGameMaps = a;
 		a = null;
+		new BukkitRunnable() {
+			
+			@Override
+			public void run() {
+				Hide.mapLoader.loadWorldsToTempWorld(currentGameMaps);
+				
+			}
+		}.runTask(plugin);
 	}
 	
 	public void sendMapChoices() {
@@ -114,10 +123,11 @@ public class VotesHandler {
 			player.sendMessage(Hide.header + ChatMessages.NAN.toText() + " (1-6).");
 		}
 	}
-	public GameMap endVotes() {
+	public int endVotes() {
 		acceptingVotes = false;
-		voted = Collections.max(votes.entrySet(), Comparator.comparingInt(Map.Entry::getValue)).getKey();
-		return voted;
+		GameMap voted = Collections.max(votes.entrySet(), Comparator.comparingInt(Map.Entry::getValue)).getKey();
+		this.voted = currentGameMaps.indexOf(voted);
+		return currentGameMaps.indexOf(voted);
 	}
 	private String getVoteAmountString(GameMap map) {
 		int n = votes.get(map);

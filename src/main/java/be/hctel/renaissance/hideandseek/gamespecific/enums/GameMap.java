@@ -1,6 +1,7 @@
 package be.hctel.renaissance.hideandseek.gamespecific.enums;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -30,6 +31,14 @@ public enum GameMap {
 	String systemName;
 	SpawnLocation hiderlocation;
 	SpawnLocation seekerlocation;
+	private static HashMap<String, GameMap> lookup = new HashMap<String, GameMap>();
+	static {
+		for(GameMap m : GameMap.values()) {
+			lookup.put(m.getSystemName(), m);
+		}
+		
+	}
+	
 	private GameMap(String mapName, String systemName, SpawnLocation hiderlocation, SpawnLocation seekerlocation) {
 		this.mapName = mapName;
 		this.systemName = systemName;
@@ -269,6 +278,9 @@ public enum GameMap {
 	}
 	public Location getHiderStart() {
 		return this.hiderlocation.getLocation();
+	}
+	public static GameMap getFromSystemName(String name) {
+		return lookup.get(name);
 	}
 }
 

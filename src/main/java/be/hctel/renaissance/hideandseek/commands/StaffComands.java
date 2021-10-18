@@ -1,13 +1,16 @@
 package be.hctel.renaissance.hideandseek.commands;
 
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import be.hctel.renaissance.hideandseek.Hide;
+import be.hctel.renaissance.hideandseek.gamespecific.enums.GameMap;
 import be.hctel.renaissance.hideandseek.nongame.utils.ChatMessages;
 import be.hctel.renaissance.hideandseek.nongame.utils.Utils;
 
@@ -98,6 +101,12 @@ public class StaffComands implements CommandExecutor {
 								player.sendMessage(Hide.header + "§aRun /blockid to get the blockid of the block/item you're holding. (ALL can be used to edit all blocks at once).");
 								player.sendMessage(Hide.header + "§aRun /findachievement <description> to search for achievements matching a description. (ALL can be used to edit all achievements at once)");
 							}
+						}
+					}
+				} else if(cmd.getName().equalsIgnoreCase("gotoworld")) {
+					if(args.length == 1) {
+							if(args[0] != "TEMPWORLD") {
+								player.teleport(GameMap.getFromSystemName(args[0]).getHiderStart());
 						}
 					}
 				}
