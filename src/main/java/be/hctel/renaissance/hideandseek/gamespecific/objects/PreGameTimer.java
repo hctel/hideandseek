@@ -1,5 +1,7 @@
 package be.hctel.renaissance.hideandseek.gamespecific.objects;
 
+import java.util.HashMap;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -7,10 +9,10 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import be.hctel.renaissance.hideandseek.Hide;
-import be.hctel.renaissance.hideandseek.commonclass.VotesHandler;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.ItemsManager;
 import be.hctel.renaissance.hideandseek.nongame.utils.ChatMessages;
 import be.hctel.renaissance.hideandseek.nongame.utils.Utils;
+import be.hctel.renaissance.hideandseek.nongame.utils.thirdparty.samagames.VObjective;
 
 public class PreGameTimer {
 	Plugin plugin;
@@ -21,6 +23,8 @@ public class PreGameTimer {
 	public boolean mapSelected = false;
 	public boolean gameStarted = false;
 	public boolean choosingBlock = false;
+	
+	private HashMap<Player, VObjective> sidebars = new HashMap<Player, VObjective>();
 	
 	public PreGameTimer(Plugin plugin) {
 		this.plugin = plugin;
@@ -101,5 +105,10 @@ public class PreGameTimer {
 				
 			}
 		}, 0L, 20L);
+	}
+	public void loadPlayer(Player player) {
+		sidebars.put(player, new VObjective(player.getName(), "§lYour stats"));
+		sidebars.get(player).init(player);
+		sidebars.get(player).addReceiver(player);
 	}
 }

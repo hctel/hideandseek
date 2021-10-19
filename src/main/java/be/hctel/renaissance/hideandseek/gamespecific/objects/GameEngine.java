@@ -1,6 +1,7 @@
 package be.hctel.renaissance.hideandseek.gamespecific.objects;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 
 import org.bukkit.Bukkit;
@@ -17,14 +18,15 @@ import org.bukkit.scheduler.BukkitScheduler;
 import be.hctel.renaissance.hideandseek.Hide;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.GameMap;
 import be.hctel.renaissance.hideandseek.nongame.utils.Utils;
-import net.minecraft.server.v1_12_R1.Slot;
+import be.hctel.renaissance.hideandseek.nongame.utils.thirdparty.samagames.VObjective;
 
 public class GameEngine {
 	private Plugin plugin;
-	private BukkitScheduler scheduler;
 	private Random r = new Random();
 	private GameMap map;
 	private int index;
+	private Location seekerSpawn;
+	private Location hiderSpawn;
 	
 	private int timer = 330;
 	private boolean warmup = true;
@@ -35,24 +37,28 @@ public class GameEngine {
 	private ArrayList<Player> seekers = new ArrayList<Player>();
 	private ArrayList<Player> queuedSeekers = new ArrayList<Player>();
 	
+	private HashMap<Player, VObjective> sidebars = new HashMap<Player, VObjective>();
+	
 	public GameEngine(Plugin plugin, GameMap map) {
 		this.plugin = plugin;
-		this.scheduler = Bukkit.getServer().getScheduler();
 		this.map = map;
 		index = Hide.votesHandler.currentGameMaps.indexOf(map);
 	}
 	
 	public void start() {
+		this.hiderSpawn = new Location(Bukkit.getWorld("TEMPWORLD" + index), map.getHiderStart().getX(), map.getHiderStart().getY(), map.getHiderStart().getZ(), map.getHiderStart().getYaw(), map.getHiderStart().getPitch());
+		this.seekerSpawn = new Location(Bukkit.getWorld("TEMPWORLD" + index), map.getSeekerStart().getX(), map.getSeekerStart().getY(), map.getSeekerStart().getZ(), map.getSeekerStart().getYaw(), map.getSeekerStart().getPitch());
 		isPlaying = true;
 		for(Player p : Bukkit.getOnlinePlayers()) {
 			hiders.add(p);
+			p.setGameMode(GameMode.ADVENTURE);
 		}
 		Player firstSeeker = getNewSeeker();
 		hiders.remove(firstSeeker);
 		seekers.add(firstSeeker);
 		
 		for(Player p : hiders) {
-			p.teleport(new Location(Bukkit.getWorld("TEMPWORLD" + index), map.getHiderStart().getX(), map.getHiderStart().getY(), map.getHiderStart().getZ(), map.getHiderStart().getYaw(), map.getHiderStart().getPitch()));
+			p.teleport(hiderSpawn);
 			Utils.sendCenteredMessage(p, "§6§m————————————————————————————————");
 			Utils.sendCenteredMessage(p, "§b§lYou are a §f§lHIDER!");
 			Utils.sendCenteredMessage(p, "§aFind a hiding spot before the seeker's released!");
@@ -60,7 +66,7 @@ public class GameEngine {
 			Utils.sendCenteredMessage(p, "§6§m————————————————————————————————");
 		}
 		for(Player p : seekers) {
-			p.teleport(new Location(Bukkit.getWorld("TEMPWORLD" + index), map.getSeekerStart().getX(), map.getSeekerStart().getY(), map.getSeekerStart().getZ(), map.getSeekerStart().getYaw(), map.getSeekerStart().getPitch()));
+			p.teleport(seekerSpawn);
 			p.setGameMode(GameMode.SURVIVAL);
 			p.getInventory().setItem(0, new ItemStack(Material.DIAMOND_SWORD));
 			p.getInventory().setHelmet(new ItemStack(Material.IRON_HELMET));
@@ -90,7 +96,15 @@ public class GameEngine {
 							}
 						}
 						if(timer == 300) {
-							
+							Bukkit.broadcastMessage(Hide.header + "§c§lReady or not, here they come!");
+							for(Player p : Bukkit.getOnlinePlayers()) {
+								p.playSound(p.getLocation(), Sound.ENTITY_ENDERDRAGON_GROWL, 1.0f, 1.0f);
+							}
+							for(Player p : seekers) {
+								p.teleport(hiderSpawn);
+								p.playSound(p.getLocation(), Sound.ENTITY_ELDER_GUARDIAN_CURSE, 1.0f, 1.0f);
+							}
+							warmup = false;
 						}
 						timer--;
 					} else if (timer == 0) {

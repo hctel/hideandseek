@@ -1,1 +1,1 @@
-typeSearchIndex = [{"l":"All Classes","u":"allclasses-index.html"},{"p":"be.hctel.renaissance.hideandseek.nongame.utils","l":"RecursiveExecutable"}];updateSearchResults();
+typeSearchIndex = [{"l":"All Classes","u":"allclasses-index.html"},{"p":"be.hctel.renaissance.hideandseek.nongame.utils","l":"Utils"}];updateSearchResults();

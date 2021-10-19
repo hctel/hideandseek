@@ -2,7 +2,7 @@ name: HideAndSeek
 author: hctel
 version: a0.1
 main: be.hctel.renaissance.hideandseek.Hide
-softdepend: ['Multiverse-Core']
+softdepend: ['Multiverse-Core', 'LibsDisguises', 'ViaVersion']
 commands: 
   stats:
     usage: /stats [player]
