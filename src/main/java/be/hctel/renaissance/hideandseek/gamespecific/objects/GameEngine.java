@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
@@ -82,7 +83,13 @@ public class GameEngine {
 				if(isPlaying) {
 					if(timer > 0) {
 						//Game in progress
-						if(timer < 304 && timer > 299) {
+						if(timer < 304 && timer > 300) {
+							Bukkit.broadcastMessage(Hide.header + "§eStarting in §f" + (timer-300));
+							for(Player p : Bukkit.getOnlinePlayers()) {
+								p.playSound(p.getLocation(), Sound.BLOCK_NOTE_PLING, 1.0f, 1.0f);
+							}
+						}
+						if(timer == 300) {
 							
 						}
 						timer--;

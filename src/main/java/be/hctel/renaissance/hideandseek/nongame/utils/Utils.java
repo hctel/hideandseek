@@ -16,6 +16,8 @@ import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
@@ -300,6 +302,11 @@ public class Utils {
 	public static String capitalize(String toCapitalize) {
 		return toCapitalize.substring(0, 1).toUpperCase() + toCapitalize.substring(1).toLowerCase();
 	}
+	/**
+	 * Get the index of the maximum value in an {@link ArrayList}
+	 * @param array The ArrayList ({@link Integer}) to get the max value key from
+	 * @return The key of the max value
+	 */
 	public static int getMaxValuePosition(ArrayList<Integer> array) {
 		int votes = 0;
 		int key = 0;
@@ -311,14 +318,24 @@ public class Utils {
 		}
 		return key;
 	}
+	/**
+	 * Get the max assigned integer to an object in an {@link HashMap}
+	 * @param map The HashMap to get the max assigned value from
+	 * @return The object matching the max value
+	 */
 	public static Object getMaxValueKey(HashMap<Object, Integer> map) {
 		int max = Integer.MIN_VALUE;
-		Object maxKey;
 		for(Object o : map.keySet()) {
 			if(map.get(o) > max) max = map.get(o);
 		}
 		return max;
 	}
+	/**
+	 * Sends the TabList header and footer to a player
+	 * @param player The player to send the header/footer to
+	 * @param header The header
+	 * @param footer The footer
+	 */
 	public static void sendHeaderFooter(Player player, String header, String footer) {
         IChatBaseComponent tabHeader = ChatSerializer.a("{\"text\": \"" + header + "\"}");
         IChatBaseComponent tabFooter = ChatSerializer.a("{\"text\": \"" + footer + "\"}");
@@ -340,8 +357,42 @@ public class Utils {
         }
         ((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
     }
-	
+	/**
+	 * Sends an action bar message to a player (used to clean other classes)
+	 * @param player The player to send the message to
+	 * @param msg The message to send
+	 */
 	public static void sendActionBarMessage(Player player, String msg) {
 		player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(msg));
 	}
+	/**
+	 * Creates a delayed recursive loop
+	 * @param plugin The main plugin instance
+	 * @param initialParamValue The initial value (for(int i = <b>60</b>; i >...))
+	 * @param maxParamValue The maximal value (for(int i = 60; i > <b>42</b>, i = -2))
+	 * @param increment The increment to add every time the loop finishes(for(int i = 0; i > 42; i = -<b>2</b>))
+	 * @param delay The delay to wait before repeating the task, expressed in server ticks
+	 * @param task the {@link RecursiveTask} to run every time the loop is runned.
+	 */
+	public static void recursiveDelayed(Plugin plugin, int initialParamValue, int maxParamValue, int increment, long delay, RecursiveExecutable task) {
+		
+		new BukkitRunnable() {
+			private int param = initialParamValue;
+			private boolean isIncreasing = maxParamValue >= initialParamValue;
+			@Override
+			public void run() {
+				if(isIncreasing) {
+					if(param < maxParamValue) {
+						task.run(param);
+					} else cancel();
+				} else {
+					if(param > maxParamValue) {
+						task.run(param);
+					} else cancel();
+				}
+				param = +increment;
+			}
+		}.runTaskTimer(plugin, 0L, delay);
+	}
+	
 }

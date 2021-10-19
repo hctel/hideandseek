@@ -124,7 +124,7 @@ public class BlockPicker {
 			ItemStack picked = e.getCurrentItem();
 			if(picked.getType() == Material.FLOWER_POT_ITEM) picked.setType(Material.FLOWER_POT);
 			p.closeInventory();
-			p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
+			p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 0.99f);
 			p.sendMessage(Hide.header + "§aGood choice! §eSet your block to " + Utils.getUserItemName(picked));
 			e.setCancelled(true);
 		}
