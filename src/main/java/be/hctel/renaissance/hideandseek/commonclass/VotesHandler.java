@@ -40,6 +40,12 @@ public class VotesHandler {
 			while(a.contains(b)) {
 				b = maps.get(r.nextInt(maps.size()));
 			}
+			//To replace first map with specific map
+			if(i == 0) {
+				a.add(GameMap.DEPARTURE);
+				votes.put(GameMap.DEPARTURE, 0);
+				continue;
+			}
 			a.add(b);
 			votes.put(b, 0);
 		}

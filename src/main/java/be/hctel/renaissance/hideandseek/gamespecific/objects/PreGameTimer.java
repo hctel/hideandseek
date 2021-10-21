@@ -12,7 +12,7 @@ import be.hctel.renaissance.hideandseek.Hide;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.ItemsManager;
 import be.hctel.renaissance.hideandseek.nongame.utils.ChatMessages;
 import be.hctel.renaissance.hideandseek.nongame.utils.Utils;
-import be.hctel.renaissance.hideandseek.nongame.utils.thirdparty.samagames.VObjective;
+import be.hctel.renaissance.hideandseek.nongame.utils.thirdparty.samagames.ObjectiveSign;
 
 public class PreGameTimer {
 	Plugin plugin;
@@ -24,7 +24,7 @@ public class PreGameTimer {
 	public boolean gameStarted = false;
 	public boolean choosingBlock = false;
 	
-	private HashMap<Player, VObjective> sidebars = new HashMap<Player, VObjective>();
+	private HashMap<Player, ObjectiveSign> sidebars = new HashMap<Player, ObjectiveSign>();
 	
 	public PreGameTimer(Plugin plugin) {
 		this.plugin = plugin;
@@ -95,6 +95,7 @@ public class PreGameTimer {
 								p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1.0f, 1.0f);
 							}
 						} else if(timer == 0) {
+							for(Player p : sidebars.keySet()) sidebars.get(p).removeReceiver(p);
 							Hide.gameEngine.start();
 						}
 						if(timer > -1) {
@@ -107,8 +108,16 @@ public class PreGameTimer {
 		}, 0L, 20L);
 	}
 	public void loadPlayer(Player player) {
-		sidebars.put(player, new VObjective(player.getName(), "§lYour stats"));
-		sidebars.get(player).init(player);
+		sidebars.put(player, new ObjectiveSign(player.getName(), "§eYour HIDE stats"));
+		sidebars.get(player).setLine(Hide.stats.getPoints(player), "§bPoints");
+		sidebars.get(player).setLine(Hide.cosmeticManager.getTokens(player), "§aTokens");
+		sidebars.get(player).setLine(Hide.stats.getGamesPlayed(player), "§bGames Played");
+		sidebars.get(player).setLine(Hide.stats.getDeaths(player), "§bTotal Deaths");
+		sidebars.get(player).setLine(Hide.stats.getKills(player), "§bTotal Kills");
+		sidebars.get(player).setLine(Hide.stats.getKilledHiders(player), "§bKills as Seeker");
+		sidebars.get(player).setLine(Hide.stats.getVictories(player), "§bVictories");
+		sidebars.get(player).setLine(Hide.stats.getKilledSeekers(player), "§bKills as Hider");
 		sidebars.get(player).addReceiver(player);
+		sidebars.get(player).updateLines(false);
 	}
 }

@@ -3,6 +3,7 @@ package be.hctel.renaissance.hideandseek.nongame.utils;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Color;
@@ -394,5 +395,4 @@ public class Utils {
 			}
 		}.runTaskTimer(plugin, 0L, delay);
 	}
-	
 }

@@ -1,5 +1,7 @@
 package be.hctel.renaissance.hideandseek.listeners;
 
+import java.sql.SQLException;
+
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -25,22 +27,26 @@ public class PlayerListener implements Listener {
 		}
 	}
 	@EventHandler
-	public void onJoin(PlayerJoinEvent e) {
+	public void onJoin(PlayerJoinEvent e) throws SQLException {
 		Player p = e.getPlayer();
 		p.teleport(new Location(Bukkit.getWorld("HIDE_Lobby"), -79.5, 90.5, 61.5, 0.1f, 0.1f));
 		p.setGameMode(GameMode.ADVENTURE);
+		p.getInventory().clear();
 		if(!(Hide.stats.isLoaded(p))) Hide.stats.load(p);
 		Hide.rankManager.load(p);
+		Hide.cosmeticManager.loadPlayer(p);
 		p.setDisplayName(Hide.rankManager.getRankColor(p) + p.getName());
 		String joinMessage = JoinMessages.getFromStorageCode(Hide.stats.getJoinMessageIndex(p)).getMessage();
 		joinMessage = Hide.rankManager.getRankColor(p) + p.getName() + joinMessage;
 		e.setJoinMessage(joinMessage);
 		Hide.votesHandler.sendMapChoices(p);
 		Utils.sendHeaderFooter(p, "\n§6Renaissance §eProject\n§fBringing back good memories\n", "\n§aPlaying in §bHide §aAnd §eSeek.\n");
+		Hide.preGameTimer.loadPlayer(p);
 	}
 	@EventHandler
-	public void onDisconnect(PlayerQuitEvent e) {
+	public void onDisconnect(PlayerQuitEvent e) throws SQLException {
 		Hide.rankManager.unLoad(e.getPlayer());
+		Hide.cosmeticManager.unloadPlayer(e.getPlayer());
 	}
 	
 	@EventHandler

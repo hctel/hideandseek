@@ -541,5 +541,9 @@ public class Stats {
 			}
 		}
 	}
+
+	public int getKills(Player player) {
+		return getKilledHiders(player) + getKilledSeekers(player);
+	}
 	
 }

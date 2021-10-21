@@ -12,6 +12,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 
+import be.hctel.renaissance.cosmetics.CosmeticsManager;
 import be.hctel.renaissance.hideandseek.commands.RankCommands;
 import be.hctel.renaissance.hideandseek.commands.StaffComands;
 import be.hctel.renaissance.hideandseek.commands.StatCommands;
@@ -38,6 +39,7 @@ public class Hide extends JavaPlugin {
 	
 	public static Stats stats;
 	public static RankManager rankManager;
+	public static CosmeticsManager cosmeticManager;
 	
 	public static MapLoader mapLoader;
 	public static VotesHandler votesHandler;
@@ -59,6 +61,7 @@ public class Hide extends JavaPlugin {
 		openConnection();
 		stats = new Stats(con);
 		rankManager = new RankManager(con);
+		cosmeticManager = new CosmeticsManager(con, this);
 		mapLoader = new MapLoader(plugin);
 		mapLoader.loadMaps();
 		preGameTimer = new PreGameTimer(this);
@@ -115,8 +118,8 @@ public class Hide extends JavaPlugin {
 				e.printStackTrace();
 			}
 	        try {
-				con = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=false", user, password);
-				System.out.println("jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=false ," + user + ", " + password);
+				con = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=false&autoReconnect=true", user, password);
+				System.out.println("jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=false&autoReconnect=true ," + user + ", " + password);
 				try {
 					@SuppressWarnings("unused")
 					Statement st = con.createStatement();
