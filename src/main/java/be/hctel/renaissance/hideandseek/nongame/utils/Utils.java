@@ -27,6 +27,10 @@ import net.minecraft.server.v1_12_R1.IChatBaseComponent;
 import net.minecraft.server.v1_12_R1.IChatBaseComponent.ChatSerializer;
 import net.minecraft.server.v1_12_R1.PacketPlayOutPlayerListHeaderFooter;
 
+/*
+ * This file is a part of the Renaissance Project API
+ */
+
 public class Utils {
 	/**
 	 * Converts a string to an int

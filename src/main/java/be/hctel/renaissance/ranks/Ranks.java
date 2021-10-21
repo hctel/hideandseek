@@ -4,6 +4,10 @@ import java.util.HashMap;
 
 import net.md_5.bungee.api.ChatColor;
 
+/*
+ * This file is a part of the Renaissance Project API
+ */
+
 public enum Ranks {
 	/**
 	 * Regular rank.

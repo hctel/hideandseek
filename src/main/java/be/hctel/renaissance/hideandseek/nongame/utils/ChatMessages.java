@@ -1,5 +1,9 @@
 package be.hctel.renaissance.hideandseek.nongame.utils;
 
+/*
+ * This file is a part of the Renaissance Project API
+ */
+
 public enum ChatMessages {
 	NO_RANK_CHANGE("§cSorry, but your current rank doesn't allow you to disguise your current rank as that rank."),
 	RANKCHANGE("§aYour rank was successfully changed."),

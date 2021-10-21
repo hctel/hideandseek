@@ -13,6 +13,10 @@ import be.hctel.renaissance.hideandseek.nongame.utils.ChatMessages;
 import be.hctel.renaissance.hideandseek.nongame.utils.Utils;
 import net.md_5.bungee.api.ChatColor;
 
+/*
+ * This file is a part of the Renaissance Project API
+ */
+
 public class RankManager {
 	Connection con;
 	HashMap<String, Ranks> cache = new HashMap<String, Ranks>();

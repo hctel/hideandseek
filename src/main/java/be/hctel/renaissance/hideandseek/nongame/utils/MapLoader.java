@@ -12,6 +12,11 @@ import org.bukkit.scheduler.BukkitRunnable;
 import be.hctel.renaissance.hideandseek.Hide;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.GameMap;
 
+/*
+ * This file is a part of the Renaissance Project API
+ */
+
+
 public class MapLoader {
 	public boolean isCopying = false;
 	ArrayList<String> worldNames = new ArrayList<String>();

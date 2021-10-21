@@ -11,6 +11,10 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import be.hctel.renaissance.hideandseek.nongame.utils.Utils;
 
+/*
+ * This file is a part of the Renaissance Project API
+ */
+
 public class CosmeticsManager {
 	Connection con;
 	Plugin plugin;

@@ -4,6 +4,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 
+/*
+ * This file is a part of the Renaissance Project API
+ */
+
 public class SpawnLocation {
 	String worldName;
 	double x, y, z;
