@@ -7,6 +7,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.UUID;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
@@ -459,8 +460,21 @@ public class Stats {
 		Statement st = con.createStatement();
 		for(String u : jsonList.keySet()) {
 			st.execute("UPDATE HIDE SET JSON = '" + jsonList.get(u).toString() + "' WHERE UUID = '" + u + "';");
-			st.execute("UPDATE HIDE SET unlockedJoinMessage = " + unlockedJMS.get(Bukkit.getPlayer(u)) + " WHERE UUID = '" + u + "';");
-			st.execute("UPDATE HIDE SET usedJoinMessage = " +jms.get(Bukkit.getPlayer(u)) + " WHERE UUID = '" + u + "';");
+			st.execute("UPDATE HIDE SET unlockedJoinMessage = " + unlockedJMS.get(Bukkit.getPlayer(UUID.fromString(u))) + " WHERE UUID = '" + u + "';");
+			st.execute("UPDATE HIDE SET usedJoinMessage = " +jms.get(Bukkit.getPlayer(UUID.fromString(u))) + " WHERE UUID = '" + u + "';");
+		}
+	}
+	
+	public void savePlayer(Player player) throws SQLException {
+		if(jsonList.containsKey(Utils.getUUID(player))) {
+			Statement st = con.createStatement();
+			String u = Utils.getUUID(player);
+			st.execute("UPDATE HIDE SET JSON = '" + jsonList.get(u).toString() + "' WHERE UUID = '" + u + "';");
+			st.execute("UPDATE HIDE SET unlockedJoinMessage = " + unlockedJMS.get(player) + " WHERE UUID = '" + u + "';");
+			st.execute("UPDATE HIDE SET usedJoinMessage = " +jms.get(player) + " WHERE UUID = '" + u + "';");
+			jsonList.remove(u);
+			unlockedJMS.remove(player);
+			jms.remove(player);
 		}
 	}
 	

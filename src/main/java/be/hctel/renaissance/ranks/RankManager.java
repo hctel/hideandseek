@@ -64,19 +64,21 @@ public class RankManager {
 			return false;
 		} else {
 			hideCache.replace(Utils.getUUID(player), rank.getIndex());
-			player.sendMessage(Hide.header + ChatMessages.RANKCHANGE);
+			player.sendMessage(Hide.header + ChatMessages.RANKCHANGE.toText());
 			return true;
 		}
 	} 
 	public void toggleRank(Player player) {
 		if(cache.get(Utils.getUUID(player)).getIndex() == 1) {
-			player.sendMessage(Hide.header + ChatMessages.NO_RANK_CHANGE);
+			player.sendMessage(Hide.header + ChatMessages.NO_RANK_CHANGE.toText());
 			return;
 		}
 		if(hideCache.get(Utils.getUUID(player)) == 1) {
 			hideCache.replace(Utils.getUUID(player), cache.get(Utils.getUUID(player)).getIndex());
+			player.sendMessage(Hide.header + ChatMessages.RANKTOGGLE.toText());
 		} else {
 			hideCache.replace(Utils.getUUID(player), 1);
+			player.sendMessage(Hide.header + ChatMessages.RANKTOGGLE.toText());
 		}
 	}
 	public void unLoad(Player player) {

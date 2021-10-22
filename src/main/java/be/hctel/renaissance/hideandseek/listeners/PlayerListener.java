@@ -25,6 +25,9 @@ public class PlayerListener implements Listener {
 		if(Hide.isServerStarting) {
 			a.getPlayer().kickPlayer("Server not started yet.");
 		}
+		else if(Hide.preGameTimer.gameStarted) {
+			if(!(a.getPlayer().hasPermission("hide.spectate"))) a.getPlayer().kickPlayer("Only staff members are allowed to spectate in Hide and Seek.");
+		}
 	}
 	@EventHandler
 	public void onJoin(PlayerJoinEvent e) throws SQLException {
