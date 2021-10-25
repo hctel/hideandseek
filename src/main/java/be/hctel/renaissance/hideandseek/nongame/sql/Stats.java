@@ -460,8 +460,8 @@ public class Stats {
 		Statement st = con.createStatement();
 		for(String u : jsonList.keySet()) {
 			st.execute("UPDATE HIDE SET JSON = '" + jsonList.get(u).toString() + "' WHERE UUID = '" + u + "';");
-			st.execute("UPDATE HIDE SET unlockedJoinMessage = " + unlockedJMS.get(Bukkit.getPlayer(UUID.fromString(u))) + " WHERE UUID = '" + u + "';");
-			st.execute("UPDATE HIDE SET usedJoinMessage = " +jms.get(Bukkit.getPlayer(UUID.fromString(u))) + " WHERE UUID = '" + u + "';");
+			st.execute("UPDATE HIDE SET unlockedJoinMessage = " + unlockedJMS.get(Bukkit.getPlayer(UUID.fromString(Utils.getFullUUID(u)))) + " WHERE UUID = '" + u + "';");
+			st.execute("UPDATE HIDE SET usedJoinMessage = " +jms.get(Bukkit.getPlayer(UUID.fromString(Utils.getFullUUID(u)))) + " WHERE UUID = '" + u + "';");
 		}
 	}
 	
@@ -470,8 +470,8 @@ public class Stats {
 			Statement st = con.createStatement();
 			String u = Utils.getUUID(player);
 			st.execute("UPDATE HIDE SET JSON = '" + jsonList.get(u).toString() + "' WHERE UUID = '" + u + "';");
-			st.execute("UPDATE HIDE SET unlockedJoinMessage = " + unlockedJMS.get(player) + " WHERE UUID = '" + u + "';");
-			st.execute("UPDATE HIDE SET usedJoinMessage = " +jms.get(player) + " WHERE UUID = '" + u + "';");
+			st.execute("UPDATE HIDE SET unlockedJoinMessage = " + unlockedJMS.get(Bukkit.getPlayer(UUID.fromString(Utils.getFullUUID(u)))) + " WHERE UUID = '" + u + "';");
+			st.execute("UPDATE HIDE SET usedJoinMessage = " +jms.get(Bukkit.getPlayer(UUID.fromString(Utils.getFullUUID(u)))) + " WHERE UUID = '" + u + "';");
 			jsonList.remove(u);
 			unlockedJMS.remove(player);
 			jms.remove(player);

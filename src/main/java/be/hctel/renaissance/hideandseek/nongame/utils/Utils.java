@@ -3,7 +3,7 @@ package be.hctel.renaissance.hideandseek.nongame.utils;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Set;
+import java.util.concurrent.RecursiveTask;
 
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Color;
@@ -17,6 +17,7 @@ import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -370,6 +371,30 @@ public class Utils {
 	public static void sendActionBarMessage(Player player, String msg) {
 		player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(msg));
 	}
+	public static ItemStack createQuickItemStack(Material material, short damage, String name) {
+		ItemStack toReturn = new ItemStack(material, 1, damage);
+		ItemMeta meta = toReturn.getItemMeta();
+		meta.setDisplayName(name);
+		toReturn.setItemMeta(meta);
+		return toReturn;
+		
+	}
+	/**
+	 * @deprecated This method uses an anmbiguous data type object
+	 * @param player
+	 * @param material
+	 * @param damage
+	 * @param data
+	 * @param name
+	 * @return
+	 */
+	public static ItemStack createQuickItemStack(Material material, short damage, byte data, String name) {
+		ItemStack toReturn = new ItemStack(material, 1, damage, data);
+		ItemMeta meta = toReturn.getItemMeta();
+		meta.setDisplayName(name);
+		toReturn.setItemMeta(meta);
+		return toReturn;
+	}
 	/**
 	 * Creates a delayed recursive loop
 	 * @param plugin The main plugin instance
@@ -398,5 +423,11 @@ public class Utils {
 				param = +increment;
 			}
 		}.runTaskTimer(plugin, 0L, delay);
+	}
+	public static String getFullUUID(String formattedUUID) {
+		String uuid = formattedUUID.replaceAll(                                            
+			    "(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})",                            
+			    "$1-$2-$3-$4-$5");
+		return uuid;
 	}
 }

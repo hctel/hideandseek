@@ -1,6 +1,7 @@
 package be.hctel.renaissance.hideandseek.gamespecific.enums;
 
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -9,6 +10,14 @@ public class ItemsManager {
 		ItemStack a = new ItemStack(Material.COMPASS);
 		ItemMeta b = a.getItemMeta();
 		b.setDisplayName("§b§lSelect your Block!");
+		a.setItemMeta(b);
+		return a;
+	}
+	public static ItemStack hidersSword() {
+		ItemStack a = new ItemStack(Material.WOOD_SWORD);
+		ItemMeta b = a.getItemMeta();
+		b.setDisplayName("§c§lSeeker Killer");
+		b.addEnchant(Enchantment.KNOCKBACK, 1, true);
 		a.setItemMeta(b);
 		return a;
 	}

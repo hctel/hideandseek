@@ -89,7 +89,7 @@ public class PreGameTimer {
 									Utils.sendActionBarMessage(p, "§eChoose your Block! §8| §aStarting in §l" + timer);
 								}
 							}
-						} else if(timer <= 5 && timer != 0) {
+						} else if(timer <= 5 && timer > 0) {
 							for(Player p : Bukkit.getOnlinePlayers()) {
 								Utils.sendActionBarMessage(p, "§eChoose your Block! §8| §aStarting in §c§l" + timer);
 								p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1.0f, 1.0f);
