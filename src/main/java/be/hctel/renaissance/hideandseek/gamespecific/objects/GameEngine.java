@@ -85,11 +85,11 @@ public class GameEngine {
 		
 		for(Player p : hiders) {
 			p.teleport(hiderSpawn);
-			Utils.sendCenteredMessage(p, "§6§m————————————————————————————————");
+			Utils.sendCenteredMessage(p, "§6§m--------------------------------");
 			Utils.sendCenteredMessage(p, "§b§lYou are a §f§lHIDER!");
 			Utils.sendCenteredMessage(p, "§aFind a hiding spot before the seeker's released!");
 			Utils.sendCenteredMessage(p, "§cThe seeker will be released in §l30 seconds!");
-			Utils.sendCenteredMessage(p, "§6§m————————————————————————————————");
+			Utils.sendCenteredMessage(p, "§6§m--------------------------------");
 		}
 		for(Player p : seekers) {
 			p.teleport(seekerSpawn);
@@ -99,13 +99,14 @@ public class GameEngine {
 			p.getInventory().setChestplate(new ItemStack(Material.IRON_CHESTPLATE));
 			p.getInventory().setLeggings(new ItemStack(Material.IRON_LEGGINGS));
 			p.getInventory().setBoots(new ItemStack(Material.IRON_BOOTS));
-			Utils.sendCenteredMessage(p, "§c§m———————————————————————————————————————————————————");
+			Utils.sendCenteredMessage(p, "§c§m---------------------------------------------------");
 			p.sendMessage("");
 			Utils.sendCenteredMessage(p, "§6§lYou are a §c§lSEEKER!");
 			Utils.sendCenteredMessage(p, "§eIt's your job to find hidden block and KILL THEM!");
 			p.sendMessage("");
 			Utils.sendCenteredMessage(p, "You will be released in §l30 seconds!");
-			Utils.sendCenteredMessage(p, "§c§m———————————————————————————————————————————————————");
+			p.sendMessage("");
+			Utils.sendCenteredMessage(p, "§c§m---------------------------------------------------");
 			sidebars.get(p).setLine(11, hiders.size() + "");
 			sidebars.get(p).setLine(8, seekers.size() + "");
 		}
