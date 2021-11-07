@@ -3,6 +3,7 @@ package be.hctel.renaissance.hideandseek.nongame.utils;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 import java.util.concurrent.RecursiveTask;
 
 import org.apache.commons.lang.StringUtils;
@@ -429,5 +430,19 @@ public class Utils {
 			    "(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})",                            
 			    "$1-$2-$3-$4-$5");
 		return uuid;
+	}
+	public static String randomString(int lenght) {
+	    int leftLimit = 48; // numeral '0'
+	    int rightLimit = 122; // letter 'z'
+	    int targetStringLength = lenght;
+	    Random random = new Random();
+
+	    String generatedString = random.ints(leftLimit, rightLimit + 1)
+	      .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
+	      .limit(targetStringLength)
+	      .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+	      .toString();
+
+	    return generatedString;
 	}
 }

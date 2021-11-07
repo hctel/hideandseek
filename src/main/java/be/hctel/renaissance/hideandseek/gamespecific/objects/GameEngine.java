@@ -54,7 +54,7 @@ public class GameEngine {
 		this.seekerSpawn = new Location(Bukkit.getWorld("TEMPWORLD" + index), map.getSeekerStart().getX(), map.getSeekerStart().getY(), map.getSeekerStart().getZ(), map.getSeekerStart().getYaw(), map.getSeekerStart().getPitch());
 		isPlaying = true;
 		for(Player p : Bukkit.getOnlinePlayers()) {
-			sidebars.put(p, new DynamicScoreboard(p.getUniqueId() + "A", "§b§lHide§a§lAnd§e§lSeek", Bukkit.getScoreboardManager()));
+			sidebars.put(p, new DynamicScoreboard(Utils.randomString(16), "§b§lHide§a§lAnd§e§lSeek", Bukkit.getScoreboardManager()));
 			sidebars.get(p).setLine(14, "§e§lTime left");
 			sidebars.get(p).setLine(13, "0:30");
 			sidebars.get(p).setLine(12, "     ");
@@ -68,7 +68,7 @@ public class GameEngine {
 			sidebars.get(p).setLine(4, "§7Kills: §f0");
 			sidebars.get(p).setLine(3, "    ");
 			sidebars.get(p).setLine(2, "§7----------");
-			sidebars.get(p).setLine(1, "§bhctel§f.§anet");
+			sidebars.get(p).setLine(1, "§bhctel§f.§anet         ");
 			sidebars.get(p).addReceiver(p);
 			Utils.sendActionBarMessage(p, "");
 			Hide.stats.addGame(p);

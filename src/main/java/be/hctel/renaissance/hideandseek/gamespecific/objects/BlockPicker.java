@@ -45,15 +45,15 @@ public class BlockPicker {
 		if(is <= 54 && is > 45) {
 			iv = 54;
 		} else if(is <= 45 && is > 36) {
-			iv = 45;
+			iv = 54;
 		} else if(is <= 36 && is > 27) {
-			iv = 36;
+			iv = 45;
 		} else if(is <= 27 && is > 18) {
-			iv = 27;
+			iv = 36;
 		} else if(is <= 18 && is > 9) {
-			iv = 18;
+			iv = 27;
 		} else if(is <= 9) {
-			iv = 9;
+			iv = 18;
 		}
 		Inventory inv = Bukkit.createInventory(null, iv, "Choose your block!");
 		for(int i = 0; i < def.size(); i++) {
@@ -84,7 +84,7 @@ public class BlockPicker {
 			a.setItemMeta(b);
 			inv.setItem(i, a);
 		}
-		for(int i = 0; i < cus.size()-1; i++) {
+		for(int i = 0; i < cus.size(); i++) {
 			ItemStack a = cus.get(i);
 			ItemMeta b = a.getItemMeta();
 			b.setDisplayName("§e§l" + Utils.getUserItemName(a));
@@ -99,7 +99,7 @@ public class BlockPicker {
 			lore.add("");
 			b.setLore(lore);
 			a.setItemMeta(b);
-			inv.setItem(i+9, a);
+			inv.setItem(i+18, a);
 		}
 		playerBlockSelector.put(player, inv);
 		ArrayList<ItemStack> all = def;
@@ -125,6 +125,10 @@ public class BlockPicker {
 		if(e.getInventory().getName().equalsIgnoreCase("Choose your block!")) {
 			Player p = (Player) e.getWhoClicked();
 			ItemStack picked = e.getCurrentItem();
+			if(picked.getType() == Material.STAINED_GLASS_PANE) {
+				e.setCancelled(true);
+				return;
+			}
 			if(picked.getType() == Material.FLOWER_POT_ITEM) picked.setType(Material.FLOWER_POT);
 			p.closeInventory();
 			p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 0.99f);
