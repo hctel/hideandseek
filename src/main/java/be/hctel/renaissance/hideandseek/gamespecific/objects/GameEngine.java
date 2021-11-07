@@ -54,7 +54,7 @@ public class GameEngine {
 		this.seekerSpawn = new Location(Bukkit.getWorld("TEMPWORLD" + index), map.getSeekerStart().getX(), map.getSeekerStart().getY(), map.getSeekerStart().getZ(), map.getSeekerStart().getYaw(), map.getSeekerStart().getPitch());
 		isPlaying = true;
 		for(Player p : Bukkit.getOnlinePlayers()) {
-			sidebars.put(p, new DynamicScoreboard(p.getName() + "A", "§b§lHide§a§lAnd§e§lSeek", Bukkit.getScoreboardManager()));
+			sidebars.put(p, new DynamicScoreboard(p.getUniqueId() + "A", "§b§lHide§a§lAnd§e§lSeek", Bukkit.getScoreboardManager()));
 			sidebars.get(p).setLine(14, "§e§lTime left");
 			sidebars.get(p).setLine(13, "0:30");
 			sidebars.get(p).setLine(12, "     ");
@@ -65,7 +65,7 @@ public class GameEngine {
 			sidebars.get(p).setLine(7, "0");
 			sidebars.get(p).setLine(6, "       ");
 			sidebars.get(p).setLine(5, "§7Points: §f0");
-			sidebars.get(p).setLine(4, "§lKills: §f");
+			sidebars.get(p).setLine(4, "§7Kills: §f0");
 			sidebars.get(p).setLine(3, "    ");
 			sidebars.get(p).setLine(2, "§7----------");
 			sidebars.get(p).setLine(1, "§bhctel§f.§anet");
@@ -76,7 +76,8 @@ public class GameEngine {
 			p.setGameMode(GameMode.ADVENTURE);
 			deaths.put(p, 0);
 			seekerKills.put(p, 0);
-			hiderKills.put(p, 0);			
+			hiderKills.put(p, 0);
+			p.getInventory().clear();
 		}
 		Player firstSeeker = getNewSeeker();
 		hiders.remove(firstSeeker);
@@ -163,6 +164,7 @@ public class GameEngine {
 		return hiders.contains(player);
 	}
 	public void addKill(Player player, Player killed, boolean seekerKill) {
+		System.out.println("addKill");
 		if(seekerKill) {
 			seekerKills.replace(player, seekerKills.get(player)+1);
 			deaths.replace(killed, deaths.get(killed)+1);
