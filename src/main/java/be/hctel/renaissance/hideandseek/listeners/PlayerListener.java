@@ -8,7 +8,9 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -54,7 +56,91 @@ public class PlayerListener implements Listener {
 	
 	@EventHandler
 	public void onDamage(EntityDamageEvent e) {
-		if(e.getCause() == DamageCause.FALL) e.setCancelled(true);
+		switch (e.getCause()) {
+		case BLOCK_EXPLOSION:
+			break;
+		case CONTACT:
+			break;
+		case CRAMMING:
+			break;
+		case CUSTOM:
+			break;
+		case DRAGON_BREATH:
+			break;
+		case DROWNING:
+			e.setCancelled(true);
+			break;
+		case ENTITY_ATTACK:
+			break;
+		case ENTITY_EXPLOSION:
+			e.setCancelled(true);
+			break;
+		case ENTITY_SWEEP_ATTACK:
+			break;
+		case FALL:
+			e.setCancelled(true);
+			break;
+		case FALLING_BLOCK:
+			e.setCancelled(true);
+			break;
+		case FIRE:
+			e.setCancelled(true);
+			break;
+		case FIRE_TICK:
+			e.setCancelled(true);
+			break;
+		case FLY_INTO_WALL:
+			break;
+		case HOT_FLOOR:
+			break;
+		case LAVA:
+			e.setCancelled(true);
+			break;
+		case LIGHTNING:
+			break;
+		case MAGIC:
+			e.setCancelled(true);
+			break;
+		case MELTING:
+			break;
+		case POISON:
+			e.setCancelled(true);
+			break;
+		case PROJECTILE:
+			e.setCancelled(true);
+			break;
+		case STARVATION:
+			break;
+		case SUFFOCATION:
+			break;
+		case SUICIDE:
+			break;
+		case THORNS:
+			break;
+		case VOID:
+			break;
+		case WITHER:
+			break;
+		default:
+			break;
+		
+		}
+	}
+	
+	@EventHandler
+	public void onDamageByEntity(EntityDamageByEntityEvent e) {
+		if(e.getDamager() instanceof Player && e.getEntity() instanceof Player) {
+			if(Hide.preGameTimer.gameStarted) {
+				if (Hide.gameEngine.areSameTeam((Player) e.getEntity(), (Player) e.getDamager())) e.setCancelled(true);
+			} else e.setCancelled(true);
+		} else e.setCancelled(true);
+	}
+	
+	@EventHandler
+	public void onDeath(EntityDeathEvent e) {
+		if(Hide.preGameTimer.gameStarted) {
+			Hide.gameEngine.addKill(e.getEntity().getKiller(), (Player) e.getEntity(), Hide.gameEngine.isSeeker(e.getEntity().getKiller()));
+		}
 	}
  	
 	@EventHandler

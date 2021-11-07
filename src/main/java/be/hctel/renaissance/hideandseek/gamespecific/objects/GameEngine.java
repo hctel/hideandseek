@@ -1,6 +1,5 @@
 package be.hctel.renaissance.hideandseek.gamespecific.objects;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
@@ -15,6 +14,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import be.hctel.api.scoreboard.DynamicScoreboard;
 import be.hctel.renaissance.hideandseek.Hide;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.GameMap;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.ItemsManager;
@@ -38,7 +38,11 @@ public class GameEngine {
 	private ArrayList<Player> seekers = new ArrayList<Player>();
 	private ArrayList<Player> queuedSeekers = new ArrayList<Player>();
 	
-	private HashMap<Player, ObjectiveSign> sidebars = new HashMap<Player, ObjectiveSign>();
+	private HashMap<Player, Integer> hiderKills = new HashMap<Player, Integer>();
+	private HashMap<Player, Integer> seekerKills = new HashMap<Player, Integer>();
+	private HashMap<Player, Integer> deaths = new HashMap<Player, Integer>();
+	
+	private HashMap<Player, DynamicScoreboard> sidebars = new HashMap<Player, DynamicScoreboard>();
 	
 	public GameEngine(Plugin plugin, GameMap map) {
 		this.plugin = plugin;
@@ -51,12 +55,29 @@ public class GameEngine {
 		this.seekerSpawn = new Location(Bukkit.getWorld("TEMPWORLD" + index), map.getSeekerStart().getX(), map.getSeekerStart().getY(), map.getSeekerStart().getZ(), map.getSeekerStart().getYaw(), map.getSeekerStart().getPitch());
 		isPlaying = true;
 		for(Player p : Bukkit.getOnlinePlayers()) {
-			sidebars.put(p, new ObjectiveSign(p.getName(), "§b§lHide§a§lAnd§e§lSeek"));
-			
+			sidebars.put(p, new DynamicScoreboard(p.getName() + "A", "§b§lHide§a§lAnd§e§lSeek", Bukkit.getScoreboardManager()));
+			sidebars.get(p).setLine(14, "§e§lTime left");
+			sidebars.get(p).setLine(13, "0:30");
+			sidebars.get(p).setLine(12, "    ");
+			sidebars.get(p).setLine(11, "§bHiders");
+			sidebars.get(p).setLine(10, "0");
+			sidebars.get(p).setLine(9, "    ");
+			sidebars.get(p).setLine(8, "§aSeekers");
+			sidebars.get(p).setLine(7, "0");
+			sidebars.get(p).setLine(6, "    ");
+			sidebars.get(p).setLine(5, "§lPoints: §f0");
+			sidebars.get(p).setLine(4, "§lKills: §f");
+			sidebars.get(p).setLine(3, "    ");
+			sidebars.get(p).setLine(2, "§7----------");
+			sidebars.get(p).setLine(1, "§bhctel§f.§anet");
+			sidebars.get(p).addReceiver(p);
 			Utils.sendActionBarMessage(p, "");
 			Hide.stats.addGame(p);
 			hiders.add(p);
 			p.setGameMode(GameMode.ADVENTURE);
+			deaths.put(p, 0);
+			seekerKills.put(p, 0);
+			hiderKills.put(p, 0);			
 		}
 		Player firstSeeker = getNewSeeker();
 		hiders.remove(firstSeeker);
@@ -118,7 +139,7 @@ public class GameEngine {
 							}
 						}
 						if(timer == 10) {
-							
+							for(Player p : Bukkit.getOnlinePlayers()) p.sendTitle("§c10 seconds remaining", "", 10, 70, 20);
 						}
 						if(timer < 6 && timer > 0) {
 							
@@ -133,7 +154,26 @@ public class GameEngine {
 		}.runTaskTimer(plugin, 0L, 20L);
 		
 	}
-	
+	public boolean areSameTeam(Player a, Player b) {
+		return (hiders.contains(a) && hiders.contains(b)) || (seekers.contains(a) && seekers.contains(b));
+	}
+	public boolean isSeeker(Player player) {
+		return seekers.contains(player);
+	}
+	public boolean isHider(Player player) {
+		return hiders.contains(player);
+	}
+	public void addKill(Player player, Player killed, boolean seekerKill) {
+		if(seekerKill) {
+			seekerKills.replace(player, seekerKills.get(player)+1);
+			deaths.replace(killed, deaths.get(killed)+1);
+			Bukkit.broadcastMessage(Hide.header + "§6Hider " + Hide.rankManager.getRankColor(killed) + killed.getName() + " §6was killed by " + Hide.rankManager.getRankColor(player) + player.getName());
+		} else {
+			hiderKills.replace(player, hiderKills.get(player)+1);
+			deaths.replace(killed, deaths.get(killed)+1);
+			Bukkit.broadcastMessage(Hide.header + "§6Seeker " + Hide.rankManager.getRankColor(killed) + killed.getName() + " §6was killed by " + Hide.rankManager.getRankColor(player) + player.getName());
+		}
+	}
 	private Player getNewSeeker() {
 		if(queuedSeekers.isEmpty()) {
 			return hiders.get(r.nextInt(hiders.size()));
