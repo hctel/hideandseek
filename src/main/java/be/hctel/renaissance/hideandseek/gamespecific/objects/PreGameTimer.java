@@ -8,11 +8,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitScheduler;
 
+import be.hctel.api.scoreboard.DynamicScoreboard;
 import be.hctel.renaissance.hideandseek.Hide;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.ItemsManager;
 import be.hctel.renaissance.hideandseek.nongame.utils.ChatMessages;
 import be.hctel.renaissance.hideandseek.nongame.utils.Utils;
-import be.hctel.renaissance.hideandseek.nongame.utils.thirdparty.samagames.ObjectiveSign;
 
 public class PreGameTimer {
 	Plugin plugin;
@@ -24,7 +24,7 @@ public class PreGameTimer {
 	public boolean gameStarted = false;
 	public boolean choosingBlock = false;
 	
-	private HashMap<Player, ObjectiveSign> sidebars = new HashMap<Player, ObjectiveSign>();
+	private HashMap<Player, DynamicScoreboard> sidebars = new HashMap<Player, DynamicScoreboard>();
 	
 	public PreGameTimer(Plugin plugin) {
 		this.plugin = plugin;
@@ -108,7 +108,7 @@ public class PreGameTimer {
 		}, 0L, 20L);
 	}
 	public void loadPlayer(Player player) {
-		sidebars.put(player, new ObjectiveSign(player.getName(), "§eYour HIDE stats"));
+		sidebars.put(player, new DynamicScoreboard(player.getName(), "§eYour HIDE stats", Bukkit.getScoreboardManager()));
 		sidebars.get(player).setLine(Hide.stats.getPoints(player), "§bPoints");
 		sidebars.get(player).setLine(Hide.cosmeticManager.getTokens(player), "§aTokens");
 		sidebars.get(player).setLine(Hide.stats.getGamesPlayed(player), "§bGames Played");
@@ -118,6 +118,5 @@ public class PreGameTimer {
 		sidebars.get(player).setLine(Hide.stats.getVictories(player), "§bVictories");
 		sidebars.get(player).setLine(Hide.stats.getKilledSeekers(player), "§bKills as Hider");
 		sidebars.get(player).addReceiver(player);
-		sidebars.get(player).updateLines(false);
 	}
 }

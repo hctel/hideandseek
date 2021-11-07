@@ -19,7 +19,6 @@ import be.hctel.renaissance.hideandseek.Hide;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.GameMap;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.ItemsManager;
 import be.hctel.renaissance.hideandseek.nongame.utils.Utils;
-import be.hctel.renaissance.hideandseek.nongame.utils.thirdparty.samagames.ObjectiveSign;
 
 public class GameEngine {
 	private Plugin plugin;
@@ -58,14 +57,14 @@ public class GameEngine {
 			sidebars.put(p, new DynamicScoreboard(p.getName() + "A", "§b§lHide§a§lAnd§e§lSeek", Bukkit.getScoreboardManager()));
 			sidebars.get(p).setLine(14, "§e§lTime left");
 			sidebars.get(p).setLine(13, "0:30");
-			sidebars.get(p).setLine(12, "    ");
+			sidebars.get(p).setLine(12, "     ");
 			sidebars.get(p).setLine(11, "§bHiders");
-			sidebars.get(p).setLine(10, "0");
-			sidebars.get(p).setLine(9, "    ");
+			sidebars.get(p).setLine(10, "0 ");
+			sidebars.get(p).setLine(9, "      ");
 			sidebars.get(p).setLine(8, "§aSeekers");
 			sidebars.get(p).setLine(7, "0");
-			sidebars.get(p).setLine(6, "    ");
-			sidebars.get(p).setLine(5, "§lPoints: §f0");
+			sidebars.get(p).setLine(6, "       ");
+			sidebars.get(p).setLine(5, "§7Points: §f0");
 			sidebars.get(p).setLine(4, "§lKills: §f");
 			sidebars.get(p).setLine(3, "    ");
 			sidebars.get(p).setLine(2, "§7----------");

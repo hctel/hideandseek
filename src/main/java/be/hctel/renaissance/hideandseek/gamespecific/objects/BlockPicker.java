@@ -36,7 +36,10 @@ public class BlockPicker {
 		ArrayList<ItemStack> def = map.getDefaultBlocks();
 		ArrayList<ItemStack> cus = stats.getUnlockedBlocks(player);
 		ArrayList<ItemStack> dis = map.getDisabledBlocks();
-		for(ItemStack i : cus) if(dis.contains(i)) cus.remove(i);
+		for(int o = 0; o < cus.size(); o++) {
+			ItemStack i = cus.get(o);
+			if(dis.contains(i)) cus.remove(i);
+		}
 		int is = def.size()+cus.size()+9;
 		int iv = 54;
 		if(is <= 54 && is > 45) {
@@ -53,7 +56,7 @@ public class BlockPicker {
 			iv = 9;
 		}
 		Inventory inv = Bukkit.createInventory(null, iv, "Choose your block!");
-		for(int i = 0; i < def.size()-1; i++) {
+		for(int i = 0; i < def.size(); i++) {
 			ItemStack a = def.get(i);
 			ItemStack aA = def.get(i);
 			if(a.getType().equals(Material.FLOWER_POT)) {
