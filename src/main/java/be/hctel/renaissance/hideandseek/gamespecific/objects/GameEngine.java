@@ -86,7 +86,7 @@ public class GameEngine {
 		for(Player p : hiders) {
 			p.teleport(hiderSpawn);
 			Utils.sendCenteredMessage(p, "§6§m--------------------------------");
-			Utils.sendCenteredMessage(p, "§b§lYou are a §f§lHIDER!");
+			Utils.sendCenteredMessage(p, "§b§lYou are a §f§lHIDER! (" + Utils.getUserItemName(Hide.blockPicker.playerBlock.get(p)) + ")");
 			Utils.sendCenteredMessage(p, "§aFind a hiding spot before the seeker's released!");
 			Utils.sendCenteredMessage(p, "§cThe seeker will be released in §l30 seconds!");
 			Utils.sendCenteredMessage(p, "§6§m--------------------------------");
