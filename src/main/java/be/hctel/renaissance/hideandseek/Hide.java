@@ -9,6 +9,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.ProtocolManager;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 
@@ -36,6 +38,7 @@ public class Hide extends JavaPlugin {
 	public static Plugin plugin;
 	public static MultiverseCore core;
 	public static MVWorldManager worldManager;
+	public static ProtocolManager protocolLibManager;
 	
 	public static Stats stats;
 	public static RankManager rankManager;
@@ -68,6 +71,7 @@ public class Hide extends JavaPlugin {
 		registerListeners();
 		loadCommands();
 		votesHandler = new VotesHandler(plugin);
+		protocolLibManager = ProtocolLibrary.getProtocolManager();
 	}
 	
 	

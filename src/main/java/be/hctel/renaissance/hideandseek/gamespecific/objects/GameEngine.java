@@ -42,6 +42,7 @@ public class GameEngine {
 	private HashMap<Player, Integer> deaths = new HashMap<Player, Integer>();
 	
 	private HashMap<Player, DynamicScoreboard> sidebars = new HashMap<Player, DynamicScoreboard>();
+	private HashMap<Player, DisguiseBlockManager> disguises = new HashMap<Player, DisguiseBlockManager>();
 	
 	public GameEngine(Plugin plugin, GameMap map) {
 		this.plugin = plugin;
@@ -86,10 +87,11 @@ public class GameEngine {
 		for(Player p : hiders) {
 			p.teleport(hiderSpawn);
 			Utils.sendCenteredMessage(p, "§6§m--------------------------------");
-			Utils.sendCenteredMessage(p, "§b§lYou are a §f§lHIDER!");
+			Utils.sendCenteredMessage(p, "§b§lYou are a §f§lHIDER! (" + Utils.getUserItemName(Hide.blockPicker.playerBlock.get(p)) + ")");
 			Utils.sendCenteredMessage(p, "§aFind a hiding spot before the seeker's released!");
 			Utils.sendCenteredMessage(p, "§cThe seeker will be released in §l30 seconds!");
 			Utils.sendCenteredMessage(p, "§6§m--------------------------------");
+			disguises.put(p, new DisguiseBlockManager(p, Hide.blockPicker.playerBlock.get(p), plugin));
 		}
 		for(Player p : seekers) {
 			p.teleport(seekerSpawn);
@@ -100,12 +102,9 @@ public class GameEngine {
 			p.getInventory().setLeggings(new ItemStack(Material.IRON_LEGGINGS));
 			p.getInventory().setBoots(new ItemStack(Material.IRON_BOOTS));
 			Utils.sendCenteredMessage(p, "§c§m---------------------------------------------------");
-			p.sendMessage("");
 			Utils.sendCenteredMessage(p, "§6§lYou are a §c§lSEEKER!");
 			Utils.sendCenteredMessage(p, "§eIt's your job to find hidden block and KILL THEM!");
-			p.sendMessage("");
 			Utils.sendCenteredMessage(p, "You will be released in §l30 seconds!");
-			p.sendMessage("");
 			Utils.sendCenteredMessage(p, "§c§m---------------------------------------------------");
 			sidebars.get(p).setLine(11, hiders.size() + "");
 			sidebars.get(p).setLine(8, seekers.size() + "");
@@ -153,6 +152,18 @@ public class GameEngine {
 				}
 			}			
 		}.runTaskTimer(plugin, 0L, 20L);
+		new BukkitRunnable() {
+
+			@Override
+			public void run() {
+				if(isPlaying) {
+					for(Player p : hiders) {
+						disguises.get(p).tick();
+					}
+				}
+			}
+			
+		}.runTaskTimer(plugin, 0L, 1L);
 		
 	}
 	public boolean areSameTeam(Player a, Player b) {
@@ -170,6 +181,7 @@ public class GameEngine {
 			seekerKills.replace(player, seekerKills.get(player)+1);
 			deaths.replace(killed, deaths.get(killed)+1);
 			Bukkit.broadcastMessage(Hide.header + "§6Hider " + Hide.rankManager.getRankColor(killed) + killed.getName() + " §6was killed by " + Hide.rankManager.getRankColor(player) + player.getName());
+			if(hiders.contains(killed)) hiders.remove(killed);
 		} else {
 			hiderKills.replace(player, hiderKills.get(player)+1);
 			deaths.replace(killed, deaths.get(killed)+1);

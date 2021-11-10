@@ -12,6 +12,7 @@ import org.bukkit.FireworkEffect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
@@ -22,12 +23,18 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.ProtocolManager;
+import com.comphenix.protocol.events.PacketContainer;
+
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.minecraft.server.v1_12_R1.EntityFallingBlock;
 import net.minecraft.server.v1_12_R1.IChatBaseComponent;
 import net.minecraft.server.v1_12_R1.IChatBaseComponent.ChatSerializer;
 import net.minecraft.server.v1_12_R1.PacketPlayOutPlayerListHeaderFooter;
+import net.minecraft.server.v1_12_R1.WorldServer;
 
 /*
  * This file is a part of the Renaissance Project API
@@ -444,5 +451,26 @@ public class Utils {
 	      .toString();
 
 	    return generatedString;
+	}
+	public static boolean locationComparator(Location a, Location b, boolean checkX, boolean checkY, boolean checkZ) {
+		if(checkX) {
+			if(checkY) {
+				return a.getBlockX() == b.getBlockX() && a.getBlockY() == b.getBlockY();
+			}
+			if(checkZ) {
+				return a.getBlockX() == b.getBlockX() && a.getBlockY() == b.getBlockY() && a.getBlockZ() == b.getBlockZ();
+			}
+			return a.getBlockX() == b.getBlockX();
+		}
+		if(checkY) {
+			if(checkZ) {
+				return a.getBlockY() == b.getBlockY() && a.getBlockZ() == b.getBlockZ();
+			}
+			return a.getBlockY() == b.getBlockY() && a.getBlockZ() == b.getBlockZ();
+		}
+		if(checkZ) {
+			return a.getBlockZ() == b.getBlockZ();
+		}
+		else return false;
 	}
 }
