@@ -1,6 +1,7 @@
 package be.hctel.renaissance.hideandseek.nongame.utils;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
@@ -23,10 +24,12 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import com.comphenix.packetwrapper.WrapperPlayServerSpawnEntity;
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketContainer;
 
+import be.hctel.renaissance.hideandseek.Hide;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -473,4 +476,24 @@ public class Utils {
 		}
 		else return false;
 	}
+	public static void spawnBlock(Player p, int blockID, int data){
+		 
+	        WrapperPlayServerSpawnEntity fbs = new WrapperPlayServerSpawnEntity();
+	 
+	        fbs.setEntityID(new Random().nextInt());
+	        fbs.setObjectData(blockID | (data << 0x10));
+	        Location l = p.getLocation();
+	        fbs.setX(l.getX());
+	        fbs.setY(l.getY() + 5);
+	        fbs.setZ(l.getZ());
+	        fbs.setOptionalSpeedX(0.1);
+	        fbs.setOptionalSpeedY(0);
+	        fbs.setOptionalSpeedY(0);
+	 
+	        try {
+	            Hide.protocolLibManager.sendServerPacket(p, fbs.getHandle());
+	        } catch (InvocationTargetException e) {
+	            e.printStackTrace();
+	        }
+	    }
 }

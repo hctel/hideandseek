@@ -51,7 +51,7 @@ public class DisguiseBlockManager {
 				player.sendTitle("§a>> >> §7>> >>", "", 0, 25, 20);
 			}
 			else if(timeInLocation == 60) {
-				player.sendTitle("§a>> >> §7>> >>", "", 0, 25, 20);
+				player.sendTitle("§a>> >> >> §7>>", "", 0, 25, 20);
 			}
 			else if(timeInLocation == 80) {
 				player.sendTitle("§aYou are now solid", "", 5, 60, 20);
@@ -70,6 +70,7 @@ public class DisguiseBlockManager {
 		player.sendBlockChange(solidLocation, Material.AIR, (byte) 0);
 		player.getWorld().playEffect(player.getLocation(), Effect.COLOURED_DUST, 0);
 		player.sendMessage(Hide.header + "§6You are now §ahidden");
+		Utils.spawnBlock(player, block.getTypeId(), block.getData().getData());
 	}
 	private void makeUnsolid() {
 		startDisguise();
