@@ -48,6 +48,7 @@ public class PlayerListener implements Listener {
 		Hide.votesHandler.sendMapChoices(p);
 		Utils.sendHeaderFooter(p, "\n§6Renaissance §eProject\n§fBringing back good memories\n", "\n§aPlaying in §bHide §aAnd §eSeek.\n");
 		Hide.preGameTimer.loadPlayer(p);
+		p.sendMessage(Hide.header + "§aWelcome on HnS indev v1 release!");
 	}
 	@EventHandler
 	public void onDisconnect(PlayerQuitEvent e) throws SQLException {
