@@ -1,5 +1,6 @@
 package be.hctel.renaissance.hideandseek.gamespecific.objects;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -30,11 +31,14 @@ public class DisguiseBlockManager {
 		this.lastLocation = player.getLocation();
 		disguise = new MiscDisguise(DisguiseType.FALLING_BLOCK, block.getType(), block.getData().getData());
 		startDisguise();
+		for(Player p : Bukkit.getOnlinePlayers()) {
+			p.hidePlayer(plugin, player);
+		}
 	}
 	
 	public void tick() {
 		if(isAlive) {
-			if(Utils.locationComparator(player.getLocation(), lastLocation, true, false, true)) timeInLocation++;
+			if(Utils.locationComparator(player.getLocation(), lastLocation)) timeInLocation++;
 			else timeInLocation = 0;
 			
 			
@@ -45,13 +49,13 @@ public class DisguiseBlockManager {
 				makeUnsolid();
 			}
 			else if(timeInLocation == 20) {
-				player.sendTitle("§a>> §7>> >> >>", "", 0, 25, 20);
+				player.sendTitle("§a» §7» » »", "", 0, 25, 20);
 			}
 			else if(timeInLocation == 40) {
-				player.sendTitle("§a>> >> §7>> >>", "", 0, 25, 20);
+				player.sendTitle("§a» » §7» »", "", 0, 25, 20);
 			}
 			else if(timeInLocation == 60) {
-				player.sendTitle("§a>> >> >> §7>>", "", 0, 25, 20);
+				player.sendTitle("§a» » » §7»", "", 0, 25, 20);
 			}
 			else if(timeInLocation == 80) {
 				player.sendTitle("§aYou are now solid", "", 5, 60, 20);
@@ -88,5 +92,8 @@ public class DisguiseBlockManager {
 	public void kill() {
 		isAlive = false;
 		stopDisguise();
+		for(Player p : Bukkit.getOnlinePlayers()) {
+			p.showPlayer(plugin, player);
+		}
 	}
 }

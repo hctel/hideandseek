@@ -455,26 +455,8 @@ public class Utils {
 
 	    return generatedString;
 	}
-	public static boolean locationComparator(Location a, Location b, boolean checkX, boolean checkY, boolean checkZ) {
-		if(checkX) {
-			if(checkY) {
-				return a.getBlockX() == b.getBlockX() && a.getBlockY() == b.getBlockY();
-			}
-			if(checkZ) {
-				return a.getBlockX() == b.getBlockX() && a.getBlockY() == b.getBlockY() && a.getBlockZ() == b.getBlockZ();
-			}
-			return a.getBlockX() == b.getBlockX();
-		}
-		if(checkY) {
-			if(checkZ) {
-				return a.getBlockY() == b.getBlockY() && a.getBlockZ() == b.getBlockZ();
-			}
-			return a.getBlockY() == b.getBlockY() && a.getBlockZ() == b.getBlockZ();
-		}
-		if(checkZ) {
-			return a.getBlockZ() == b.getBlockZ();
-		}
-		else return false;
+	public static boolean locationComparator(Location a, Location b) {
+		return (a.getBlockX() == b.getBlockX() && a.getBlockZ() == b.getBlockZ());
 	}
 	public static void spawnBlock(Player p, int blockID, int data){
 		 
