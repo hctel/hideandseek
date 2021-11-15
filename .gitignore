@@ -12,3 +12,7 @@ buildNumber.properties
 .project
 .classpath
 org/*
+com/*
+doc/*
+.gitignore
+.gitattributes
