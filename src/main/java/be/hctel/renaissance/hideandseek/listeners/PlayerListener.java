@@ -5,21 +5,28 @@ import java.sql.SQLException;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.entity.Entity;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import be.hctel.renaissance.hideandseek.Hide;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.GameRanks;
+import be.hctel.renaissance.hideandseek.gamespecific.enums.GameTeam;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.JoinMessages;
 import be.hctel.renaissance.hideandseek.nongame.utils.Utils;
 
@@ -58,74 +65,13 @@ public class PlayerListener implements Listener {
 	
 	@EventHandler
 	public void onDamage(EntityDamageEvent e) {
-		switch (e.getCause()) {
-		case BLOCK_EXPLOSION:
-			break;
-		case CONTACT:
-			break;
-		case CRAMMING:
-			break;
-		case CUSTOM:
-			break;
-		case DRAGON_BREATH:
-			break;
-		case DROWNING:
-			e.setCancelled(true);
-			break;
-		case ENTITY_ATTACK:
-			break;
-		case ENTITY_EXPLOSION:
-			e.setCancelled(true);
-			break;
-		case ENTITY_SWEEP_ATTACK:
-			break;
-		case FALL:
-			e.setCancelled(true);
-			break;
-		case FALLING_BLOCK:
-			e.setCancelled(true);
-			break;
-		case FIRE:
-			e.setCancelled(true);
-			break;
-		case FIRE_TICK:
-			e.setCancelled(true);
-			break;
-		case FLY_INTO_WALL:
-			break;
-		case HOT_FLOOR:
-			break;
-		case LAVA:
-			e.setCancelled(true);
-			break;
-		case LIGHTNING:
-			break;
-		case MAGIC:
-			e.setCancelled(true);
-			break;
-		case MELTING:
-			break;
-		case POISON:
-			e.setCancelled(true);
-			break;
-		case PROJECTILE:
-			e.setCancelled(true);
-			break;
-		case STARVATION:
-			break;
-		case SUFFOCATION:
-			break;
-		case SUICIDE:
-			break;
-		case THORNS:
-			break;
-		case VOID:
-			break;
-		case WITHER:
-			break;
-		default:
-			break;
-		
+		System.out.println("Triggerred damage event");
+		if(e.getEntity() instanceof Player) {
+			System.out.println("    damage event is player");
+			if(e.getCause() == DamageCause.FALL) {
+				System.out.println("         and is fall");
+					e.setCancelled(true);
+			}
 		}
 	}
 	
@@ -134,21 +80,61 @@ public class PlayerListener implements Listener {
 		if(e.getDamager() instanceof Player && e.getEntity() instanceof Player) {
 			if(Hide.preGameTimer.gameStarted) {
 				if (Hide.gameEngine.areSameTeam((Player) e.getEntity(), (Player) e.getDamager())) e.setCancelled(true);
-				else {
-					e.setDamage(7);
+				else if(Hide.gameEngine.getTeam((Player) e.getDamager()) == GameTeam.SEEKER) {
 					Player damaged = (Player) e.getEntity();
-					damaged.setHealth(damaged.getHealth() - 7);
+					int d = (int) (damaged.getHealth() >= 6 ? 6 : damaged.getHealth());
+					damaged.setHealth(damaged.getHealth() - d);
 					damaged.getWorld().playSound(damaged.getLocation(), Sound.ENTITY_PLAYER_DEATH, 1.0f, 0.5f);
 					e.setCancelled(true);
-				}
+				} 				
 			} else e.setCancelled(true);
 		} else e.setCancelled(true);
+	}
+	@EventHandler
+	public void onBlockDamage(BlockDamageEvent e) {
+		Player p = e.getPlayer();
+		Block b = e.getBlock();
+		if(Hide.gameEngine.getTeam(p) == GameTeam.SEEKER) {
+			for(Player i : Hide.gameEngine.disguises.keySet()) {
+				if(Hide.gameEngine.disguises.get(i).getBlock().equals(b)) {
+					Player damaged = i;
+					int d = (int) (damaged.getHealth() >= 6 ? 6 : damaged.getHealth());
+					damaged.setHealth(damaged.getHealth() - d);
+					damaged.getWorld().playSound(damaged.getLocation(), Sound.ENTITY_PLAYER_DEATH, 1.0f, 0.5f);
+				}
+			}
+		} else e.setCancelled(true);
+	}
+	
+	@EventHandler
+	public void onBlockBreak(BlockBreakEvent e) {
+		if(e.getPlayer().getLocation().getWorld().getName().contains("TEMPWORLD") || e.getPlayer().getLocation().getWorld().getName().equals("HIDE_Lobby")) {
+			new BukkitRunnable() {
+				
+				@Override
+				public void run() {
+					e.setCancelled(true);
+					
+				}
+			}.runTaskLater(Hide.plugin, 1L);
+		}
+	}
+	
+	@EventHandler
+	public void onInteract(PlayerInteractEvent e) {
+		if(e.getClickedBlock().getType() != null) {
+			if(e.getClickedBlock().getType() == Material.SIGN) {
+				//Sign
+			} else if (e.getClickedBlock().getType() != Material.WOOD_DOOR) e.setCancelled(true);
+		}
 	}
 	
 	@EventHandler
 	public void onDeath(EntityDeathEvent e) {
 		if(Hide.preGameTimer.gameStarted) {
 			Hide.gameEngine.addKill(e.getEntity().getKiller(), (Player) e.getEntity(), Hide.gameEngine.isSeeker(e.getEntity().getKiller()));
+			Player p = (Player) e.getEntity();
+			p.spigot().respawn();
 		}
 	}
  	

@@ -549,8 +549,8 @@ public class Utils {
 	public static void sendBlockChange(Player player, Material block, Location location) {
 		PacketPlayOutBlockChange packet = new PacketPlayOutBlockChange();
 		try {
-			Field t = packet.getClass().getDeclaredField("Block ID");
-			Field l = packet.getClass().getDeclaredField("Location");
+			Field t = packet.getClass().getField("Location");
+			Field l = packet.getClass().getField("Block ID");
 			t.setAccessible(true);
 			t.set(packet, block.getId());
 			t.setAccessible(false);

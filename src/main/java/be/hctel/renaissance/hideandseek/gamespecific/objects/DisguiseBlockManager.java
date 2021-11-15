@@ -1,11 +1,22 @@
 package be.hctel.renaissance.hideandseek.gamespecific.objects;
 
+import java.util.Collection;
+import java.util.List;
+
 import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.block.Biome;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.PistonMoveReaction;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
 
 import be.hctel.renaissance.hideandseek.Hide;
@@ -16,6 +27,7 @@ import me.libraryaddict.disguise.disguisetypes.MiscDisguise;
 public class DisguiseBlockManager {
 	Player player;
 	ItemStack block;
+	Block b = null;
 	Plugin plugin;
 	Location lastLocation;
 	Location solidLocation;
@@ -31,9 +43,6 @@ public class DisguiseBlockManager {
 		this.lastLocation = player.getLocation();
 		disguise = new MiscDisguise(DisguiseType.FALLING_BLOCK, block.getType(), block.getData().getData());
 		startDisguise();
-		for(Player p : Bukkit.getOnlinePlayers()) {
-			p.hidePlayer(plugin, player);
-		}
 	}
 	
 	public void tick() {
@@ -78,9 +87,17 @@ public class DisguiseBlockManager {
 		player.sendBlockChange(solidLocation, Material.AIR, (byte) 0);
 		player.getWorld().playEffect(player.getLocation(), Effect.COLOURED_DUST, 0);
 		player.sendMessage(Hide.header + "§6You are now §ahidden");
+		b = solidLocation.getBlock();
 		Utils.spawnBlock(player, solidLocation, block.getTypeId(), block.getData().getData());
+		Utils.sendBlockChange(player, Material.AIR, solidLocation);
+		for(Player p : Bukkit.getOnlinePlayers()) {
+			p.hidePlayer(plugin, player);
+		}
 	}
 	private void makeUnsolid() {
+		for(Player p : Bukkit.getOnlinePlayers()) {
+			p.showPlayer(plugin, player);
+		}
 		startDisguise();
 		solidLocation.getBlock().setType(Material.AIR);
 	}
@@ -96,8 +113,10 @@ public class DisguiseBlockManager {
 	public void kill() {
 		isAlive = false;
 		stopDisguise();
-		for(Player p : Bukkit.getOnlinePlayers()) {
-			p.showPlayer(plugin, player);
-		}
+		
+	}
+	
+	public Block getBlock() {
+		return b;
 	}
 }

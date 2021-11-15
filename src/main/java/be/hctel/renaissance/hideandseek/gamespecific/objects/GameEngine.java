@@ -17,6 +17,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import be.hctel.api.scoreboard.DynamicScoreboard;
 import be.hctel.renaissance.hideandseek.Hide;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.GameMap;
+import be.hctel.renaissance.hideandseek.gamespecific.enums.GameTeam;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.ItemsManager;
 import be.hctel.renaissance.hideandseek.nongame.utils.Utils;
 
@@ -42,7 +43,7 @@ public class GameEngine {
 	private HashMap<Player, Integer> deaths = new HashMap<Player, Integer>();
 	
 	private HashMap<Player, DynamicScoreboard> sidebars = new HashMap<Player, DynamicScoreboard>();
-	private HashMap<Player, DisguiseBlockManager> disguises = new HashMap<Player, DisguiseBlockManager>();
+	public HashMap<Player, DisguiseBlockManager> disguises = new HashMap<Player, DisguiseBlockManager>();
 	
 	public GameEngine(Plugin plugin, GameMap map) {
 		this.plugin = plugin;
@@ -138,15 +139,23 @@ public class GameEngine {
 								p.getInventory().setItem(4, ItemsManager.hidersSword());
 							}
 						}
-						if(timer == 10) {
-							for(Player p : Bukkit.getOnlinePlayers()) p.sendTitle("§c10 seconds remaining", "", 10, 70, 20);
+						if(timer == 30) {
+							for(Player p : Bukkit.getOnlinePlayers()) p.sendTitle("§c30 seconds remaining", "", 10, 70, 20);
 						}
 						if(timer < 6 && timer > 0) {
-							
+							for(Player p : Bukkit.getOnlinePlayers()) {
+								p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BASS, 1.0f, 1.0f);
+							}
+							Bukkit.broadcastMessage(Hide.header + "§eEnding in §f" + timer);
+						}
+						if(warmup) {
+							for(Player p : sidebars.keySet()) {
+								sidebars.get(p).setLine(13, "0:" + (timer-300));
+							}
 						}
 						timer--;
 					} else if (timer == 0) {
-						//Endgame
+						endGame(GameTeam.HIDER);
 						timer--;
 					}
 				}
@@ -176,16 +185,40 @@ public class GameEngine {
 		return hiders.contains(player);
 	}
 	public void addKill(Player player, Player killed, boolean seekerKill) {
-		System.out.println("addKill");
 		if(seekerKill) {
 			seekerKills.replace(player, seekerKills.get(player)+1);
 			deaths.replace(killed, deaths.get(killed)+1);
 			Bukkit.broadcastMessage(Hide.header + "§6Hider " + Hide.rankManager.getRankColor(killed) + killed.getName() + " §6was killed by " + Hide.rankManager.getRankColor(player) + player.getName());
 			if(hiders.contains(killed)) hiders.remove(killed);
+			disguises.get(killed).kill();
+			killed.teleport(Hide.votesHandler.currentGameMaps.get(Hide.votesHandler.voted).getSeekerStart());
+			Player p = killed;
+			p.teleport(seekerSpawn);
+			p.setGameMode(GameMode.SURVIVAL);
+			p.getInventory().setItem(0, new ItemStack(Material.DIAMOND_SWORD));
+			p.getInventory().setHelmet(new ItemStack(Material.IRON_HELMET));
+			p.getInventory().setChestplate(new ItemStack(Material.IRON_CHESTPLATE));
+			p.getInventory().setLeggings(new ItemStack(Material.IRON_LEGGINGS));
+			p.getInventory().setBoots(new ItemStack(Material.IRON_BOOTS));
+			Utils.sendCenteredMessage(p, "§c§m---------------------------------------------------");
+			Utils.sendCenteredMessage(p, "§6§lYou are a §c§lSEEKER!");
+			Utils.sendCenteredMessage(p, "§eIt's your job to find hidden block and KILL THEM!");
+			Utils.sendCenteredMessage(p, "You will be released in §l30 seconds!");
+			Utils.sendCenteredMessage(p, "§c§m---------------------------------------------------");
+			new BukkitRunnable() {
+
+				@Override
+				public void run() {
+					p.teleport(hiderSpawn);
+					p.playSound(p.getLocation(), Sound.ENTITY_ELDER_GUARDIAN_CURSE, 1.0f, 1.0f);
+				}
+				
+			}.runTaskLater(plugin, 30*20L);
 		} else {
 			hiderKills.replace(player, hiderKills.get(player)+1);
 			deaths.replace(killed, deaths.get(killed)+1);
 			Bukkit.broadcastMessage(Hide.header + "§6Seeker " + Hide.rankManager.getRankColor(killed) + killed.getName() + " §6was killed by " + Hide.rankManager.getRankColor(player) + player.getName());
+			killed.teleport(hiderSpawn);
 		}
 	}
 	private Player getNewSeeker() {
@@ -193,6 +226,24 @@ public class GameEngine {
 			return hiders.get(r.nextInt(hiders.size()));
 		} else {
 			return queuedSeekers.get(r.nextInt(queuedSeekers.size()));
+		}
+	}
+	
+	public GameTeam getTeam(Player player) {
+		if(hiders.contains(player)) return GameTeam.HIDER;
+		else if(seekers.contains(player)) return GameTeam.SEEKER;
+		else return GameTeam.SPECTATOR;
+	}
+	
+	private void endGame(GameTeam winners) {
+		if(winners == GameTeam.HIDER) {
+			for(Player p : Bukkit.getOnlinePlayers()) {
+				p.playSound(p.getLocation(), Sound.ENTITY_SPIDER_DEATH, 1.0f, 1.0f);
+				p.sendTitle("§c§l<< GAME OVER >>", "§eThe Hiders won the game.", 0, 25, 70);
+			}
+			for(Player p : hiders) {
+				Hide.stats.addVictory(p);
+			}
 		}
 	}
 }
