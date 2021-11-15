@@ -2,9 +2,11 @@ package be.hctel.renaissance.hideandseek.nongame.utils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
+import java.util.UUID;
 import java.util.concurrent.RecursiveTask;
 
 import org.apache.commons.lang.StringUtils;
@@ -13,7 +15,6 @@ import org.bukkit.FireworkEffect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
@@ -24,20 +25,28 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import com.comphenix.packetwrapper.AbstractPacket;
+import com.comphenix.packetwrapper.WrapperPlayServerBlockChange;
 import com.comphenix.packetwrapper.WrapperPlayServerSpawnEntity;
-import com.comphenix.protocol.PacketType;
-import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketContainer;
+import com.comphenix.protocol.reflect.FieldAccessException;
+import com.comphenix.protocol.wrappers.BlockPosition;
+import com.comphenix.protocol.wrappers.WrappedBlockData;
+import com.viaversion.viaversion.api.Via;
 
 import be.hctel.renaissance.hideandseek.Hide;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
-import net.minecraft.server.v1_12_R1.EntityFallingBlock;
 import net.minecraft.server.v1_12_R1.IChatBaseComponent;
 import net.minecraft.server.v1_12_R1.IChatBaseComponent.ChatSerializer;
+import net.minecraft.server.v1_12_R1.Packet;
+import net.minecraft.server.v1_12_R1.PacketDataSerializer;
+import net.minecraft.server.v1_12_R1.PacketPlayOutBlockChange;
 import net.minecraft.server.v1_12_R1.PacketPlayOutPlayerListHeaderFooter;
-import net.minecraft.server.v1_12_R1.WorldServer;
+import net.minecraft.server.v1_12_R1.PacketPlayOutSpawnEntity;
 
 /*
  * This file is a part of the Renaissance Project API
@@ -456,11 +465,69 @@ public class Utils {
 	    return generatedString;
 	}
 	public static boolean locationComparator(Location a, Location b) {
-		return (a.getBlockX() == b.getBlockX() && a.getBlockZ() == b.getBlockZ());
+		return (a.getBlockX() == b.getBlockX() && a.getBlockZ() == b.getBlockZ() && (a.getBlockY() - b.getBlockY()) < 4);
 	}
-	public static void spawnBlock(Player p, int blockID, int data){
+	public static void spawnBlock(Player p, Location loc, int blockID, int data){
+			PacketPlayOutSpawnEntity packet = new PacketPlayOutSpawnEntity();
+			try {
+				Field id = packet.getClass().getDeclaredField("Entity ID");
+				Field objUUID = packet.getClass().getDeclaredField("Object UUID");
+				Field typ = packet.getClass().getDeclaredField("Type");
+				Field x  = packet.getClass().getDeclaredField("X");
+				Field y = packet.getClass().getDeclaredField("Y");
+				Field z = packet.getClass().getDeclaredField("Z");
+				Field pitch = packet.getClass().getDeclaredField("Pitch");
+				Field yaw = packet.getClass().getDeclaredField("Yaw");
+				Field eData = packet.getClass().getDeclaredField("Data");
+				Field xVel = packet.getClass().getDeclaredField("Velocity X");
+				Field yVel = packet.getClass().getDeclaredField("Velocity Y");
+				Field zVel = packet.getClass().getDeclaredField("Velocity Z");
+				id.setAccessible(true);
+				id.set(packet, new Random().nextInt());
+				id.setAccessible(false);
+				objUUID.setAccessible(true);
+				objUUID.set(packet, UUID.randomUUID());
+				objUUID.setAccessible(false);
+				typ.setAccessible(true);
+				typ.set(packet, 27);
+				typ.setAccessible(false);
+				x.setAccessible(true);
+				x.set(packet, loc.getX());
+				x.setAccessible(false);
+				y.setAccessible(true);
+				y.set(packet, loc.getY());
+				y.setAccessible(false);
+				z.setAccessible(true);
+				z.set(packet, loc.getZ());
+				z.setAccessible(false);
+				pitch.setAccessible(true);
+				pitch.set(packet, loc.getPitch());
+				pitch.setAccessible(false);
+				yaw.setAccessible(true);
+				yaw.set(packet, loc.getYaw());
+				yaw.setAccessible(false);
+				eData.setAccessible(true);
+				eData.set(packet, blockID | (data << 0x10));
+				eData.setAccessible(false);
+				xVel.setAccessible(true);
+				xVel.set(packet, 0);
+				xVel.setAccessible(false);
+				yVel.setAccessible(true);
+				yVel.set(packet, 0);
+				yVel.setAccessible(false);
+				zVel.setAccessible(true);
+				zVel.set(packet, 0);
+				zVel.setAccessible(false);
+				ByteBuf b = Unpooled.buffer(1000);
+				PacketDataSerializer s = new PacketDataSerializer(b);
+				packet.b(s);
+				Via.getAPI().sendRawPacket(p.getUniqueId(), b);
+			} catch (Exception e) {
+				
+			}
+			
 		 
-	        WrapperPlayServerSpawnEntity fbs = new WrapperPlayServerSpawnEntity();
+	       /* WrapperPlayServerSpawnEntity fbs = new WrapperPlayServerSpawnEntity();
 	 
 	        fbs.setEntityID(new Random().nextInt());
 	        fbs.setObjectData(blockID | (data << 0x10));
@@ -476,6 +543,37 @@ public class Utils {
 	            Hide.protocolLibManager.sendServerPacket(p, fbs.getHandle());
 	        } catch (InvocationTargetException e) {
 	            e.printStackTrace();
-	        }
+	        }*/
 	    }
+	@SuppressWarnings("deprecation")
+	public static void sendBlockChange(Player player, Material block, Location location) {
+		PacketPlayOutBlockChange packet = new PacketPlayOutBlockChange();
+		try {
+			Field t = packet.getClass().getDeclaredField("Block ID");
+			Field l = packet.getClass().getDeclaredField("Location");
+			t.setAccessible(true);
+			t.set(packet, block.getId());
+			t.setAccessible(false);
+			l.setAccessible(true);
+			l.set(packet, locationEncoder(location));
+			l.setAccessible(false);	
+			ByteBuf b = Unpooled.buffer(1000);
+			PacketDataSerializer s = new PacketDataSerializer(b);
+			packet.b(s);
+			Via.getAPI().sendRawPacket(player.getUniqueId(), b);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	private static int locationEncoder(Location l) {
+		int x = l.getBlockX();
+		int y = l.getBlockY();
+		int z = l.getBlockZ();
+		int out = ((x & 0x3FFFFFF) << 38) | ((y & 0xFFF) << 26) | (z & 0x3FFFFFF);
+		return out;		
+	}
+		
+ 
 }
