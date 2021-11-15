@@ -1,5 +1,5 @@
 <h1>Welcome on the Hide and Seek recode repository!</h1>
-------------------------------------------------
+
 
 The idea behind this project is to re-create a now defunct gamemode created by the also defunct HiveMC
 (Note to Hive Games owners: the maps listed in the "config" file are only for test purpose and not distributed within this repository.)
@@ -10,4 +10,4 @@ The idea behind this project is to re-create a now defunct gamemode created by t
 **NOTE: Before creating a new issue, please read this: https://github.com/hctel/hideandseek/issues/2**
 
 
-*This repository is published under the MIT Licence. Please check LICENCE.md file for more information*
+*This repository is published under the MIT Licence. Please check the LICENCE file for more information*
