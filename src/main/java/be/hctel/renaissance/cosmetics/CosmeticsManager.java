@@ -58,6 +58,13 @@ public class CosmeticsManager {
 		} else return false;
 	}
 	
+	public boolean addTokens(Player player, int amount) {
+		if(tokens.containsKey(player)) {
+			tokens.replace(player, getTokens(player) + amount);
+			return true;
+		} else return false;
+	}
+	
 	public void unloadPlayer(Player player) throws SQLException {
 		if(tokens.containsKey(player)) {
 			con.createStatement().execute("UPDATE cosmetics SET TOKENS = " + tokens.get(player) + " WHERE UUID = '" + Utils.getUUID(player) + "';");

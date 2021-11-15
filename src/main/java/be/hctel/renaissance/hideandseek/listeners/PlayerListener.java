@@ -132,9 +132,9 @@ public class PlayerListener implements Listener {
 	@EventHandler
 	public void onDeath(EntityDeathEvent e) {
 		if(Hide.preGameTimer.gameStarted) {
-			Hide.gameEngine.addKill(e.getEntity().getKiller(), (Player) e.getEntity(), Hide.gameEngine.isSeeker(e.getEntity().getKiller()));
 			Player p = (Player) e.getEntity();
 			p.spigot().respawn();
+			Hide.gameEngine.addKill(e.getEntity().getKiller(), (Player) e.getEntity(), Hide.gameEngine.isSeeker(e.getEntity().getKiller()));
 		}
 	}
  	

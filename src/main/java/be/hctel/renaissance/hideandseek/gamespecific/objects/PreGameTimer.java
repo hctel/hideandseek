@@ -56,7 +56,7 @@ public class PreGameTimer {
 							for(Player p : Bukkit.getOnlinePlayers()) {
 								Utils.sendActionBarMessage(p, "§aStarting in §l" + (timer - 16));
 							}
-							if(timer == 22) {
+							if(timer == 32) {
 								Hide.votesHandler.sendMapChoices();
 							}
 						} else if(timer <= 21 && timer > 16) {

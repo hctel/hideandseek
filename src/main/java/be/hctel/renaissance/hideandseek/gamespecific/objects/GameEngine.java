@@ -41,6 +41,7 @@ public class GameEngine {
 	private HashMap<Player, Integer> hiderKills = new HashMap<Player, Integer>();
 	private HashMap<Player, Integer> seekerKills = new HashMap<Player, Integer>();
 	private HashMap<Player, Integer> deaths = new HashMap<Player, Integer>();
+	private HashMap<Player, Integer> gainedPoints = new HashMap<Player, Integer>();
 	
 	private HashMap<Player, DynamicScoreboard> sidebars = new HashMap<Player, DynamicScoreboard>();
 	public HashMap<Player, DisguiseBlockManager> disguises = new HashMap<Player, DisguiseBlockManager>();
@@ -80,6 +81,7 @@ public class GameEngine {
 			seekerKills.put(p, 0);
 			hiderKills.put(p, 0);
 			p.getInventory().clear();
+			gainedPoints.put(p, 0);
 		}
 		Player firstSeeker = getNewSeeker();
 		hiders.remove(firstSeeker);
@@ -107,8 +109,8 @@ public class GameEngine {
 			Utils.sendCenteredMessage(p, "§eIt's your job to find hidden block and KILL THEM!");
 			Utils.sendCenteredMessage(p, "You will be released in §l30 seconds!");
 			Utils.sendCenteredMessage(p, "§c§m---------------------------------------------------");
-			sidebars.get(p).setLine(11, hiders.size() + "");
-			sidebars.get(p).setLine(8, seekers.size() + "");
+			sidebars.get(p).setLine(10, hiders.size() + "");
+			sidebars.get(p).setLine(7, seekers.size() + "");
 		}
 		
 		//Task running every second (timer decrease, give items, ...)
@@ -190,9 +192,11 @@ public class GameEngine {
 			deaths.replace(killed, deaths.get(killed)+1);
 			Bukkit.broadcastMessage(Hide.header + "§6Hider " + Hide.rankManager.getRankColor(killed) + killed.getName() + " §6was killed by " + Hide.rankManager.getRankColor(player) + player.getName());
 			if(hiders.contains(killed)) hiders.remove(killed);
+			seekers.add(player);
 			disguises.get(killed).kill();
 			killed.teleport(Hide.votesHandler.currentGameMaps.get(Hide.votesHandler.voted).getSeekerStart());
 			Player p = killed;
+			p.spigot().respawn();
 			p.teleport(seekerSpawn);
 			p.setGameMode(GameMode.SURVIVAL);
 			p.getInventory().setItem(0, new ItemStack(Material.DIAMOND_SWORD));
@@ -205,6 +209,9 @@ public class GameEngine {
 			Utils.sendCenteredMessage(p, "§eIt's your job to find hidden block and KILL THEM!");
 			Utils.sendCenteredMessage(p, "You will be released in §l30 seconds!");
 			Utils.sendCenteredMessage(p, "§c§m---------------------------------------------------");
+			player.sendMessage(Hide.header + "§6You earned §f30 points §6and §55 tokens §6for killing " + p.getName() + ".");
+			addPoints(player, 30);
+			Hide.cosmeticManager.addTokens(player, 5);
 			new BukkitRunnable() {
 
 				@Override
@@ -245,5 +252,9 @@ public class GameEngine {
 				Hide.stats.addVictory(p);
 			}
 		}
+	}
+	
+	private void addPoints(Player player, int points) {
+		gainedPoints.put(player, gainedPoints.get(player) + points);
 	}
 }
