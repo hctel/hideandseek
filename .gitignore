@@ -14,5 +14,3 @@ buildNumber.properties
 org/*
 com/*
 doc/*
-.gitignore
-.gitattributes
