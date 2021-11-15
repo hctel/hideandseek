@@ -9,6 +9,6 @@ The idea behind this project is to re-create a now defunct gamemode created by t
 
 
 **NOTE: Before creating a new issue, please read this: https://github.com/hctel/hideandseek/issues/2**
-<p>
-<p>
+
+
 *This repository is published under the MIT Licence. Please check the LICENCE file for more information*
