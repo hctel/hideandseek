@@ -60,6 +60,7 @@ public class DisguiseBlockManager {
 			else if(timeInLocation == 80) {
 				player.sendTitle("§aYou are now solid", "", 5, 60, 20);
 				makeSolid();
+				isSolid = true;
 			}
 			lastLocation = player.getLocation();
 		}
