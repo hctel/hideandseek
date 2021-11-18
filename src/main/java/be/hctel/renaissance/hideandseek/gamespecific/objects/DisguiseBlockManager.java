@@ -1,22 +1,12 @@
 package be.hctel.renaissance.hideandseek.gamespecific.objects;
 
-import java.util.Collection;
-import java.util.List;
-
 import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
-import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
-import org.bukkit.block.BlockState;
-import org.bukkit.block.PistonMoveReaction;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
 
 import be.hctel.renaissance.hideandseek.Hide;
