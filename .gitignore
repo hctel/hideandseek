@@ -9,4 +9,4 @@ buildNumber.properties
 .mvn/timing.properties
 .mvn/wrapper/maven-wrapper.jar
 org/*
-src/main/com/*
+src/main/java/com/*
