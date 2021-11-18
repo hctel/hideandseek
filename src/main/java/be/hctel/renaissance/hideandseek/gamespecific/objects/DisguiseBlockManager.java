@@ -116,5 +116,4 @@ public class DisguiseBlockManager {
 	public Block getBlock() {
 		return b;
 	}
-	//discord webhook test
 }

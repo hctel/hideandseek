@@ -68,13 +68,18 @@ public class PlayerListener implements Listener {
 	@EventHandler
 	public void onDamage(EntityDamageEvent e) {
 		System.out.println("Triggerred damage event");
-		if(e.getEntity() instanceof Player) {
-			System.out.println("    damage event is player");
-			if(e.getCause() == DamageCause.FALL) {
-				System.out.println("         and is fall");
+		if(Hide.preGameTimer.gameStarted) {
+			if(e.getEntity() instanceof Player) {
+				System.out.println("    damage event is player");
+				if(e.getCause() == DamageCause.FALL) {
+					System.out.println("         and is fall");
+						e.setCancelled(true);
+				}
+				if(e.getCause() == DamageCause.DROWNING) {
 					e.setCancelled(true);
+				}
 			}
-		}
+		} else e.setCancelled(true);
 	}
 	
 	@EventHandler

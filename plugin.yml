@@ -14,7 +14,7 @@ commands:
     description: Disguise your rank as another rank
   togglerank:
     usage: /togglerank
-    permision: hide.setrank
+    permission: hide.setrank
     description: Toggles your rank visibility
   updateprofile:
     usage: /updateprofile <player> <category> <value>
