@@ -3,7 +3,10 @@ package be.hctel.renaissance.hideandseek.gamespecific.enums;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
+
 
 public enum GameRanks {
 	BLIND("§7", "Blind", 0, 100),
@@ -65,7 +68,11 @@ public enum GameRanks {
 	public String getName() {
 		return name;
 	}
-	
+	public TextComponent getTextComponent() {
+		TextComponent t = new TextComponent(getChatColor() + getName());
+		t.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(getChatColor() + getName() + "§f[" + getMinPoints() + "-" + getMaxPoints() + "]").create()));
+		return t;
+	}	
 	
 	public static GameRanks getMatchingRank(int points) {
 		ArrayList<GameRanks> all = new ArrayList<GameRanks>();

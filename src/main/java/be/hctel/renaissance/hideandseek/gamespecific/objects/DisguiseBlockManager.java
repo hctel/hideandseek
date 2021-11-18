@@ -25,6 +25,7 @@ public class DisguiseBlockManager {
 	public boolean isSolid = false;
 	MiscDisguise disguise;
 	public boolean isAlive = true;
+	int fakeEntityId = 0;
 	@SuppressWarnings("deprecation")
 	public DisguiseBlockManager(Player player, ItemStack block, Plugin plugin) {
 		this.player = player;
@@ -43,26 +44,24 @@ public class DisguiseBlockManager {
 			
 			if(timeInLocation == 0 && isSolid) {
 				isSolid = false;
-				player.sendTitle("§6You are now §cvisible!", "", 5, 25, 20);
-				player.sendMessage(Hide.header + "§aYou are now visible. §7Be careful!");
+				player.sendTitle("Â§6You are now Â§cvisible!", "", 5, 25, 20);
+				player.sendMessage(Hide.header + "Â§aYou are now visible. Â§7Be careful!");
 				makeUnsolid();
 			}
 			else if(timeInLocation == 20) {
-				player.sendTitle("", "§a» §7» » »", 0, 25, 20);
+				player.sendTitle("", "Â§aÂ»Â§8Â»Â»Â»Â»", 0, 25, 20);
 			}
 			else if(timeInLocation == 40) {
-				player.sendTitle("", "§a» » §7» »", 0, 25, 20);
+				player.sendTitle("", "Â§aÂ»Â»Â§8Â»Â»Â»", 0, 25, 20);
 			}
 			else if(timeInLocation == 60) {
-				player.sendTitle("", "§a» » » §7»", 0, 25, 20);
+				player.sendTitle("", "Â§aÂ»Â»Â»Â§8Â»Â»", 0, 25, 20);
 			}
 			else if(timeInLocation == 80) {
-				player.sendTitle("", "§a» » » »", 0, 25, 20);
+				player.sendTitle("", "Â§aÂ»Â»Â»Â»Â§8Â»", 0, 25, 20);
 			}
 			else if(timeInLocation == 100) {
-				player.sendTitle("§aYou are now solid", "", 5, 60, 20);
 				makeSolid();
-				isSolid = true;
 			}
 			lastLocation = player.getLocation();
 		}
@@ -70,18 +69,25 @@ public class DisguiseBlockManager {
 	
 	@SuppressWarnings("deprecation")
 	private void makeSolid() {
-		stopDisguise();
-		solidLocation = lastLocation;
-		solidLocation.getBlock().setType(block.getType());
-		solidLocation.getBlock().setData(block.getData().getData(), false);
-		player.sendBlockChange(solidLocation, Material.AIR, (byte) 0);
-		player.getWorld().playEffect(player.getLocation(), Effect.COLOURED_DUST, 0);
-		player.sendMessage(Hide.header + "§6You are now §ahidden");
-		b = solidLocation.getBlock();
-		Utils.spawnBlock(player, solidLocation, block.getTypeId(), block.getData().getData());
-		Utils.sendBlockChange(player, Material.AIR, solidLocation);
-		for(Player p : Bukkit.getOnlinePlayers()) {
-			p.hidePlayer(plugin, player);
+		if(lastLocation.getBlock().getType() == Material.AIR) {
+			stopDisguise();
+			player.sendTitle("Â§aYou are now solid", "", 5, 60, 20);
+			solidLocation = lastLocation;
+			solidLocation.getBlock().setType(block.getType());
+			solidLocation.getBlock().setData(block.getData().getData(), false);
+			player.sendBlockChange(solidLocation, Material.AIR, (byte) 0);
+			player.getWorld().playEffect(player.getLocation(), Effect.COLOURED_DUST, 0);
+			player.sendMessage(Hide.header + "Â§6You are now Â§ahidden");
+			b = solidLocation.getBlock();
+			fakeEntityId = Utils.testSpawnFakeBlockEntityNMS(player, solidLocation, block.getType(), block.getData().getData());
+			Utils.sendBlockChange(player, Material.AIR, solidLocation);
+			isSolid = true;
+			for(Player p : Bukkit.getOnlinePlayers()) {
+				p.hidePlayer(plugin, player);
+			}
+		} else {
+			player.sendMessage(Hide.header + "Â§cYou can't go solid here!");
+			player.sendTitle("Â§cÂ§lâŒ", "Â§6You can't go solid here", 0, 20, 70);
 		}
 	}
 	private void makeUnsolid() {
@@ -90,6 +96,7 @@ public class DisguiseBlockManager {
 		}
 		startDisguise();
 		solidLocation.getBlock().setType(Material.AIR);
+		Utils.testEntotyDestroyNMS(player, fakeEntityId);
 	}
 	
 	private void startDisguise() {

@@ -24,6 +24,8 @@ import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import com.viaversion.viaversion.api.Via;
+
 import be.hctel.renaissance.hideandseek.Hide;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.GameRanks;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.GameTeam;

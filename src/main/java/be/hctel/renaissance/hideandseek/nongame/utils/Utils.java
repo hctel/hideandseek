@@ -1,13 +1,10 @@
 package be.hctel.renaissance.hideandseek.nongame.utils;
 
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
-import java.util.UUID;
 import java.util.concurrent.RecursiveTask;
 
 import org.apache.commons.lang.StringUtils;
@@ -18,6 +15,7 @@ import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -26,26 +24,20 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import com.comphenix.packetwrapper.AbstractPacket;
 import com.comphenix.packetwrapper.WrapperPlayServerBlockChange;
+import com.comphenix.packetwrapper.WrapperPlayServerEntityDestroy;
 import com.comphenix.packetwrapper.WrapperPlayServerSpawnEntity;
-import com.comphenix.protocol.events.PacketContainer;
-import com.comphenix.protocol.reflect.FieldAccessException;
 import com.comphenix.protocol.wrappers.BlockPosition;
 import com.comphenix.protocol.wrappers.WrappedBlockData;
-import com.viaversion.viaversion.api.Via;
 
 import be.hctel.renaissance.hideandseek.Hide;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.minecraft.server.v1_12_R1.Entity;
 import net.minecraft.server.v1_12_R1.IChatBaseComponent;
 import net.minecraft.server.v1_12_R1.IChatBaseComponent.ChatSerializer;
-import net.minecraft.server.v1_12_R1.Packet;
-import net.minecraft.server.v1_12_R1.PacketDataSerializer;
-import net.minecraft.server.v1_12_R1.PacketPlayOutBlockChange;
+import net.minecraft.server.v1_12_R1.PacketPlayOutEntityDestroy;
 import net.minecraft.server.v1_12_R1.PacketPlayOutPlayerListHeaderFooter;
 import net.minecraft.server.v1_12_R1.PacketPlayOutSpawnEntity;
 
@@ -468,59 +460,75 @@ public class Utils {
 	public static boolean locationComparator(Location a, Location b) {
 		return (a.getBlockX() == b.getBlockX() && a.getBlockZ() == b.getBlockZ() && (a.getBlockY() - b.getBlockY()) < 4);
 	}
-	public static void spawnBlock(Player player, Location loc, int blockID, int data){
+	public static int spawnBlock(Player player, Location loc, int blockID, int data){
 		WrapperPlayServerSpawnEntity fbs = new WrapperPlayServerSpawnEntity();
-	 
-	        fbs.setEntityID(new Random().nextInt());
+			int entityID = new Random().nextInt();
+	        fbs.setEntityID(entityID);
 	        fbs.setObjectData(blockID | (data << 0x10));
 	        Location l = player.getLocation();
 	        fbs.setX(l.getX());
-	        fbs.setY(l.getY() + 5);
+	        fbs.setY(l.getY());
 	        fbs.setZ(l.getZ());
-	        fbs.setOptionalSpeedX(0.1);
+	        fbs.setOptionalSpeedX(0);
 	        fbs.setOptionalSpeedY(0);
 	        fbs.setOptionalSpeedY(0);
-	        PacketPlayOutSpawnEntity packet = (PacketPlayOutSpawnEntity) fbs.getHandle().getHandle();
-	        ByteBuf b = Unpooled.buffer(1000);
-			PacketDataSerializer s = new PacketDataSerializer(b);
+	        System.out.println("ProtocolLib packet done");
 			try {
-				packet.b(s);
-			} catch (IOException e) {
+				Hide.protocolLibManager.sendServerPacket(player, fbs.getHandle());
+			} catch (InvocationTargetException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			Via.getAPI().sendRawPacket(player.getUniqueId(), b);
-	        
-	    }
-	@SuppressWarnings("deprecation")
+			System.out.println("send packet");
+			return entityID;
+	}
+	
 	public static void sendBlockChange(Player player, Material block, Location location) {
-		PacketPlayOutBlockChange packet = new PacketPlayOutBlockChange();
+		WrapperPlayServerBlockChange fbs = new WrapperPlayServerBlockChange();
+		fbs.setLocation(new BlockPosition(location.getBlockX(), location.getBlockY(), location.getBlockZ()));
+		fbs.setBlockData(WrappedBlockData.createData(block));
 		try {
-			Field t = packet.getClass().getField("Location");
-			Field l = packet.getClass().getField("Block ID");
-			t.setAccessible(true);
-			t.set(packet, block.getId());
-			t.setAccessible(false);
-			l.setAccessible(true);
-			l.set(packet, locationEncoder(location));
-			l.setAccessible(false);	
-			ByteBuf b = Unpooled.buffer(1000);
-			PacketDataSerializer s = new PacketDataSerializer(b);
-			packet.b(s);
-			Via.getAPI().sendRawPacket(player.getUniqueId(), b);
-		} catch (Exception e) {
+			Hide.protocolLibManager.sendServerPacket(player, fbs.getHandle());
+		} catch (InvocationTargetException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 	
-	private static int locationEncoder(Location l) {
-		int x = l.getBlockX();
-		int y = l.getBlockY();
-		int z = l.getBlockZ();
-		int out = ((x & 0x3FFFFFF) << 38) | ((y & 0xFFF) << 26) | (z & 0x3FFFFFF);
-		return out;		
+	public static void sendEntityDestroy(Player player, int entityID) {
+		WrapperPlayServerEntityDestroy fbs = new WrapperPlayServerEntityDestroy();
+		int[] entityIDs = {entityID};
+		fbs.setEntityIds(entityIDs);
+		try {
+			Hide.protocolLibManager.sendServerPacket(player, fbs.getHandle());
+		} catch (InvocationTargetException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
-		
+	
+	public static int testSpawnFakeBlockEntityNMS(Player player, Location location, Material material, byte data) {
+		@SuppressWarnings("deprecation")
+		FallingBlock entity = location.getWorld().spawnFallingBlock(location, material, data);
+		PacketPlayOutSpawnEntity packet;
+		try {
+			entity.setGravity(false);
+			entity.setInvulnerable(true);
+			packet = new PacketPlayOutSpawnEntity((Entity) entity, entity.getEntityId());
+			((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return entity.getEntityId();
+	}
+	public static void testEntotyDestroyNMS(Player player,int entityID) {
+		PacketPlayOutEntityDestroy packet = new PacketPlayOutEntityDestroy(entityID);
+		try {
+			((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
  
 }
