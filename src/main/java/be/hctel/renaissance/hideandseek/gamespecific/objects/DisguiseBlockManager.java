@@ -10,6 +10,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
 import be.hctel.renaissance.hideandseek.Hide;
+import be.hctel.renaissance.hideandseek.gamespecific.enums.ItemsManager;
 import be.hctel.renaissance.hideandseek.nongame.utils.Utils;
 import me.libraryaddict.disguise.disguisetypes.DisguiseType;
 import me.libraryaddict.disguise.disguisetypes.MiscDisguise;
@@ -71,23 +72,23 @@ public class DisguiseBlockManager {
 	private void makeSolid() {
 		if(lastLocation.getBlock().getType() == Material.AIR) {
 			stopDisguise();
+			isSolid = true;
 			player.sendTitle("§aYou are now solid", "", 5, 60, 20);
-			solidLocation = lastLocation;
+			player.getInventory().setItem(4, ItemsManager.tauntButton);
+			solidLocation = Utils.locationFlattenner(lastLocation);
 			solidLocation.getBlock().setType(block.getType());
 			solidLocation.getBlock().setData(block.getData().getData(), false);
-			player.sendBlockChange(solidLocation, Material.AIR, (byte) 0);
-			player.getWorld().playEffect(player.getLocation(), Effect.COLOURED_DUST, 0);
+			player.getWorld().playEffect(player.getLocation(), Effect.COLOURED_DUST, 0, 2);
 			player.sendMessage(Hide.header + "§6You are now §ahidden");
 			b = solidLocation.getBlock();
 			fakeEntityId = Utils.testSpawnFakeBlockEntityNMS(player, solidLocation, block.getType(), block.getData().getData());
-			Utils.sendBlockChange(player, Material.AIR, solidLocation);
-			isSolid = true;
+			//Utils.testBlockChangeNMS(player, solidLocation, Material.AIR);
 			for(Player p : Bukkit.getOnlinePlayers()) {
 				p.hidePlayer(plugin, player);
 			}
 		} else {
 			player.sendMessage(Hide.header + "§cYou can't go solid here!");
-			player.sendTitle("§c§l❌", "§6You can't go solid here", 0, 20, 70);
+			player.sendTitle("§c§l✖", "§6You can't go solid here", 0, 20, 70);
 		}
 	}
 	private void makeUnsolid() {

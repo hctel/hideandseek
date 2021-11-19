@@ -1,5 +1,7 @@
 package be.hctel.renaissance.hideandseek.gamespecific.enums;
 
+import java.util.ArrayList;
+
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
@@ -20,5 +22,11 @@ public class ItemsManager {
 		b.addEnchant(Enchantment.KNOCKBACK, 1, true);
 		a.setItemMeta(b);
 		return a;
+	}
+	public static ItemStack tauntButton = new ItemStack(Material.EMERALD);
+	static {
+		ItemMeta b = tauntButton.getItemMeta();
+		b.setDisplayName("§a§lTaunt Menu");
+		tauntButton.setItemMeta(b);
 	}
 }

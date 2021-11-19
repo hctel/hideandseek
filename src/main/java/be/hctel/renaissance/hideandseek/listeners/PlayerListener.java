@@ -11,20 +11,19 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scheduler.BukkitRunnable;
-
-import com.viaversion.viaversion.api.Via;
 
 import be.hctel.renaissance.hideandseek.Hide;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.GameRanks;
@@ -63,6 +62,8 @@ public class PlayerListener implements Listener {
 	public void onDisconnect(PlayerQuitEvent e) throws SQLException {
 		Hide.rankManager.unLoad(e.getPlayer());
 		Hide.cosmeticManager.unloadPlayer(e.getPlayer());
+		Hide.stats.savePlayer(e.getPlayer());
+		if(Hide.preGameTimer.gameStarted) Hide.gameEngine.disconnect(e.getPlayer());
 	}
 	
 	@EventHandler
@@ -129,7 +130,7 @@ public class PlayerListener implements Listener {
 	
 	@EventHandler
 	public void onInteract(PlayerInteractEvent e) {
-		if(e.getClickedBlock().getType() != null) {
+		if(e.getAction() == Action.RIGHT_CLICK_BLOCK && e.getAction() == Action.LEFT_CLICK_BLOCK) {
 			if(e.getClickedBlock().getType() == Material.SIGN) {
 				//Sign
 			} else if (e.getClickedBlock().getType() != Material.WOOD_DOOR) e.setCancelled(true);
@@ -137,11 +138,10 @@ public class PlayerListener implements Listener {
 	}
 	
 	@EventHandler
-	public void onDeath(EntityDeathEvent e) {
+	public void onDeath(PlayerDeathEvent e) {
+		e.setDeathMessage(null);
 		if(Hide.preGameTimer.gameStarted) {
 			Hide.gameEngine.addKill(e.getEntity().getKiller(), (Player) e.getEntity(), Hide.gameEngine.isSeeker(e.getEntity().getKiller()));
-			Player p = (Player) e.getEntity();
-			p.spigot().respawn();
 		}
 	}
  	

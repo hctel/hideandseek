@@ -1,0 +1,136 @@
+package be.hctel.renaissance.hideandseek.gamespecific.objects;
+
+import java.util.Random;
+
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Particle;
+import org.bukkit.Sound;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.Vector;
+
+import be.hctel.renaissance.hideandseek.Hide;
+import be.hctel.renaissance.hideandseek.gamespecific.enums.TauntType;
+import be.hctel.renaissance.hideandseek.nongame.utils.Utils;
+
+public class Taunt {
+	Player player;
+	TauntType type;
+	public Taunt(Player player, TauntType type) {
+		this.player = player;
+		this.type = type;
+	}
+	public int perform() {
+		switch(type) {
+		case BARK:
+			player.getWorld().playSound(player.getLocation(), Sound.ENTITY_WOLF_AMBIENT, 1.0f, 1.0f);
+		case CREEPER:
+			player.getWorld().playSound(player.getLocation(), Sound.ENTITY_CREEPER_HURT, 1.0f, 1.0f);
+		case GHAST:
+			player.getWorld().playSound(player.getLocation(), Sound.ENTITY_GHAST_SCREAM, 1.0f, 1.0f);
+		case ENDERMAN:
+			player.getWorld().playSound(player.getLocation(), Sound.ENTITY_ENDERMEN_SCREAM, 1.0f, 1.0f);
+		case WATER:
+			player.getWorld().playSound(player.getLocation(), Sound.ENTITY_PLAYER_SPLASH, 1.0f, 0.5f);
+		case PIG: 
+			player.getWorld().playSound(player.getLocation(), Sound.ENTITY_PIG_AMBIENT, 1.0f, 1.0f);
+		case DRAGON:
+			player.getWorld().playSound(player.getLocation(), Sound.ENTITY_ENDERDRAGON_GROWL, 1.0f, 1.0f);
+		case TNT:
+			player.getWorld().playSound(player.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1.0f, 1.0f);
+		case EGGS:
+			player.getWorld().playSound(player.getLocation(), Sound.ENTITY_CHICKEN_EGG, 1.0f, 1.0f);
+			Random r = new Random();
+			for(int i = 0; i < 4; i++) {
+				Location loc = new Location(player.getWorld(), player.getLocation().getBlockX()+(r.nextDouble()-0.5), player.getLocation().getBlockY(),  player.getLocation().getBlockZ()+(r.nextDouble()-0.5));
+				player.getWorld().dropItemNaturally(loc, new ItemStack(Material.EGG));
+			}
+			break;
+		case FLAME:
+			player.getWorld().playSound(player.getLocation(), Sound.ENTITY_GENERIC_EXTINGUISH_FIRE, 1.0f, 1.0f);
+			player.getWorld().spawnParticle(Particle.FLAME, player.getLocation().getX(), player.getLocation().getY(), player.getLocation().getZ(), 10, 1.5, 1.5, 1.5);
+			break;
+		case LOVE:
+			player.getWorld().playSound(player.getLocation(), Sound.ENTITY_VILLAGER_TRADING, 1.0f, 1.0f);
+			player.getWorld().spawnParticle(Particle.HEART, player.getLocation().getX(), player.getLocation().getY(), player.getLocation().getZ(), 10, 1.5, 1.5, 1.5);
+			break;
+		case FIREWORKS:
+			Utils.spawnFireworks(player.getLocation());
+		case POTION:
+			Random ra = new Random();
+			for(int i = 0; i < 4; i++) {
+				Location loc = new Location(player.getWorld(), player.getLocation().getBlockX()+(ra.nextDouble()-0.5), player.getLocation().getBlockY(),  player.getLocation().getBlockZ()+(ra.nextDouble()-0.5));
+				player.getWorld().dropItemNaturally(loc, new ItemStack(Material.SPLASH_POTION));
+			}
+			break;
+		case BAT:
+			for(int i = 0; i < 5; i++) {
+				final Entity e = player.getWorld().spawnEntity(player.getLocation(), EntityType.BAT);
+				player.getWorld().playSound(player.getLocation(), Sound.ENTITY_BAT_AMBIENT, 1.0f, 1.0f);
+				e.setInvulnerable(true);
+				Bukkit.getScheduler().scheduleSyncDelayedTask(Hide.plugin, new Runnable() {
+					public void run() {
+						e.getWorld().spawnParticle(Particle.CRIT_MAGIC, e.getLocation(), 1);
+						e.getWorld().playSound(e.getLocation(), Sound.ENTITY_BAT_DEATH, 1.0f, 1.0f);
+						e.remove();
+					}
+				}, 60L);
+			}
+			break;
+		case FLY_CREEPER:
+			final LivingEntity e1 = (LivingEntity) player.getWorld().spawnEntity(player.getLocation(), EntityType.CREEPER);
+			e1.setGravity(false);
+			e1.setVelocity(new Vector(0, 1, 0));
+			e1.setCustomName("Buzz Buzz I'm a beeee");
+			e1.setInvulnerable(true);
+			e1.setSilent(true);
+			e1.setAI(false);
+			Bukkit.getScheduler().scheduleSyncDelayedTask(Hide.plugin, new Runnable() {
+				public void run() {
+					e1.getWorld().playSound(e1.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1.0f, 1.0f);
+					e1.getWorld().spawnParticle(Particle.EXPLOSION_HUGE, e1.getLocation(), 1);
+					e1.remove();
+				}
+			}, 60L);
+			break;
+		case SHEEPER:
+			final LivingEntity e2 = (LivingEntity) player.getWorld().spawnEntity(player.getLocation(), EntityType.SHEEP);
+			e2.setGravity(false);
+			e2.setVelocity(new Vector(0, 1, 0));
+			e2.setCustomName("Buzz Buzz I'm a beeee");
+			e2.setInvulnerable(true);
+			e2.setAI(false);
+			Bukkit.getScheduler().scheduleSyncDelayedTask(Hide.plugin, new Runnable() {
+				public void run() {
+					e2.getWorld().playSound(e2.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1.0f, 1.0f);
+					e2.getWorld().spawnParticle(Particle.EXPLOSION_HUGE, e2.getLocation(), 1);
+					e2.remove();
+				}
+			}, 60L);
+			break;
+		case TNT_TOSS:
+			final Entity te1 = player.getWorld().spawnEntity(player.getLocation(),EntityType.PRIMED_TNT);
+			te1.setVelocity(this.a(player.getLocation(), 5));
+			Bukkit.getScheduler().scheduleSyncDelayedTask(Hide.plugin, new Runnable() {
+				public void run() {
+					te1.getWorld().spawnParticle(Particle.EXPLOSION_NORMAL, te1.getLocation(), 1);
+					te1.remove();
+				}
+			}, 3L);
+			break;
+		default:
+			break;
+		}
+		return type.getCooldown();
+	}
+	
+	private Vector a(Location loc, int multiplier) {
+		Vector initial = loc.getDirection();
+		return new Vector(initial.getX()*multiplier, initial.getY()*multiplier, initial.getZ()*multiplier);
+	}
+}

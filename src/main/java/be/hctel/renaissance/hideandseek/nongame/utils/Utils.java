@@ -13,9 +13,12 @@ import org.bukkit.FireworkEffect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_12_R1.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_12_R1.util.CraftMagicNumbers;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -27,15 +30,15 @@ import org.bukkit.scheduler.BukkitRunnable;
 import com.comphenix.packetwrapper.WrapperPlayServerBlockChange;
 import com.comphenix.packetwrapper.WrapperPlayServerEntityDestroy;
 import com.comphenix.packetwrapper.WrapperPlayServerSpawnEntity;
-import com.comphenix.protocol.wrappers.BlockPosition;
 import com.comphenix.protocol.wrappers.WrappedBlockData;
 
 import be.hctel.renaissance.hideandseek.Hide;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
-import net.minecraft.server.v1_12_R1.Entity;
+import net.minecraft.server.v1_12_R1.BlockPosition;
 import net.minecraft.server.v1_12_R1.IChatBaseComponent;
+import net.minecraft.server.v1_12_R1.PacketPlayOutBlockChange;
 import net.minecraft.server.v1_12_R1.IChatBaseComponent.ChatSerializer;
 import net.minecraft.server.v1_12_R1.PacketPlayOutEntityDestroy;
 import net.minecraft.server.v1_12_R1.PacketPlayOutPlayerListHeaderFooter;
@@ -473,26 +476,16 @@ public class Utils {
 	        fbs.setOptionalSpeedY(0);
 	        fbs.setOptionalSpeedY(0);
 	        System.out.println("ProtocolLib packet done");
-			try {
-				Hide.protocolLibManager.sendServerPacket(player, fbs.getHandle());
-			} catch (InvocationTargetException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			((CraftPlayer) player).getHandle().playerConnection.sendPacket((PacketPlayOutSpawnEntity) fbs.getHandle().getHandle());
 			System.out.println("send packet");
 			return entityID;
 	}
 	
 	public static void sendBlockChange(Player player, Material block, Location location) {
 		WrapperPlayServerBlockChange fbs = new WrapperPlayServerBlockChange();
-		fbs.setLocation(new BlockPosition(location.getBlockX(), location.getBlockY(), location.getBlockZ()));
+		fbs.setLocation(new com.comphenix.protocol.wrappers.BlockPosition(location.getBlockX(), location.getBlockY(), location.getBlockZ()));
 		fbs.setBlockData(WrappedBlockData.createData(block));
-		try {
-			Hide.protocolLibManager.sendServerPacket(player, fbs.getHandle());
-		} catch (InvocationTargetException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		((CraftPlayer) player).getHandle().playerConnection.sendPacket((PacketPlayOutBlockChange) fbs.getHandle().getHandle());
 	}
 	
 	public static void sendEntityDestroy(Player player, int entityID) {
@@ -509,13 +502,15 @@ public class Utils {
 	
 	public static int testSpawnFakeBlockEntityNMS(Player player, Location location, Material material, byte data) {
 		@SuppressWarnings("deprecation")
-		FallingBlock entity = location.getWorld().spawnFallingBlock(location, material, data);
+		Entity entity = location.getWorld().spawnFallingBlock(location, material, data);
 		PacketPlayOutSpawnEntity packet;
-		try {
 			entity.setGravity(false);
 			entity.setInvulnerable(true);
-			packet = new PacketPlayOutSpawnEntity((Entity) entity, entity.getEntityId());
+			entity.setTicksLived(1);
+			packet = new PacketPlayOutSpawnEntity(((CraftEntity) entity).getHandle(), entity.getEntityId());
+			try {
 			((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
+			entity.remove();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -529,6 +524,31 @@ public class Utils {
 			e.printStackTrace();
 		}
 	}
+	public static void testBlockChangeNMS(Player player,Location loc, Material material) {
+		PacketPlayOutBlockChange packet = new PacketPlayOutBlockChange(((CraftWorld) loc.getWorld()).getHandle(), new BlockPosition(loc.getX(), loc.getY(), loc.getZ()));
+		net.minecraft.server.v1_12_R1.Block nmsBlock = CraftMagicNumbers.getBlock(material);
+		packet.block = nmsBlock.getBlockData();
+		try {
+			((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	public static Location locationFlattenner(Location loc) {
+		return new Location(loc.getWorld(), loc.getBlockY(), loc.getBlockY(), loc.getBlockZ(), loc.getYaw(), loc.getPitch());
+	}
+	public static String formatSeconds(int timeInSeconds)
+	{
+	    int secondsLeft = timeInSeconds % 3600 % 60;
+	    int minutes = (int) Math.floor(timeInSeconds % 3600 / 60);
+	    int hours = (int) Math.floor(timeInSeconds / 3600);
+
+	    String HH = ((hours       < 10) ? "0" : "") + hours;
+	    String MM = ((minutes     < 10) ? "0" : "") + minutes;
+	    String SS = ((secondsLeft < 10) ? "0" : "") + secondsLeft;
+
+	    return MM + ":" + SS;
+	}   
 	
  
 }

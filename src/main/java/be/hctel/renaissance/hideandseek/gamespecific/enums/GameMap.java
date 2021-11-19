@@ -25,7 +25,7 @@ public enum GameMap {
 	HEARTHSTONE_VILLAGE("Hearthstone Village", "HIDE_Hearthstone", new SpawnLocation("HIDE_Hearthstone", -9.5, 16.0, 6.5, 0.1f, 0.1f), new SpawnLocation("HIDE_Hearthstone", -40.5, 32.0, 11.5, 0.1f, 0.1f)),
 	NEXUS_CITY("Nexus City", "HIDE_Nexus", new SpawnLocation("HIDE_Nexus", -15.5, 27.5, -12.5, 0.1f, 0.1f), new SpawnLocation("HIDE_Nexus", -1.5, 34.5, 29.5, 180.1f, 0.1f)),
 	DEPARTURE("Departure", "HIDE_Departure", new SpawnLocation("HIDE_Departure", 33.5, 36.2, 26.5, 90.1f, 0.1f), new SpawnLocation("HIDE_Departure", 14.5, 31.2, 49.5, -90.1f, 0.1f)),
-	HOTEL("Hotel", "HIDE_Hotel", new SpawnLocation("HIDE_Hotel", -2, 61, -35, 0.1f, 0.1f), new SpawnLocation("HIDE_Hotel", -3, 64, -21, 0.1f, 0.1f));
+	HOTEL("Hotel", "HIDE_Hotel", new SpawnLocation("HIDE_Hotel", -2, 64, -35, 0.1f, 0.1f), new SpawnLocation("HIDE_Hotel", -3, 61, -21, 0.1f, 0.1f));
 	
 	String mapName;
 	String systemName;

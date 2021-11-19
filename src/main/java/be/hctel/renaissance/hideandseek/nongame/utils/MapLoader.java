@@ -50,6 +50,8 @@ public class MapLoader {
 		for(int i = 0; i < 6; i++) {
 			Hide.worldManager.cloneWorld(map.get(i).getSystemName(), "TEMPWORLD" + i);
 			Hide.worldManager.loadWorld("TEMPWORLD" + i);
+			Bukkit.getWorld("TEMPWORLD" + i).setGameRuleValue("keepInventory", "true"); 
+			Bukkit.getWorld("TEMPWORLD" + i).setDifficulty(Difficulty.PEACEFUL);
 		}
 	}
 	
