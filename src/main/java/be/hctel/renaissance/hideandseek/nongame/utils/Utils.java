@@ -535,7 +535,7 @@ public class Utils {
 		}
 	}
 	public static Location locationFlattenner(Location loc) {
-		return new Location(loc.getWorld(), loc.getBlockY(), loc.getBlockY(), loc.getBlockZ(), loc.getYaw(), loc.getPitch());
+		return new Location(loc.getWorld(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), loc.getYaw(), loc.getPitch());
 	}
 	public static String formatSeconds(int timeInSeconds)
 	{

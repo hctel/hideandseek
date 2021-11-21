@@ -82,7 +82,7 @@ public class DisguiseBlockManager {
 			player.sendMessage(Hide.header + "§6You are now §ahidden");
 			b = solidLocation.getBlock();
 			fakeEntityId = Utils.testSpawnFakeBlockEntityNMS(player, solidLocation, block.getType(), block.getData().getData());
-			//Utils.testBlockChangeNMS(player, solidLocation, Material.AIR);
+			Utils.sendBlockChange(player, Material.AIR, solidLocation);
 			for(Player p : Bukkit.getOnlinePlayers()) {
 				p.hidePlayer(plugin, player);
 			}

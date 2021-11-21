@@ -157,7 +157,7 @@ public class GameEngine {
 							}
 						} else {
 							for(Player p : sidebars.keySet()) {
-								sidebars.get(p).setLine(13, Utils.formatSeconds(timer-300));
+								sidebars.get(p).setLine(13, Utils.formatSeconds(timer));
 								sidebars.get(p).setLine(10, hiders.size() + " ");
 								sidebars.get(p).setLine(8, seekers.size() + "");
 							}
@@ -296,6 +296,7 @@ public class GameEngine {
 	}
 	
 	private void endGame(GameTeam winners) {
+		isGameFinished = true;
 		if(winners == GameTeam.HIDER) {
 			for(Player p : Bukkit.getOnlinePlayers()) {
 				p.playSound(p.getLocation(), Sound.ENTITY_SPIDER_DEATH, 1.0f, 1.0f);
