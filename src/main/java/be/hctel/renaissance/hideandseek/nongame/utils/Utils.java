@@ -19,6 +19,7 @@ import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_12_R1.util.CraftMagicNumbers;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -130,8 +131,7 @@ public class Utils {
 	public static String getUserItemName(ItemStack it) {
 		Material a = it.getType();
 		String aN = a.toString().toLowerCase();
-		@SuppressWarnings("deprecation")
-		String aN1 = StringUtils.capitalise(aN);
+		String aN1 = StringUtils.capitalize(aN);
 		@SuppressWarnings("deprecation")
 		int b = it.getData().getData();
 		if(a == Material.STONE) {
@@ -492,12 +492,7 @@ public class Utils {
 		WrapperPlayServerEntityDestroy fbs = new WrapperPlayServerEntityDestroy();
 		int[] entityIDs = {entityID};
 		fbs.setEntityIds(entityIDs);
-		try {
-			Hide.protocolLibManager.sendServerPacket(player, fbs.getHandle());
-		} catch (InvocationTargetException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		((CraftPlayer) player).getHandle().playerConnection.sendPacket((PacketPlayOutEntityDestroy) fbs.getHandle().getHandle());
 	}
 	
 	public static int testSpawnFakeBlockEntityNMS(Player player, Location location, Material material, byte data) {
@@ -542,13 +537,31 @@ public class Utils {
 	    int secondsLeft = timeInSeconds % 3600 % 60;
 	    int minutes = (int) Math.floor(timeInSeconds % 3600 / 60);
 	    int hours = (int) Math.floor(timeInSeconds / 3600);
-
-	    String HH = ((hours       < 10) ? "0" : "") + hours;
 	    String MM = ((minutes     < 10) ? "0" : "") + minutes;
 	    String SS = ((secondsLeft < 10) ? "0" : "") + secondsLeft;
 
 	    return MM + ":" + SS;
-	}   
+	} 
+	public static int spawnBlockTestFGDSHGDFSQGFD(Player player, Location loc, int blockID, int data){
+		@SuppressWarnings("deprecation")
+		FallingBlock block = loc.getWorld().spawnFallingBlock(loc, blockID, (byte) data);
+		block.setGravity(false);
+		WrapperPlayServerSpawnEntity fbs = new WrapperPlayServerSpawnEntity(block, 27, blockID | (data << 0x10));
+			int entityID = new Random().nextInt();
+	        fbs.setEntityID(entityID);
+	        fbs.setObjectData(blockID | (data << 0x10));
+	        Location l = player.getLocation();
+	        fbs.setX(l.getX());
+	        fbs.setY(l.getY());
+	        fbs.setZ(l.getZ());
+	        fbs.setOptionalSpeedX(0);
+	        fbs.setOptionalSpeedY(0);
+	        fbs.setOptionalSpeedY(0);
+	        System.out.println("ProtocolLib packet done");
+			((CraftPlayer) player).getHandle().playerConnection.sendPacket((PacketPlayOutSpawnEntity) fbs.getHandle().getHandle());
+			System.out.println("send packet");
+			return entityID;
+	}
 	
  
 }

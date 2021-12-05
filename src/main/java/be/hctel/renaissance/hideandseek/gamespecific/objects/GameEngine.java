@@ -298,18 +298,28 @@ public class GameEngine {
 	private void endGame(GameTeam winners) {
 		isGameFinished = true;
 		if(winners == GameTeam.HIDER) {
-			for(Player p : Bukkit.getOnlinePlayers()) {
-				p.playSound(p.getLocation(), Sound.ENTITY_SPIDER_DEATH, 1.0f, 1.0f);
-				p.sendTitle("§c§l<< GAME OVER >>", "§eThe Hiders won the game.", 0, 25, 70);
-			}
+			new BukkitRunnable() {
+				@Override
+				public void run() {
+					for(Player p : Bukkit.getOnlinePlayers()) {
+						p.playSound(p.getLocation(), Sound.ENTITY_SPIDER_DEATH, 1.0f, 1.0f);
+						p.sendTitle("§c§l<< GAME OVER >>", "§eThe Hiders won the game.", 0, 25, 70);
+					}
+				}
+			}.runTaskAsynchronously(plugin);
 			for(Player p : hiders) {
 				Hide.stats.addVictory(p);
 			}
 		} else if(winners == GameTeam.SEEKER) {
-			for(Player p : Bukkit.getOnlinePlayers()) {
-				p.playSound(p.getLocation(), Sound.ENTITY_SPIDER_DEATH, 1.0f, 1.0f);
-				p.sendTitle("§c§l<< GAME OVER >>", "§eThe Seekers won the game.", 0, 25, 70);
-			}
+			new BukkitRunnable() {
+				@Override
+				public void run() {
+					for(Player p : Bukkit.getOnlinePlayers()) {
+						p.playSound(p.getLocation(), Sound.ENTITY_SPIDER_DEATH, 1.0f, 1.0f);
+						p.sendTitle("§c§l<< GAME OVER >>", "§eThe Seekers won the game.", 0, 25, 70);
+					}
+				}
+			}.runTaskAsynchronously(plugin);
 			for(Player p : seekers) {
 				Hide.stats.addVictory(p);
 			}

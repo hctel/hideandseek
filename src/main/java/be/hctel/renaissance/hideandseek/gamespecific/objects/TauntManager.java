@@ -45,7 +45,6 @@ public class TauntManager {
 		else {
 			TauntType type = TauntType.getByInventoryName(clicked.getItemMeta().getDisplayName());
 			if(type != null) {
-				e.setCancelled(true);
 				e.getView().close();
 				if(nextTaunt.get(e.getWhoClicked()) < seconds) {
 					e.getWhoClicked().sendMessage(Hide.header + "§cYour taunts are on cooldown! Please wait " + (nextTaunt.get(e.getWhoClicked()) - seconds) + " seconds");
@@ -58,6 +57,7 @@ public class TauntManager {
 						nextTaunt.put((Player) e.getWhoClicked(), new Taunt((Player) e.getWhoClicked(), type).perform() + seconds);
 					}
 				}
+				e.setCancelled(true);
 			}
 		}
 	}
