@@ -547,7 +547,8 @@ public class Utils {
 		FallingBlock block = loc.getWorld().spawnFallingBlock(loc, blockID, (byte) data);
 		block.setGravity(false);
 		WrapperPlayServerSpawnEntity fbs = new WrapperPlayServerSpawnEntity(block, 27, blockID | (data << 0x10));
-			int entityID = new Random().nextInt();
+		block.remove();
+			int entityID = fbs.getEntityID();
 	        fbs.setEntityID(entityID);
 	        fbs.setObjectData(blockID | (data << 0x10));
 	        Location l = player.getLocation();

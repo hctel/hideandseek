@@ -1,15 +1,11 @@
 package be.hctel.renaissance.hideandseek.commands;
 
-import java.util.ArrayList;
-
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-
 import be.hctel.renaissance.hideandseek.Hide;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.GameAchievement;
 import be.hctel.renaissance.hideandseek.nongame.utils.Utils;
@@ -67,5 +63,5 @@ public class StatCommands implements CommandExecutor {
 		}
 		return true;
 	}
-
 }
+	

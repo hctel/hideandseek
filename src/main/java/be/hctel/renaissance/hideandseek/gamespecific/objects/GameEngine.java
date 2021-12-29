@@ -45,7 +45,7 @@ public class GameEngine {
 	private HashMap<Player, Integer> deaths = new HashMap<Player, Integer>();
 	
 	private HashMap<Player, DynamicScoreboard> sidebars = new HashMap<Player, DynamicScoreboard>();
-	public HashMap<Player, DisguiseBlockManager> disguises = new HashMap<Player, DisguiseBlockManager>();
+	public HashMap<Player, DisguiseBlockManager2> disguises = new HashMap<Player, DisguiseBlockManager2>();
 	
 	public GameEngine(Plugin plugin, GameMap map) {
 		this.plugin = plugin;
@@ -95,7 +95,7 @@ public class GameEngine {
 			Utils.sendCenteredMessage(p, "§aFind a hiding spot before the seeker's released!");
 			Utils.sendCenteredMessage(p, "§cThe seeker will be released in §l30 seconds!");
 			Utils.sendCenteredMessage(p, "§6§m--------------------------------");
-			disguises.put(p, new DisguiseBlockManager(p, Hide.blockPicker.playerBlock.get(p), plugin));
+			disguises.put(p, new DisguiseBlockManager2(p, Hide.blockPicker.playerBlock.get(p), plugin));
 		}
 		for(Player p : seekers) {
 			p.teleport(seekerSpawn);
