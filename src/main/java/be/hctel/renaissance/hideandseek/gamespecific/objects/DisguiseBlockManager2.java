@@ -5,6 +5,8 @@ import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
@@ -77,20 +79,16 @@ public class DisguiseBlockManager2 {
 	
 	@SuppressWarnings("deprecation")
 	private void makeSolid() {
-		if(lastLocation.getBlock().getType() == Material.AIR) {
+		if(lastLocation.getBlock().getType() == Material.AIR || lastLocation.getBlock().getType() == Material.WATER) {
 			stopDisguise();
 			isSolid = true;
 			player.sendTitle("§aYou are now solid", "", 5, 60, 20);
 			player.getInventory().setItem(4, ItemsManager.tauntButton);
 			solidLocation = Utils.locationFlattenner(lastLocation);
-			//solidLocation.getBlock().setType(block.getType());
-			//solidLocation.getBlock().setData(block.getData().getData(), false);
-			//solidLocation.getBlock().getState().update();
 			player.getWorld().playEffect(player.getLocation(), Effect.COLOURED_DUST, 0, 2);
 			player.sendMessage(Hide.header + "§6You are now §ahidden");
 			b = solidLocation.getBlock();
 			fakeEntityId = Utils.spawnBlockTestFGDSHGDFSQGFD(player, solidLocation, block.getTypeId(), block.getData().getData());
-			//Utils.sendBlockChange(player, Material.AIR, solidLocation);
 			for(Player p : Bukkit.getOnlinePlayers()) {
 				p.hidePlayer(plugin, player);
 			}
@@ -110,7 +108,6 @@ public class DisguiseBlockManager2 {
 			p.sendBlockChange(solidLocation, Material.AIR, (byte) 0);
 		}
 		startDisguise();
-		//solidLocation.getBlock().setType(Material.AIR);
 		Utils.testEntotyDestroyNMS(player, fakeEntityId);
 	}
 	
@@ -123,6 +120,14 @@ public class DisguiseBlockManager2 {
 	}
 	
 	public void kill() {
+		Location armorStandLocation = player.getLocation().add(0, -2, 0);
+		ArmorStand armor = (ArmorStand) armorStandLocation.getWorld().spawnEntity(armorStandLocation, EntityType.ARMOR_STAND);
+		armor.setArms(false);
+		armor.setVisible(false);
+		armor.setBasePlate(false);
+		armor.setInvulnerable(true);
+		armor.setHelmet(block);
+		armor.setCustomName(player.getName());
 		isAlive = false;
 		stopDisguise();
 		run.cancel();

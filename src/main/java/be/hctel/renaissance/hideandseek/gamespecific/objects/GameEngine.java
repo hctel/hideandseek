@@ -99,7 +99,6 @@ public class GameEngine {
 		}
 		for(Player p : seekers) {
 			p.teleport(seekerSpawn);
-			p.setGameMode(GameMode.SURVIVAL);
 			p.getInventory().setItem(0, new ItemStack(Material.DIAMOND_SWORD));
 			p.getInventory().setHelmet(new ItemStack(Material.IRON_HELMET));
 			p.getInventory().setChestplate(new ItemStack(Material.IRON_CHESTPLATE));
@@ -131,6 +130,7 @@ public class GameEngine {
 							}
 							for(Player p : seekers) {
 								p.teleport(hiderSpawn);
+								p.setGameMode(GameMode.SURVIVAL);
 								p.playSound(p.getLocation(), Sound.ENTITY_ELDER_GUARDIAN_CURSE, 1.0f, 1.0f);
 							}
 							warmup = false;
@@ -221,6 +221,7 @@ public class GameEngine {
 					public void run() {
 						p.teleport(hiderSpawn);
 						p.playSound(p.getLocation(), Sound.ENTITY_ELDER_GUARDIAN_CURSE, 1.0f, 1.0f);
+						p.setGameMode(GameMode.SURVIVAL);
 					}
 					
 				}.runTaskLater(plugin, 30*20L);
@@ -231,11 +232,11 @@ public class GameEngine {
 			}
 		} else {
 			if(seekerKill) {
+				disguises.get(killed).kill();
 				seekerKills.replace(player, seekerKills.get(player)+1);
 				deaths.replace(killed, deaths.get(killed)+1);
 				Bukkit.broadcastMessage(Hide.header + "§6Hider " + Hide.rankManager.getRankColor(killed) + killed.getName() + " §6was killed by " + Hide.rankManager.getRankColor(player) + player.getName());
 				hiders.remove(killed);
-				disguises.get(killed).kill();
 				disguises.remove(player);
 				killed.teleport(Hide.votesHandler.currentGameMaps.get(Hide.votesHandler.voted).getSeekerStart());
 				sidebars.get(player).setLine(4, "§7Kills: §f" + seekerKills.get(player));
@@ -297,6 +298,10 @@ public class GameEngine {
 	
 	private void endGame(GameTeam winners) {
 		isGameFinished = true;
+		isPlaying = false;
+		for(Player p : Bukkit.getOnlinePlayers()) {
+			sidebars.get(p).removeReceiver(p);
+		}
 		if(winners == GameTeam.HIDER) {
 			new BukkitRunnable() {
 				@Override

@@ -1,9 +1,9 @@
 package be.hctel.renaissance.hideandseek.commands;
 
+import java.sql.SQLException;
+
 import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -80,12 +80,23 @@ public class StaffComands implements CommandExecutor {
 								} catch (NumberFormatException e) {
 									player.sendMessage(Hide.header + "§cPlease enter a correct number in the value field.");
 								}
-							} else if(args[1].contains("blockexperience.")) {
+							} else if(args[1].startsWith("blockexperience.")) {
 								
-							} else if(args[1].contains("blocklevel.")) {
+							} else if(args[1].startsWith("blocklevel.")) {
 								
-							} else if(args[1].contains("achievements.")) {
+							} else if(args[1].startsWith("achievements.")) {
 								
+							} else if(args[1].equalsIgnoreCase("tokens")) {
+								try {
+									int i = Utils.convertToInt(args[2]);
+									if(!Hide.cosmeticManager.isLoaded(t)) Hide.cosmeticManager.loadPlayer(t);
+									Hide.cosmeticManager.setTokens(t, i);
+									if(!Bukkit.getOnlinePlayers().contains(t)) Hide.cosmeticManager.unloadPlayer(t);
+								} catch (NumberFormatException e) {
+									player.sendMessage(Hide.header + "§cPlease enter a correct number in the value field.");
+								} catch (SQLException e) {
+									e.printStackTrace();
+								}
 							} else {
 								player.sendMessage(Hide.header + "§cInvalid category! The following categoies were expected:");
 								player.sendMessage(Hide.header + "§6points: adds (or removes) points to the specified player");
@@ -105,7 +116,7 @@ public class StaffComands implements CommandExecutor {
 					}
 				} else if(cmd.getName().equalsIgnoreCase("gotoworld")) {
 					if(args.length == 1) {
-							if(args[0] != "TEMPWORLD") {
+							if(!args[0].contains("TEMPWORLD")) {
 								player.teleport(GameMap.getFromSystemName(args[0]).getHiderStart());
 						}
 					}
