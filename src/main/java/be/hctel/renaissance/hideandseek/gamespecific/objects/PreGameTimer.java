@@ -16,7 +16,7 @@ import be.hctel.renaissance.hideandseek.nongame.utils.Utils;
 
 public class PreGameTimer {
 	Plugin plugin;
-	int minPlayers = 2;
+	int minPlayers = 3; //NE PAS OUBLIER DE CHANGER À 2 POUR LES TESTS
 	int timer = 36;
 	BukkitScheduler scheduler;
 	
