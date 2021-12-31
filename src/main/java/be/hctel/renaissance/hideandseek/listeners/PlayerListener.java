@@ -69,19 +69,7 @@ public class PlayerListener implements Listener {
 	
 	@EventHandler
 	public void onDamage(EntityDamageEvent e) {
-		System.out.println("Triggerred damage event");
-		if(Hide.preGameTimer.gameStarted) {
-			if(e.getEntity() instanceof Player) {
-				System.out.println("    damage event is player");
-				if(e.getCause() == DamageCause.FALL) {
-					System.out.println("         and is fall");
-						e.setCancelled(true);
-				}
-				if(e.getCause() == DamageCause.DROWNING) {
-					e.setCancelled(true);
-				}
-			}
-		} else e.setCancelled(true);
+		if(e.getEntity() instanceof Player) e.setCancelled(true);
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -96,10 +84,11 @@ public class PlayerListener implements Listener {
 					if(((Player) e.getDamager()).getItemInHand().getType() != Material.DIAMOND_SWORD) d = (int) e.getDamage();
 					damaged.setHealth(damaged.getHealth() - d);
 					damaged.getWorld().playSound(damaged.getLocation(), Sound.ENTITY_PLAYER_DEATH, 1.0f, 0.5f);
-					e.setCancelled(true);
+					
 				} 				
-			} else e.setCancelled(true);
-		} else e.setCancelled(true);
+			} 
+		}
+		e.setCancelled(true);
 	}
 	@EventHandler
 	public void onBlockDamage(BlockDamageEvent e) {
@@ -108,7 +97,7 @@ public class PlayerListener implements Listener {
 		Block b = e.getBlock();
 		if(Hide.gameEngine.getTeam(p) == GameTeam.SEEKER) {
 			for(Player i : Hide.gameEngine.disguises.keySet()) {
-				if(Hide.gameEngine.disguises.get(i).getBlock().equals(b)) {
+				if(Hide.gameEngine.disguises.get(i).getSolidLocation().equals(b.getLocation())) {
 					Player damaged = i;
 					Hide.gameEngine.disguises.get(i).makeUnsolid();
 					int d = (int) (damaged.getHealth() >= 6 ? 6 : damaged.getHealth());

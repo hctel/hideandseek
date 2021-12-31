@@ -22,7 +22,6 @@ import me.libraryaddict.disguise.disguisetypes.MiscDisguise;
 public class DisguiseBlockManager2 {
 	Player player;
 	ItemStack block;
-	Block b = null;
 	Plugin plugin;
 	Location lastLocation;
 	Location solidLocation;
@@ -87,7 +86,6 @@ public class DisguiseBlockManager2 {
 			solidLocation = Utils.locationFlattenner(lastLocation);
 			player.getWorld().playEffect(player.getLocation(), Effect.COLOURED_DUST, 0, 2);
 			player.sendMessage(Hide.header + "§6You are now §ahidden");
-			b = solidLocation.getBlock();
 			fakeEntityId = Utils.spawnBlockTestFGDSHGDFSQGFD(player, solidLocation, block.getTypeId(), block.getData().getData());
 			for(Player p : Bukkit.getOnlinePlayers()) {
 				p.hidePlayer(plugin, player);
@@ -133,7 +131,7 @@ public class DisguiseBlockManager2 {
 		run.cancel();
 	}
 	
-	public Block getBlock() {
-		return b;
+	public Location getSolidLocation() {
+		return solidLocation;
 	}
 }
