@@ -11,6 +11,10 @@ import com.google.common.io.ByteStreams;
 public class BungeeCordMessenger implements PluginMessageListener {
 	Plugin plugin;
 	
+	/**
+	 * 
+	 * @param plugin
+	 */
 	public BungeeCordMessenger(Plugin plugin) {
 		this.plugin = plugin;
 		plugin.getServer().getMessenger().registerOutgoingPluginChannel(plugin, "BungeeCord");
@@ -23,7 +27,11 @@ public class BungeeCordMessenger implements PluginMessageListener {
 		ByteArrayDataInput in = ByteStreams.newDataInput(message);
 		String subchannel = in.readUTF();
 	}
-	
+	/**
+	 * 
+	 * @param player
+	 * @param server
+	 */
 	public void sendToServer(Player player, String server) {
 		ByteArrayDataOutput out = ByteStreams.newDataOutput();
 		out.writeUTF("Connect");
@@ -31,6 +39,9 @@ public class BungeeCordMessenger implements PluginMessageListener {
 		player.sendPluginMessage(plugin, "BungeeCord", out.toByteArray());
 	}
 	
+	/**
+	 * 
+	 */
 	public void unload() {
 		plugin.getServer().getMessenger().unregisterOutgoingPluginChannel(plugin);
 		plugin.getServer().getMessenger().unregisterIncomingPluginChannel(plugin);

@@ -335,6 +335,12 @@ public class GameEngine {
 				for(Player P : Bukkit.getOnlinePlayers()) Hide.bungeeMessenger.sendToServer(P, "LOBBY02");				
 			}
 		}.runTaskLater(plugin, 10*20L);
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), "stop");
+			}
+		}.runTaskLater(plugin, 12*20L);
 	}
 	private void checkForHidersRemaining() {
 		if(hiders.size() < 1) {
