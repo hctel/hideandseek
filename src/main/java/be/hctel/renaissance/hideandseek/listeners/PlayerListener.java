@@ -57,7 +57,6 @@ public class PlayerListener implements Listener {
 		Utils.sendHeaderFooter(p, "\n§6Renaissance §eProject\n§fBringing back good memories\n", "\n§aPlaying in §bHide §aAnd §eSeek.\n");
 		Hide.preGameTimer.loadPlayer(p);
 		p.sendMessage(Hide.header + "§aWelcome on HnS indev v1 release!");
-		for(Player P : Bukkit.getOnlinePlayers()) P.showPlayer(Hide.plugin, p);
 	}
 	@EventHandler
 	public void onDisconnect(PlayerQuitEvent e) throws SQLException {
@@ -69,7 +68,19 @@ public class PlayerListener implements Listener {
 	
 	@EventHandler
 	public void onDamage(EntityDamageEvent e) {
-		if(e.getEntity() instanceof Player) e.setCancelled(true);
+		System.out.println("Triggerred damage event");
+		if(Hide.preGameTimer.gameStarted) {
+			if(e.getEntity() instanceof Player) {
+				System.out.println("    damage event is player");
+				if(e.getCause() == DamageCause.FALL) {
+					System.out.println("         and is fall");
+						e.setCancelled(true);
+				}
+				if(e.getCause() == DamageCause.DROWNING) {
+					e.setCancelled(true);
+				}
+			}
+		} else e.setCancelled(true);
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -84,11 +95,10 @@ public class PlayerListener implements Listener {
 					if(((Player) e.getDamager()).getItemInHand().getType() != Material.DIAMOND_SWORD) d = (int) e.getDamage();
 					damaged.setHealth(damaged.getHealth() - d);
 					damaged.getWorld().playSound(damaged.getLocation(), Sound.ENTITY_PLAYER_DEATH, 1.0f, 0.5f);
-					
+					e.setCancelled(true);
 				} 				
-			} 
-		}
-		e.setCancelled(true);
+			} else e.setCancelled(true);
+		} else e.setCancelled(true);
 	}
 	@EventHandler
 	public void onBlockDamage(BlockDamageEvent e) {
@@ -97,7 +107,7 @@ public class PlayerListener implements Listener {
 		Block b = e.getBlock();
 		if(Hide.gameEngine.getTeam(p) == GameTeam.SEEKER) {
 			for(Player i : Hide.gameEngine.disguises.keySet()) {
-				if(Hide.gameEngine.disguises.get(i).getSolidLocation().equals(b.getLocation())) {
+				if(Hide.gameEngine.disguises.get(i).getBlock().equals(b)) {
 					Player damaged = i;
 					Hide.gameEngine.disguises.get(i).makeUnsolid();
 					int d = (int) (damaged.getHealth() >= 6 ? 6 : damaged.getHealth());

@@ -13,8 +13,8 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
+import com.viaversion.viaversion.api.Via;
 
-import be.hctel.api.bungee.BungeeCordMessenger;
 import be.hctel.renaissance.cosmetics.CosmeticsManager;
 import be.hctel.renaissance.hideandseek.commands.RankCommands;
 import be.hctel.renaissance.hideandseek.commands.StaffComands;
@@ -40,7 +40,6 @@ public class Hide extends JavaPlugin {
 	public static MultiverseCore core;
 	public static MVWorldManager worldManager;
 	public static ProtocolManager protocolLibManager;
-	public static BungeeCordMessenger bungeeMessenger;
 	
 	public static Stats stats;
 	public static RankManager rankManager;
@@ -72,15 +71,13 @@ public class Hide extends JavaPlugin {
 		preGameTimer = new PreGameTimer(this);
 		registerListeners();
 		loadCommands();
-		votesHandler = new VotesHandler(this);
+		votesHandler = new VotesHandler(plugin);
 		protocolLibManager = ProtocolLibrary.getProtocolManager();
-		bungeeMessenger = new BungeeCordMessenger(this);
 	}
 	
 	
 	@Override
 	public void onDisable() {
-		bungeeMessenger.unload();
 		try {
 			stats.saveAll();
 			rankManager.saveAll();
