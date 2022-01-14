@@ -34,6 +34,7 @@ public class TauntManager {
 		}.runTaskTimer(plugin, 0L, 20L);
 	}
 	public void openMenu(Player player) {
+		if(!nextTaunt.containsKey(player)) nextTaunt.put(player, 330);
 		player.openInventory(inv);
 	}
 	public void triggerMenu(InventoryClickEvent e) {
@@ -51,11 +52,7 @@ public class TauntManager {
 				} else if(isWarmingUp) {
 					e.getWhoClicked().sendMessage(Hide.header + "§cYou can't taunt while the game is still warming up!");
 				} else {
-					if(nextTaunt.containsKey((Player) e.getWhoClicked())) {
-						nextTaunt.replace((Player) e.getWhoClicked(), new Taunt((Player) e.getWhoClicked(), type).perform() + seconds);
-					} else {
-						nextTaunt.put((Player) e.getWhoClicked(), new Taunt((Player) e.getWhoClicked(), type).perform() + seconds);
-					}
+					nextTaunt.replace((Player) e.getWhoClicked(), new Taunt((Player) e.getWhoClicked(), type).perform() + seconds);
 				}
 				e.setCancelled(true);
 			}

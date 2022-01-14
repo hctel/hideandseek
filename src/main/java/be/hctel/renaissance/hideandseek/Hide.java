@@ -13,13 +13,14 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
-import com.viaversion.viaversion.api.Via;
 
+import be.hctel.api.bungee.BungeeCordMessenger;
 import be.hctel.renaissance.cosmetics.CosmeticsManager;
 import be.hctel.renaissance.hideandseek.commands.RankCommands;
 import be.hctel.renaissance.hideandseek.commands.StaffComands;
 import be.hctel.renaissance.hideandseek.commands.StatCommands;
 import be.hctel.renaissance.hideandseek.commands.VoteCommand;
+import be.hctel.renaissance.hideandseek.commands.completers.StaffCommandsTabCompleter;
 import be.hctel.renaissance.hideandseek.commonclass.VotesHandler;
 import be.hctel.renaissance.hideandseek.gamespecific.objects.BlockPicker;
 import be.hctel.renaissance.hideandseek.gamespecific.objects.GameEngine;
@@ -40,6 +41,7 @@ public class Hide extends JavaPlugin {
 	public static MultiverseCore core;
 	public static MVWorldManager worldManager;
 	public static ProtocolManager protocolLibManager;
+	public static BungeeCordMessenger bm;
 	
 	public static Stats stats;
 	public static RankManager rankManager;
@@ -73,6 +75,7 @@ public class Hide extends JavaPlugin {
 		loadCommands();
 		votesHandler = new VotesHandler(plugin);
 		protocolLibManager = ProtocolLibrary.getProtocolManager();
+		bm = new BungeeCordMessenger(this);
 	}
 	
 	
@@ -93,6 +96,7 @@ public class Hide extends JavaPlugin {
 		getCommand("togglerank").setExecutor(new RankCommands());
 		getCommand("setrank").setExecutor(new RankCommands());
 		getCommand("updateprofile").setExecutor(new StaffComands());
+		getCommand("updateprofile").setTabCompleter(new StaffCommandsTabCompleter());
 		getCommand("gotoworld").setExecutor(new StaffComands());
 		getCommand("vote").setExecutor(new VoteCommand());
 		getCommand("v").setExecutor(new VoteCommand());

@@ -39,7 +39,7 @@ public enum TauntType {
 	static HashMap<String, TauntType> nameLookup = new HashMap<String, TauntType>();
 	static {
 		for(TauntType t : TauntType.values()) {
-			lookup.put(t.getName(), t);
+			nameLookup.put(t.getName(), t);
 		}
 	}
 	private TauntType(Material material, String name, String description, int points, int cooldown) {

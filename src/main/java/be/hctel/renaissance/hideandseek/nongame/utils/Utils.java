@@ -1,7 +1,6 @@
 package be.hctel.renaissance.hideandseek.nongame.utils;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
@@ -33,14 +32,13 @@ import com.comphenix.packetwrapper.WrapperPlayServerEntityDestroy;
 import com.comphenix.packetwrapper.WrapperPlayServerSpawnEntity;
 import com.comphenix.protocol.wrappers.WrappedBlockData;
 
-import be.hctel.renaissance.hideandseek.Hide;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.minecraft.server.v1_12_R1.BlockPosition;
 import net.minecraft.server.v1_12_R1.IChatBaseComponent;
-import net.minecraft.server.v1_12_R1.PacketPlayOutBlockChange;
 import net.minecraft.server.v1_12_R1.IChatBaseComponent.ChatSerializer;
+import net.minecraft.server.v1_12_R1.PacketPlayOutBlockChange;
 import net.minecraft.server.v1_12_R1.PacketPlayOutEntityDestroy;
 import net.minecraft.server.v1_12_R1.PacketPlayOutPlayerListHeaderFooter;
 import net.minecraft.server.v1_12_R1.PacketPlayOutSpawnEntity;
@@ -555,13 +553,17 @@ public class Utils {
 	        fbs.setX(l.getX());
 	        fbs.setY(l.getY());
 	        fbs.setZ(l.getZ());
-	        fbs.setOptionalSpeedX(0);
-	        fbs.setOptionalSpeedY(0);
-	        fbs.setOptionalSpeedY(0);
 	        System.out.println("ProtocolLib packet done");
 			((CraftPlayer) player).getHandle().playerConnection.sendPacket((PacketPlayOutSpawnEntity) fbs.getHandle().getHandle());
 			System.out.println("send packet");
 			return entityID;
+	}
+	public static Location substractLocation(Location a, Location b) {
+		if(!a.getWorld().equals(b.getWorld())) throw new IllegalArgumentException("The two locations are not in the same world!");
+		double x = a.getX() - b.getX();
+		double y = a.getY() - b.getY();
+		double z = a.getZ() - b.getZ();
+		return new Location(a.getWorld(), x, y, z);
 	}
 	
  

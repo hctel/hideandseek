@@ -46,6 +46,7 @@ public class GameEngine {
 	
 	private HashMap<Player, DynamicScoreboard> sidebars = new HashMap<Player, DynamicScoreboard>();
 	public HashMap<Player, DisguiseBlockManager2> disguises = new HashMap<Player, DisguiseBlockManager2>();
+	public HashMap<Player, Integer> durability = new HashMap<Player, Integer>();
 	
 	public GameEngine(Plugin plugin, GameMap map) {
 		this.plugin = plugin;
@@ -110,6 +111,7 @@ public class GameEngine {
 			Utils.sendCenteredMessage(p, "§eIt's your job to find hidden block and KILL THEM!");
 			Utils.sendCenteredMessage(p, "You will be released in §l30 seconds!");
 			Utils.sendCenteredMessage(p, "§c§m---------------------------------------------------");
+			durability.put(p, 20);
 		}
 		
 		//Task running every second (timer decrease, give items, ...)
@@ -161,6 +163,10 @@ public class GameEngine {
 								sidebars.get(p).setLine(10, hiders.size() + " ");
 								sidebars.get(p).setLine(8, seekers.size() + "");
 							}
+						}
+						for(Player P : durability.keySet()) {
+							if(durability.get(P) < 20) durability.replace(P, durability.get(P)+1);
+							Utils.sendActionBarMessage(P, "§6Durability: " + durability.get(P));
 						}
 						timer--;
 					} else if (timer == 0) {
@@ -252,6 +258,7 @@ public class GameEngine {
 				Utils.sendCenteredMessage(p, "§eIt's your job to find hidden block and KILL THEM!");
 				Utils.sendCenteredMessage(p, "You will be released in §l10 seconds!");
 				Utils.sendCenteredMessage(p, "§c§m---------------------------------------------------");
+				durability.put(p, 20);
 				new BukkitRunnable() {
 					@Override
 					public void run() {
@@ -304,6 +311,7 @@ public class GameEngine {
 					for(Player p : Bukkit.getOnlinePlayers()) {
 						p.playSound(p.getLocation(), Sound.ENTITY_SPIDER_DEATH, 1.0f, 1.0f);
 						p.sendTitle("§c§l<< GAME OVER >>", "§eThe Hiders won the game.", 0, 25, 70);
+						p.sendMessage(Hide.header + "§cGame Over! §3You will be sent to hub in 10 seconds.");
 					}
 				}
 			}.runTaskAsynchronously(plugin);
@@ -317,6 +325,7 @@ public class GameEngine {
 					for(Player p : Bukkit.getOnlinePlayers()) {
 						p.playSound(p.getLocation(), Sound.ENTITY_SPIDER_DEATH, 1.0f, 1.0f);
 						p.sendTitle("§c§l<< GAME OVER >>", "§eThe Seekers won the game.", 0, 25, 70);
+						p.sendMessage(Hide.header + "§cGame Over! §3You will be sent to hub in 10 seconds.");
 					}
 				}
 			}.runTaskAsynchronously(plugin);
@@ -324,6 +333,14 @@ public class GameEngine {
 				Hide.stats.addVictory(p);
 			}
 		}
+		new BukkitRunnable() {
+			
+			@Override
+			public void run() {
+				for(Player P : Bukkit.getOnlinePlayers()) Hide.bm.sendToServer(P, "LOBBY02");
+				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "stop");
+			}
+		}.runTaskLater(plugin, 10*20L);
 	}
 	private void checkForHidersRemaining() {
 		if(hiders.size() < 1) {
