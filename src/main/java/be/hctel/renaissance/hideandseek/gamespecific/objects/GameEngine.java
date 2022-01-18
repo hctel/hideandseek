@@ -84,6 +84,7 @@ public class GameEngine {
 			seekerKills.put(p, 0);
 			hiderKills.put(p, 0);
 			p.getInventory().clear();
+			p.setBedSpawnLocation(hiderSpawn, true);
 		}
 		Player firstSeeker = getNewSeeker();
 		hiders.remove(firstSeeker);
@@ -155,13 +156,13 @@ public class GameEngine {
 							for(Player p : sidebars.keySet()) {
 								sidebars.get(p).setLine(13, Utils.formatSeconds(timer-300));
 								sidebars.get(p).setLine(10, hiders.size() + " ");
-								sidebars.get(p).setLine(8, seekers.size() + "");
+								sidebars.get(p).setLine(7, seekers.size() + "");
 							}
 						} else {
 							for(Player p : sidebars.keySet()) {
 								sidebars.get(p).setLine(13, Utils.formatSeconds(timer));
 								sidebars.get(p).setLine(10, hiders.size() + " ");
-								sidebars.get(p).setLine(8, seekers.size() + "");
+								sidebars.get(p).setLine(7, seekers.size() + "");
 							}
 						}
 						for(Player P : durability.keySet()) {
@@ -281,11 +282,11 @@ public class GameEngine {
 		if(hiders.contains(player)) {
 			disguises.get(player).kill();
 			disguises.remove(player);
-			Bukkit.broadcastMessage(Hide.header + "§6Hider " + Hide.rankManager.getRankColor(player) + player.getName() + " §6has died.");
+			if(!isGameFinished) Bukkit.broadcastMessage(Hide.header + "§6Hider " + Hide.rankManager.getRankColor(player) + player.getName() + " §6has died.");
 			hiders.remove(player);
 		} else if(seekers.contains(player)) {
 			seekers.remove(player);
-			Bukkit.broadcastMessage(Hide.header + "§6Seeker " + Hide.rankManager.getRankColor(player) + player.getName() + " §6has left.");
+			if(!isGameFinished) Bukkit.broadcastMessage(Hide.header + "§6Seeker " + Hide.rankManager.getRankColor(player) + player.getName() + " §6has left.");
 		}
 	}
 	private Player getNewSeeker() {
@@ -333,6 +334,7 @@ public class GameEngine {
 				Hide.stats.addVictory(p);
 			}
 		}
+		for(Player P : sidebars.keySet()) sidebars.get(P).removeReceiver(P);
 		new BukkitRunnable() {
 			
 			@Override

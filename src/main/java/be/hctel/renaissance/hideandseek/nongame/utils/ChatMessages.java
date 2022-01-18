@@ -6,6 +6,7 @@ package be.hctel.renaissance.hideandseek.nongame.utils;
 
 public enum ChatMessages {
 	NO_RANK_CHANGE("§cSorry, but your current rank doesn't allow you to disguise your current rank as that rank."),
+	UNAVAILABLE_CMD("§cThe specified command is currently unavailable."),
 	RANKCHANGE("§aYour rank was successfully changed."),
 	RANKTOGGLE("§aToggled your rank!"),
 	RANKINDEXINVALID("§cPlease enter a value from 1 to 4."),
@@ -15,6 +16,8 @@ public enum ChatMessages {
 	VOTEREGISTERED("§aYou voted for §6"),
 	NAN("§cPlease provide a valid number"),
 	STARTCANCELLED("§cStart cancelled! We don't have enough players anymore."),
+	ARGSMISSING_1("§cPlease specify one argument"),
+	TAUNTNOTFOUND("§cThere is no taunt matching that name!"),
 	PLAYER_NOTFOUND("§cSorry, but that player wasn't found.");
 	
 	
@@ -25,5 +28,10 @@ public enum ChatMessages {
 	
 	public String toText() {
 		return message;
+	}
+	
+	@Override
+	public String toString() {
+		return toText();
 	}
 }

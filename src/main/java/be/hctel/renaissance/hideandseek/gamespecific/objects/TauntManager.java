@@ -47,12 +47,12 @@ public class TauntManager {
 			TauntType type = TauntType.getByInventoryName(clicked.getItemMeta().getDisplayName());
 			if(type != null) {
 				e.getView().close();
-				if(nextTaunt.get(e.getWhoClicked()) < seconds) {
+				if(nextTaunt.get(e.getWhoClicked()) > seconds) {
 					e.getWhoClicked().sendMessage(Hide.header + "§cYour taunts are on cooldown! Please wait " + (nextTaunt.get(e.getWhoClicked()) - seconds) + " seconds");
 				} else if(isWarmingUp) {
 					e.getWhoClicked().sendMessage(Hide.header + "§cYou can't taunt while the game is still warming up!");
 				} else {
-					nextTaunt.replace((Player) e.getWhoClicked(), new Taunt((Player) e.getWhoClicked(), type).perform() + seconds);
+					nextTaunt.replace((Player) e.getWhoClicked(), - new Taunt((Player) e.getWhoClicked(), type).perform() + seconds);
 				}
 				e.setCancelled(true);
 			}
@@ -92,5 +92,17 @@ public class TauntManager {
 			a.setItem(i, TauntType.values()[i-16].getItem());
 		}
 		return a;
+	}
+	
+	public void tryPerfomTaunt(TauntType type, Player player) {
+		if(type != null) {
+			if(nextTaunt.get(player) > seconds) {
+				player.sendMessage(Hide.header + "§cYour taunts are on cooldown! Please wait " + (nextTaunt.get(player) - seconds) + " seconds");
+			} else if(isWarmingUp) {
+				player.sendMessage(Hide.header + "§cYou can't taunt while the game is still warming up!");
+			} else {
+				nextTaunt.replace((Player) player, - new Taunt((Player) player, type).perform() + seconds);
+			}
+		}
 	}
 }

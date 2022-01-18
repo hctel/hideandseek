@@ -19,8 +19,10 @@ import be.hctel.renaissance.cosmetics.CosmeticsManager;
 import be.hctel.renaissance.hideandseek.commands.RankCommands;
 import be.hctel.renaissance.hideandseek.commands.StaffComands;
 import be.hctel.renaissance.hideandseek.commands.StatCommands;
+import be.hctel.renaissance.hideandseek.commands.TauntCommand;
 import be.hctel.renaissance.hideandseek.commands.VoteCommand;
 import be.hctel.renaissance.hideandseek.commands.completers.StaffCommandsTabCompleter;
+import be.hctel.renaissance.hideandseek.commands.completers.TauntCommandTabCompleter;
 import be.hctel.renaissance.hideandseek.commonclass.VotesHandler;
 import be.hctel.renaissance.hideandseek.gamespecific.objects.BlockPicker;
 import be.hctel.renaissance.hideandseek.gamespecific.objects.GameEngine;
@@ -100,6 +102,8 @@ public class Hide extends JavaPlugin {
 		getCommand("gotoworld").setExecutor(new StaffComands());
 		getCommand("vote").setExecutor(new VoteCommand());
 		getCommand("v").setExecutor(new VoteCommand());
+		getCommand("taunt").setExecutor(new TauntCommand());
+		getCommand("taunt").setTabCompleter(new TauntCommandTabCompleter());
 	}
 	private void openConnection() {
 		getLogger().info("[ " + getName() + "] Enabling SQL connection to database");

@@ -81,7 +81,7 @@ public class VotesHandler {
 	public void sendMapChoices(Player player) {
 		player.sendMessage(Hide.header + "§e§lVote for a map! §7Use §f/v # §7or click.");
 		for(int i = 0; i < 5; i++) {
-			TextComponent message = new TextComponent(Hide.header + "§7§l" + (i+1) + " §6" + currentGameMaps.get(i).getMapName() + getVoteAmountString(currentGameMaps.get(i)));
+			TextComponent message = new TextComponent(Hide.header + "§7§l" + (i+1) + ". §6" + currentGameMaps.get(i).getMapName() + getVoteAmountString(currentGameMaps.get(i)));
 			message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("§aClick to vote for §6" + currentGameMaps.get(i).getMapName()).create()));
 			message.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/v " + (i+1)));
 			player.spigot().sendMessage(message);

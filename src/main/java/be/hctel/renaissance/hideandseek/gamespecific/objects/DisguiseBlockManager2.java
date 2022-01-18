@@ -116,6 +116,8 @@ public class DisguiseBlockManager2 {
 	
 	private void startDisguise() {
 		disguise.setEntity(player);
+		disguise.setHidePlayer(true);
+		
 		disguise.startDisguise();
 	}
 	private void stopDisguise() {

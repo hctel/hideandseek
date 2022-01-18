@@ -32,3 +32,7 @@ commands:
     usage: /gotoworld <worldname>
     permission: hide.staff
     description: Go to a world
+  taunt:
+    usage /taunt <taunt type>
+    permission: hide.taunt
+    description: Taunt!
