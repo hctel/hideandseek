@@ -100,10 +100,12 @@ public class Hide extends JavaPlugin {
 		getCommand("updateprofile").setExecutor(new StaffComands());
 		getCommand("updateprofile").setTabCompleter(new StaffCommandsTabCompleter());
 		getCommand("gotoworld").setExecutor(new StaffComands());
+		getCommand("gotoworld").setTabCompleter(new StaffCommandsTabCompleter());
 		getCommand("vote").setExecutor(new VoteCommand());
 		getCommand("v").setExecutor(new VoteCommand());
 		getCommand("taunt").setExecutor(new TauntCommand());
 		getCommand("taunt").setTabCompleter(new TauntCommandTabCompleter());
+		getCommand("s").setExecutor(new StaffComands());
 	}
 	private void openConnection() {
 		getLogger().info("[ " + getName() + "] Enabling SQL connection to database");

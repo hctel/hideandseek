@@ -33,6 +33,10 @@ commands:
     permission: hide.staff
     description: Go to a world
   taunt:
-    usage /taunt <taunt type>
+    usage: /taunt <taunt type>
     permission: hide.taunt
     description: Taunt!
+  s:
+    usage: /s
+    permission: hide.admin
+    description: Stops the server and sends everyone to the lobby

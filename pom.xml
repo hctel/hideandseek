@@ -45,7 +45,12 @@
     <dependency>
     <groupId>com.comphenix.protocol</groupId>
     <artifactId>ProtocolLib</artifactId>
-    <version>4.7.0</version>
+    <version>4.5.0</version>
+  </dependency>
+  <dependency>
+    <groupId>com.comphenix.packetwrapper</groupId>
+    <artifactId>PacketWrapper</artifactId>
+    <version>1.12.1-R0.1-SNAPSHOT</version>
   </dependency>
 </dependencies>
 </project>

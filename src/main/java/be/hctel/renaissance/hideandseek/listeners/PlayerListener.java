@@ -10,13 +10,13 @@ import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -66,7 +66,7 @@ public class PlayerListener implements Listener {
 		if(Hide.preGameTimer.gameStarted) Hide.gameEngine.disconnect(e.getPlayer());
 	}
 	
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onDamage(EntityDamageEvent e) {
 		e.setCancelled(true);
 	}
@@ -96,7 +96,7 @@ public class PlayerListener implements Listener {
 			} else e.setCancelled(true);
 		} else e.setCancelled(true);
 	}
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onBlockDamage(BlockDamageEvent e) {
 		System.out.println("Block damage !");
 		Player p = e.getPlayer();
@@ -115,7 +115,7 @@ public class PlayerListener implements Listener {
 		} else e.setCancelled(true);
 	}
 	
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onBlockBreak(BlockBreakEvent e) {
 		if(e.getPlayer().getLocation().getWorld().getName().contains("TEMPWORLD") || e.getPlayer().getLocation().getWorld().getName().equals("HIDE_Lobby")) {
 			new BukkitRunnable() {

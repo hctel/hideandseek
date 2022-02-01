@@ -20,7 +20,6 @@ import be.hctel.renaissance.hideandseek.gamespecific.enums.GameMap;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.GameTeam;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.ItemsManager;
 import be.hctel.renaissance.hideandseek.nongame.utils.Utils;
-import net.minecraft.server.v1_12_R1.Scoreboard;
 
 public class GameEngine {
 	private Plugin plugin;

@@ -1,9 +1,9 @@
 package be.hctel.renaissance.ranks;
 
-import java.sql.Statement;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.HashMap;
 
 import org.bukkit.entity.Player;

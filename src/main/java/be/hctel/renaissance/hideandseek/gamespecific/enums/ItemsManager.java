@@ -1,7 +1,5 @@
 package be.hctel.renaissance.hideandseek.gamespecific.enums;
 
-import java.util.ArrayList;
-
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;

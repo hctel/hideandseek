@@ -60,7 +60,6 @@ public class DynamicScoreboard {
 	 * @param lineContent The text of the line
 	 */
 	public void setLine(int lineIndex, String lineContent) {
-		if(line.containsKey(lineIndex)) removeLine(lineIndex);
 		Score a = obj.getScore(lineContent);
 		line.put(lineIndex, lineContent);
 		a.setScore(lineIndex);

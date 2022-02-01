@@ -1,9 +1,7 @@
 package be.hctel.renaissance.hideandseek.commands;
 
 import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -106,6 +104,7 @@ public class StaffComands implements CommandExecutor {
 				} else if(cmd.getName().equalsIgnoreCase("gotoworld")) {
 					if(args.length == 1) {
 							if(args[0] != "TEMPWORLD") {
+								if(!args[0].startsWith("HIDE_")) args[0] = "HIDE_" + args[0];
 								player.teleport(GameMap.getFromSystemName(args[0]).getHiderStart());
 						}
 					}
@@ -113,6 +112,13 @@ public class StaffComands implements CommandExecutor {
 			} else {
 				player.sendMessage(Hide.header + ChatMessages.NOPERM);
 			}
+		}
+		if(cmd.getName().equalsIgnoreCase("s")) {
+			Bukkit.broadcastMessage(Hide.header + "§c§lServer restarting!");
+			Bukkit.broadcastMessage("");
+			Bukkit.broadcastMessage("§cYou were sent to a lobby because the server you were previously on was stopped by a staff member");
+			for(Player P : Bukkit.getOnlinePlayers()) Hide.bm.sendToServer(P, "LOBBY02");
+			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "stop");
 		}
 		return false;
 	}

@@ -36,8 +36,7 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="C:/Users/hugod/Desktop/dev plugin/spigot-1.12.2.jar"/>
-	<classpathentry kind="lib" path="C:/Users/hugod/Downloads/LibsDisguises-10.0.8-Premium-cracked.jar" sourcepath="B:/LibsDisguiseSource/LibsDisguises-10.0.8-Premium-cracked.jar.src.zip"/>
-	<classpathentry kind="lib" path="C:/Users/hugod/Desktop/dev plugin/serv1.12.2/plugins/ViaVersion-4.0.1.jar"/>
 	<classpathentry kind="lib" path="C:/Users/hugod/Desktop/dev plugin/serv1.12.2/plugins/ProtocolLib.jar"/>
+	<classpathentry kind="lib" path="C:/Users/hugod/Desktop/dev plugin/LibsDisguises-10.0.27.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

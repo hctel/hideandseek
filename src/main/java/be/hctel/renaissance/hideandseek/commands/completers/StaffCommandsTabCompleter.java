@@ -9,6 +9,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
+import be.hctel.renaissance.hideandseek.gamespecific.enums.GameMap;
+
 public class StaffCommandsTabCompleter implements TabCompleter {
 
 	@Override
@@ -29,6 +31,15 @@ public class StaffCommandsTabCompleter implements TabCompleter {
 				out.add("achievements.");
 			}
 			if(args.length == 3) out.add("<value>");
+			return out;
+		}
+		else if(command.getName().equalsIgnoreCase("gotoworld")) {
+			ArrayList<String> out = new ArrayList<String>();
+			if(args.length == 1) {
+				for(GameMap M : GameMap.values()) {
+					out.add(M.getSystemName());
+				}
+			}
 			return out;
 		}
 		return null;

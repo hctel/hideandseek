@@ -30,7 +30,12 @@ public class BungeeCordMessenger implements PluginMessageListener {
 		out.writeUTF(server);
 		player.sendPluginMessage(plugin, "BungeeCord", out.toByteArray());
 	}
-	
+	public void addToQueue(Player player, ServerType queue) {
+		ByteArrayDataOutput out = ByteStreams.newDataOutput();
+		out.writeUTF("AddQueue");
+		out.writeUTF(player.getName() + ":" + queue);
+	}
+		
 	public void unload() {
 		plugin.getServer().getMessenger().unregisterOutgoingPluginChannel(plugin);
 		plugin.getServer().getMessenger().unregisterIncomingPluginChannel(plugin);
