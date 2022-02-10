@@ -17,6 +17,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -66,36 +67,28 @@ public class PlayerListener implements Listener {
 		if(Hide.preGameTimer.gameStarted) Hide.gameEngine.disconnect(e.getPlayer());
 	}
 	
-	@EventHandler(priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.HIGH)
 	public void onDamage(EntityDamageEvent e) {
 		e.setCancelled(true);
 	}
 	
-	@SuppressWarnings("deprecation")
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onDamageByEntity(EntityDamageByEntityEvent e) {
+		System.out.println("Main events trigger: EntityDamageByEntityEvent " + e);
 		if(e.getDamager() instanceof Player && e.getEntity() instanceof Player) {
+			System.out.println("Both entities players");
 			if(Hide.preGameTimer.gameStarted) {
 				if (Hide.gameEngine.areSameTeam((Player) e.getEntity(), (Player) e.getDamager())) e.setCancelled(true);
 				else if(Hide.gameEngine.getTeam((Player) e.getDamager()) == GameTeam.SEEKER) {
-					if(Hide.gameEngine.durability.get(e.getDamager()) == 0) {
-						Player a = (Player) e.getDamager();
-						a.sendMessage(Hide.header + "§cYou're out of durability. Slow down!");
-						a.playSound(a.getLocation(), Sound.ENTITY_ITEM_BREAK, 1.0f, 1.0f);
-						e.setCancelled(true);
-						return;
-					} else {
+					System.out.println("Not same team");
 						Player damaged = (Player) e.getEntity();
-						int d = (int) (damaged.getHealth() >= 6 ? 6 : damaged.getHealth());
-						if(((Player) e.getDamager()).getItemInHand().getType() != Material.DIAMOND_SWORD) d = (int) e.getDamage();
-						damaged.setHealth(damaged.getHealth() - d);
+						e.setDamage(7);
 						damaged.getWorld().playSound(damaged.getLocation(), Sound.ENTITY_PLAYER_DEATH, 1.0f, 0.5f);
-						e.setCancelled(true);
-					}
 				} 				
 			} else e.setCancelled(true);
 		} else e.setCancelled(true);
 	}
+	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onBlockDamage(BlockDamageEvent e) {
 		System.out.println("Block damage !");
@@ -106,9 +99,8 @@ public class PlayerListener implements Listener {
 				if(Hide.gameEngine.disguises.get(i).getBlock().equals(b)) {
 					Player damaged = i;
 					Hide.gameEngine.disguises.get(i).makeUnsolid();
-					int d = (int) (damaged.getHealth() >= 6 ? 6 : damaged.getHealth());
-					damaged.setHealth(damaged.getHealth() - d);
-					damaged.getWorld().playSound(damaged.getLocation(), Sound.ENTITY_PLAYER_DEATH, 1.0f, 0.5f);
+					onDamageByEntity(new EntityDamageByEntityEvent(p, i, DamageCause.ENTITY_ATTACK, 0));
+					i.damage(7);
 					break;
 				}
 			}

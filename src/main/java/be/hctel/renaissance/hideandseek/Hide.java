@@ -64,6 +64,7 @@ public class Hide extends JavaPlugin {
 	public void onEnable() {
 		plugin = this;
 		core = (MultiverseCore) Bukkit.getServer().getPluginManager().getPlugin("Multiverse-Core");
+		protocolLibManager = ProtocolLibrary.getProtocolManager();
 		worldManager = core.getMVWorldManager();
 		loadSQLCred();
 		openConnection();
@@ -76,7 +77,6 @@ public class Hide extends JavaPlugin {
 		registerListeners();
 		loadCommands();
 		votesHandler = new VotesHandler(plugin);
-		protocolLibManager = ProtocolLibrary.getProtocolManager();
 		bm = new BungeeCordMessenger(this);
 	}
 	

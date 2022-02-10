@@ -37,7 +37,7 @@ public class GameEngine {
 	
 	private ArrayList<Player> hiders = new ArrayList<Player>();
 	private ArrayList<Player> seekers = new ArrayList<Player>();
-	private ArrayList<Player> queuedSeekers = new ArrayList<Player>();
+	private ArrayList<Player> queuedSeekers;
 	
 	private HashMap<Player, Integer> hiderKills = new HashMap<Player, Integer>();
 	private HashMap<Player, Integer> seekerKills = new HashMap<Player, Integer>();
@@ -54,6 +54,7 @@ public class GameEngine {
 	}
 	
 	public void start() {
+		this.queuedSeekers = Hide.preGameTimer.seekerQueue;
 		this.hiderSpawn = new Location(Bukkit.getWorld("TEMPWORLD" + index), map.getHiderStart().getX(), map.getHiderStart().getY(), map.getHiderStart().getZ(), map.getHiderStart().getYaw(), map.getHiderStart().getPitch());
 		this.seekerSpawn = new Location(Bukkit.getWorld("TEMPWORLD" + index), map.getSeekerStart().getX(), map.getSeekerStart().getY(), map.getSeekerStart().getZ(), map.getSeekerStart().getYaw(), map.getSeekerStart().getPitch());
 		isPlaying = true;
@@ -134,6 +135,7 @@ public class GameEngine {
 							for(Player p : seekers) {
 								p.teleport(hiderSpawn);
 								p.playSound(p.getLocation(), Sound.ENTITY_ELDER_GUARDIAN_CURSE, 1.0f, 1.0f);
+								p.setGameMode(GameMode.SURVIVAL);
 							}
 							warmup = false;
 						}
@@ -247,7 +249,6 @@ public class GameEngine {
 				sidebars.get(player).setLine(4, "§7Kills: §f" + seekerKills.get(player));
 				Player p = killed;
 				p.teleport(seekerSpawn);
-				p.setGameMode(GameMode.SURVIVAL);
 				p.getInventory().setItem(0, new ItemStack(Material.DIAMOND_SWORD));
 				p.getInventory().setHelmet(new ItemStack(Material.IRON_HELMET));
 				p.getInventory().setChestplate(new ItemStack(Material.IRON_CHESTPLATE));
@@ -264,6 +265,7 @@ public class GameEngine {
 					public void run() {
 						p.teleport(hiderSpawn);
 						p.playSound(p.getLocation(), Sound.ENTITY_ELDER_GUARDIAN_CURSE, 1.0f, 1.0f);
+						p.setGameMode(GameMode.SURVIVAL);
 					}
 					
 				}.runTaskLater(plugin, 10*20L);

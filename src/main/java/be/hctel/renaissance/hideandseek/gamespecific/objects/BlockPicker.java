@@ -122,6 +122,7 @@ public class BlockPicker {
 	}
 	
 	public void listener(InventoryClickEvent e) {
+		System.out.println("InventoryClickEvent in BlockPicker class!");
 		if(e.getInventory().getName().equalsIgnoreCase("Choose your block!")) {
 			Player p = (Player) e.getWhoClicked();
 			ItemStack picked = e.getCurrentItem();
@@ -133,6 +134,7 @@ public class BlockPicker {
 			p.closeInventory();
 			p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 0.99f);
 			p.sendMessage(Hide.header + "§aGood choice! §eSet your block to " + Utils.getUserItemName(picked));
+			playerBlock.put(p, picked);
 			e.setCancelled(true);
 		}
 	}
