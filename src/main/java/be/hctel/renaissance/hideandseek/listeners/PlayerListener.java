@@ -30,6 +30,7 @@ import be.hctel.renaissance.hideandseek.Hide;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.GameRanks;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.GameTeam;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.JoinMessages;
+import be.hctel.renaissance.hideandseek.nongame.utils.PackettedUtils;
 import be.hctel.renaissance.hideandseek.nongame.utils.Utils;
 
 public class PlayerListener implements Listener {
@@ -67,9 +68,14 @@ public class PlayerListener implements Listener {
 		if(Hide.preGameTimer.gameStarted) Hide.gameEngine.disconnect(e.getPlayer());
 	}
 	
-	@EventHandler(priority = EventPriority.HIGH)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onDamage(EntityDamageEvent e) {
-		e.setCancelled(true);
+		if(e.getCause().equals(DamageCause.FALL)) {
+			e.getEntity().setFallDistance(0);
+			e.setDamage(0);
+			e.setCancelled(true);
+			return;
+		}
 	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
@@ -78,12 +84,15 @@ public class PlayerListener implements Listener {
 		if(e.getDamager() instanceof Player && e.getEntity() instanceof Player) {
 			System.out.println("Both entities players");
 			if(Hide.preGameTimer.gameStarted) {
-				if (Hide.gameEngine.areSameTeam((Player) e.getEntity(), (Player) e.getDamager())) e.setCancelled(true);
+				if (Hide.gameEngine.areSameTeam((Player) e.getEntity(), (Player) e.getDamager())) {
+					e.setCancelled(true);
+					e.getEntity().getWorld().playSound(e.getEntity().getLocation(), Sound.ENTITY_PLAYER_ATTACK_NODAMAGE, 1.0f, 1.0f);
+				}
 				else if(Hide.gameEngine.getTeam((Player) e.getDamager()) == GameTeam.SEEKER) {
 					System.out.println("Not same team");
+					for(Player P : Bukkit.getOnlinePlayers()) PackettedUtils.sendSound(P, e.getEntity().getLocation(), "entity.player.death", 1.0f, 0.5f);
 						Player damaged = (Player) e.getEntity();
 						e.setDamage(7);
-						damaged.getWorld().playSound(damaged.getLocation(), Sound.ENTITY_PLAYER_DEATH, 1.0f, 0.5f);
 				} 				
 			} else e.setCancelled(true);
 		} else e.setCancelled(true);

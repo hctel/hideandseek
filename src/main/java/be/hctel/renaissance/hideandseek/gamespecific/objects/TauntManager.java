@@ -44,7 +44,7 @@ public class TauntManager {
 			e.setCancelled(true);
 		} else if(clicked.getType().equals(Material.STAINED_GLASS_PANE)) e.setCancelled(true);
 		else {
-			TauntType type = TauntType.getByInventoryName(clicked.getItemMeta().getDisplayName());
+			TauntType type = TauntType.getByItem(clicked);
 			if(type != null) {
 				e.getView().close();
 				if(nextTaunt.get(e.getWhoClicked()) > seconds) {

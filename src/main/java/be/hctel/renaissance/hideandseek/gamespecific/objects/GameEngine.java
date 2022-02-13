@@ -243,12 +243,14 @@ public class GameEngine {
 				deaths.replace(killed, deaths.get(killed)+1);
 				Bukkit.broadcastMessage(Hide.header + "§6Hider " + Hide.rankManager.getRankColor(killed) + killed.getName() + " §6was killed by " + Hide.rankManager.getRankColor(player) + player.getName());
 				hiders.remove(killed);
+				seekers.add(killed);
 				disguises.get(killed).kill();
 				disguises.remove(player);
 				killed.teleport(Hide.votesHandler.currentGameMaps.get(Hide.votesHandler.voted).getSeekerStart());
 				sidebars.get(player).setLine(4, "§7Kills: §f" + seekerKills.get(player));
 				Player p = killed;
 				p.teleport(seekerSpawn);
+				p.getInventory().clear();
 				p.getInventory().setItem(0, new ItemStack(Material.DIAMOND_SWORD));
 				p.getInventory().setHelmet(new ItemStack(Material.IRON_HELMET));
 				p.getInventory().setChestplate(new ItemStack(Material.IRON_CHESTPLATE));

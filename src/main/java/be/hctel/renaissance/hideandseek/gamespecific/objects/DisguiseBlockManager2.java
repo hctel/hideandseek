@@ -94,6 +94,7 @@ public class DisguiseBlockManager2 {
 			for(Player p : Bukkit.getOnlinePlayers()) {
 				p.hidePlayer(plugin, player);
 			}
+			System.out.println(player.getName() + " went solid at " + solidLocation);
 		} else {
 			player.sendMessage(Hide.header + "§cYou can't go solid here!");
 			player.sendTitle("§c§l✖", "§6You can't go solid here", 0, 20, 70);
@@ -117,7 +118,7 @@ public class DisguiseBlockManager2 {
 	private void startDisguise() {
 		disguise.setEntity(player);
 		disguise.setHidePlayer(true);
-		
+		disguise.setVelocitySent(true);
 		disguise.startDisguise();
 	}
 	private void stopDisguise() {

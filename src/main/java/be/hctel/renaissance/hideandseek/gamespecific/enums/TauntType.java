@@ -42,6 +42,12 @@ public enum TauntType {
 			nameLookup.put(t.getName(), t);
 		}
 	}
+	static HashMap<ItemStack, TauntType> itemLookup = new HashMap<ItemStack, TauntType>();
+	static {
+		for(TauntType t : TauntType.values()) {
+			itemLookup.put(t.getItem(), t);
+		}
+	}
 	private TauntType(Material material, String name, String description, int points, int cooldown) {
 		this.material = material;
 		this.name = name;
@@ -63,6 +69,9 @@ public enum TauntType {
 		} else {
 			return null;
 		}
+	}
+	public static TauntType getByItem(ItemStack clicked) {
+		if(itemLookup.containsKey(clicked)) return itemLookup.get(clicked); else return null;
 	}
 	public String getName() {
 		return  "§e§l" + name;
@@ -94,4 +103,5 @@ public enum TauntType {
 		a.setItemMeta(b);
 		return a;
 	}
+	
 }
