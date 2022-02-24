@@ -10,6 +10,7 @@ import org.bukkit.Sound;
 import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import com.mojang.authlib.GameProfile;
@@ -42,33 +43,29 @@ public class PreGameTimer {
 		
 		seekerQueueNPC = new FakePlayer(((CraftWorld) Bukkit.getWorld("HIDE_Lobby")).getHandle(), new GameProfile(UUID.fromString("fef039ef-e6cd-4987-9c84-26a3e6134277"), "§bSeeker queue"), new Location(Bukkit.getWorld("HIDE_Lobby"), -75.5, 90.01, 65.5, 135.0f, 0.0f), plugin);
 		seekerQueueNPC.setSkin(UUID.fromString("4c13b583-2355-465f-aad8-d202d621176b"));
-		seekerQueueNPC.setOnPunchTask(new ArgumentRunnable() {
-			@Override
-			public void run(Object o) {
-				if(o instanceof Player) {
-					Player p = (Player) o;
-					if(!seekerQueue.contains(p)) {
-						p.playSound(p.getLocation(), Sound.BLOCK_NOTE_PLING, 1.0f, 1.0f);
-						seekerQueue.add(p);
-					} else {
-						p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BASS, 1.0f, 0.675f);
-						seekerQueue.remove(p);
-					}
-				}
-			}
-		});
 		seekerQueueNPC.setOnRightClickTask(new ArgumentRunnable() {
 			@Override
 			public void run(Object o) {
-				if(o instanceof Player) {
-					Player p = (Player) o;
-					if(!seekerQueue.contains(p)) {
-						p.playSound(p.getLocation(), Sound.BLOCK_NOTE_PLING, 1.0f, 1.0f);
-						seekerQueue.add(p);
-					} else {
-						p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BASS, 1.0f, 0.675f);
-						seekerQueue.remove(p);
-					}
+				System.out.println("start runnable");
+				if(o instanceof String) {
+					Player p = Bukkit.getPlayer((String) o);
+					new BukkitRunnable() {
+						@Override
+						public void run() {
+							int a = 0;
+							if(a < 1) {
+								System.out.println("cast");
+								if(!seekerQueue.contains(p)) {
+									p.playSound(p.getLocation(), Sound.BLOCK_NOTE_PLING, 1.0f, 1.0f);
+									System.out.println("sound");
+									seekerQueue.add(p);
+								} else {
+									p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BASS, 1.0f, 0.675f);
+									seekerQueue.remove(p);
+								}	
+							}
+						}
+					}.runTaskAsynchronously(plugin);
 				}
 			}
 		});

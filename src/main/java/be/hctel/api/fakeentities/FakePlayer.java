@@ -17,6 +17,11 @@ import org.bukkit.plugin.Plugin;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.ProtocolManager;
+import com.comphenix.protocol.events.PacketAdapter;
+import com.comphenix.protocol.events.PacketEvent;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 
@@ -48,16 +53,26 @@ import net.minecraft.server.v1_12_R1.WorldServer;
 public class FakePlayer extends EntityPlayer implements Listener {
 
     private final Location loc;
-	private ArgumentRunnable onPunch;
 	private ArgumentRunnable onRightClick;
-	private UUID npcUUID;
+	private int id;
+	private ProtocolManager manager = ProtocolLibrary.getProtocolManager();
 
     public FakePlayer(WorldServer ws, GameProfile gp, Location loc, Plugin plugin) {
         super(((CraftServer) Bukkit.getServer()).getServer(), ws, gp, new PlayerInteractManager(ws));
         this.loc = loc;
-        this.npcUUID = this.getUniqueID();
+        this.id = this.getId();
         setLocation(loc.getX(), loc.getY(), loc.getZ(), loc.getYaw(), loc.getPitch()); // set location
         Bukkit.getServer().getPluginManager().registerEvents(this, plugin);
+        manager.addPacketListener(new PacketAdapter(plugin, PacketType.Play.Client.USE_ENTITY) {
+        	@Override
+        	public void onPacketReceiving(PacketEvent e) {
+        		if(e.getPacket().getIntegers().read(0) == id) {
+        			if(onRightClick != null) {
+        				onRightClick.run(e.getPlayer().getName());
+        			}
+        		}
+        	}
+		});
     }
 
     public void spawn() {
@@ -85,42 +100,12 @@ public class FakePlayer extends EntityPlayer implements Listener {
         this.die();
     }
 	/**
-	 * Sets the task to be executed when the fake player is punched
-	 * @param r an {@link ArgumentRunnable} where the {@link Object} is the {@link Player} who punched the FakePlayer
-	 */
-	public void setOnPunchTask(ArgumentRunnable r) {
-		this.onPunch = r;
-	}
-	
-	/**
 	 * Sets the task to be executed when the fake player is right-clicked
 	 * @param r an {@link ArgumentRunnable} where the {@link Object} is the {@link Player} who right-clicked the FakePlayer
 	 */
 	public void setOnRightClickTask(ArgumentRunnable r) {
 		this.onRightClick = r;
-	}	
-	
-	@EventHandler(priority = EventPriority.MONITOR)
-	public void onDamage(EntityDamageByEntityEvent e) {
-		System.out.println("FakePlayer damage event trigger");
-		if(e.getEntity().getUniqueId() == this.npcUUID) {
-			if(e.getDamager() instanceof Player && this.onPunch != null) {
-				Player p = (Player) e.getDamager();
-				onPunch.run(p);
-			}
-		} else return;
 	}
-	
-	@EventHandler(priority = EventPriority.MONITOR)
-	public void onPlayerInteract(PlayerInteractAtEntityEvent e) {
-		System.out.println("FakePlayer damage event trigger");
-		if(e.getRightClicked().getUniqueId() == this.npcUUID) {
-			if(this.onRightClick != null) {
-				onRightClick.run(e.getPlayer());
-			}
-		} else return;
-	}
-	
 	public boolean setSkin(UUID uuid) {
 	    try {
 	            JSONObject json = Utils.readJsonFromUrl("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid.toString() + "?unsigned=false").getJSONArray("properties").getJSONObject(0);
