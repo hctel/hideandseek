@@ -17,7 +17,7 @@ public enum GameMap {
 	VENICE("Venice Bridge", "HIDE_Venice", new SpawnLocation("HIDE_Venice", -8.0, 65, 6.0, 0.1f, 0.1f), new SpawnLocation("HIDE_Venice", 43.5, 74, -46.5, 0.1f, 0.1f)),
 	INDUSTRIA("Industria", "HIDE_Industria", new SpawnLocation("HIDE_Industria", -33.5, 4,27.5, 0.1f, 0.1f), new SpawnLocation("HIDE_Industria", -8.5, 16, -23.5, 0.1f, 0.1f)),
 	SUNSET_TERRACE("Sunset Terrace", "HIDE_Sunset", new SpawnLocation("HIDE_Sunset", 68.5, 25, 9.5, 0.1f, 0.1f), new SpawnLocation("HIDE_Sunset", 105.5, 44, 16.5, 90.1f, 0.1f)),
-	TEITAKU("Teitaku", "HIDE_Teitaku", new SpawnLocation("HIDE_Teitaku", -79.5, 24, 48.5, 0.1f, 0.1f), new SpawnLocation("HIDE_Teitaku", -160.5, 12, 447.5, 90.1f, 0.1f)),
+	//TEITAKU("Teitaku", "HIDE_Teitaku", new SpawnLocation("HIDE_Teitaku", -79.5, 24, 48.5, 0.1f, 0.1f), new SpawnLocation("HIDE_Teitaku", -160.5, 12, 447.5, 90.1f, 0.1f)),
 	SEQUOIA("Sequoia", "HIDE_Sequoia", new SpawnLocation("HIDE_Sequoia", -91.5, 38, -2.5, -90.1f, 0.1f), new SpawnLocation("HIDE_Sequoia", -79.5, 24, 48.5, 0.1f, 0.1f)),
 	HOTEL_CALIFORNIA("Hotel California", "HIDE_HotelCalifornia",new SpawnLocation("HIDE_HotelCalifornia", 18.5, 25, 0.5, 0.1f, 0.1f), new SpawnLocation("HIDE_HotelCalifornia", 18.5, 25, 6.5, 180.1f, 0.1f)),
 	LOTUS("Lotus", "HIDE_Lotus", new SpawnLocation("HIDE_Lotus", -9.5, 126, 0.5, 0.1f, 0.1f), new SpawnLocation("HIDE_Lotus", 12.5, 113, 0.5, 90.1f, 0.1f)),
@@ -191,7 +191,7 @@ public enum GameMap {
 			ItemStack f = new ItemStack(Material.HARD_CLAY);
 			toAdd.add(f);
 		}
-		if(this == GameMap.TEITAKU) {
+		/*if(this == GameMap.TEITAKU) {
 			ItemStack a = new ItemStack(Material.WORKBENCH);
 			toAdd.add(a);
 			ItemStack b = new ItemStack(Material.BOOKSHELF);
@@ -204,7 +204,7 @@ public enum GameMap {
 			toAdd.add(f);
 			ItemStack g = new ItemStack(Material.FLOWER_POT);
 			toAdd.add(g);
-		}
+		}*/
 		if(this == GameMap.SEQUOIA) {
 			@SuppressWarnings("deprecation")
 			ItemStack a = new ItemStack(Material.STAINED_CLAY, 1, (short) 0, (byte) 5);

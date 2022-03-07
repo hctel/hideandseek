@@ -6,12 +6,16 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.lang.reflect.Field;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.concurrent.RecursiveTask;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Color;
@@ -595,7 +599,50 @@ public class Utils {
 		      is.close();
 		    }
 		  }
+		  public static String getHTTPResponse(String url, int timeout) {
+			    HttpURLConnection c = null;
+			    try {
+			        URL u = new URL(url);
+			        c = (HttpURLConnection) u.openConnection();
+			        c.setRequestMethod("GET");
+			        c.setRequestProperty("Content-length", "0");
+			        c.setRequestProperty("content-type", "text/plain; charset=utf-8");
+			        c.setRequestProperty("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.104 Safari/537.36");
+			        c.setUseCaches(false);
+			        c.setAllowUserInteraction(false);
+			        c.setConnectTimeout(timeout);
+			        c.setReadTimeout(timeout);
+			        c.connect();
+			        int status = c.getResponseCode();
 
+			        switch (status) {
+			            case 200:
+			            case 201:
+			                BufferedReader br = new BufferedReader(new InputStreamReader(c.getInputStream()));
+			                StringBuilder sb = new StringBuilder();
+			                String line;
+			                while ((line = br.readLine()) != null) {
+			                    sb.append(line+"\n");
+			                }
+			                br.close();
+			                return sb.toString();
+			        }
+
+			    } catch (MalformedURLException ex) {
+			       ex.printStackTrace();
+			    } catch (IOException ex) {
+			    	ex.printStackTrace();
+			    } finally {
+			       if (c != null) {
+			          try {
+			              c.disconnect();
+			          } catch (Exception ex) {
+			        	  ex.printStackTrace();
+			          }
+			       }
+			    }
+			    return null;
+			}
 	
  
 }

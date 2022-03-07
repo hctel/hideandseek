@@ -46,24 +46,30 @@ public class PreGameTimer {
 		seekerQueueNPC.setOnRightClickTask(new ArgumentRunnable() {
 			@Override
 			public void run(Object o) {
-				System.out.println("start runnable");
 				if(o instanceof String) {
 					Player p = Bukkit.getPlayer((String) o);
 					new BukkitRunnable() {
 						@Override
 						public void run() {
-							int a = 0;
-							if(a < 1) {
-								System.out.println("cast");
 								if(!seekerQueue.contains(p)) {
 									p.playSound(p.getLocation(), Sound.BLOCK_NOTE_PLING, 1.0f, 1.0f);
-									System.out.println("sound");
 									seekerQueue.add(p);
+									Utils.sendCenteredMessage(p, "§e§m-----------------------------");
+									p.sendMessage("");
+									Utils.sendCenteredMessage(p, "§a§lJoined seeker queue");
+									Utils.sendCenteredMessage(p, "§7You now have a chance at starting out as the Seeker.");
+									p.sendMessage("");
+									Utils.sendCenteredMessage(p, "§e§m-----------------------------");
 								} else {
 									p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BASS, 1.0f, 0.675f);
 									seekerQueue.remove(p);
+									Utils.sendCenteredMessage(p, "§e§m-----------------------------");
+									p.sendMessage("");
+									Utils.sendCenteredMessage(p, "§c§lLeft seeker queue");
+									Utils.sendCenteredMessage(p, "§7You left the queue to become the starting Seeker.");
+									p.sendMessage("");
+									Utils.sendCenteredMessage(p, "§e§m-----------------------------");
 								}	
-							}
 						}
 					}.runTaskAsynchronously(plugin);
 				}

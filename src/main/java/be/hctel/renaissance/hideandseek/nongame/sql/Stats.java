@@ -48,6 +48,7 @@ public class Stats {
 			} else {
 				json.replace("%UUID", Utils.getUUID(player));
 				json.replace("%TIME%", new Date().getTime()+ "");
+				st.execute("INSERT INTO HIDE (UUID, JSON) VALUES ('" + Utils.getUUID(player) + "', '" + json.toString() + "');");
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

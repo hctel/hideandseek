@@ -24,6 +24,7 @@ public class TauntManager {
 	public TauntManager(Plugin plugin) {
 		this.plugin = plugin;
 		inv = buildInventory();
+		for(Player player : Bukkit.getOnlinePlayers()) nextTaunt.put(player, 330);
 		new BukkitRunnable() {
 			
 			@Override
@@ -34,7 +35,6 @@ public class TauntManager {
 		}.runTaskTimer(plugin, 0L, 20L);
 	}
 	public void openMenu(Player player) {
-		if(!nextTaunt.containsKey(player)) nextTaunt.put(player, 330);
 		player.openInventory(inv);
 	}
 	public void triggerMenu(InventoryClickEvent e) {
@@ -47,8 +47,8 @@ public class TauntManager {
 			TauntType type = TauntType.getByItem(clicked);
 			if(type != null) {
 				e.getView().close();
-				if(nextTaunt.get(e.getWhoClicked()) > seconds) {
-					e.getWhoClicked().sendMessage(Hide.header + "§cYour taunts are on cooldown! Please wait " + (nextTaunt.get(e.getWhoClicked()) - seconds) + " seconds");
+				if(nextTaunt.get(e.getWhoClicked()) < seconds) {
+					e.getWhoClicked().sendMessage(Hide.header + "§cYour taunts are on cooldown! Please wait " + (-nextTaunt.get(e.getWhoClicked()) + seconds) + " seconds");
 				} else if(isWarmingUp) {
 					e.getWhoClicked().sendMessage(Hide.header + "§cYou can't taunt while the game is still warming up!");
 				} else {

@@ -32,8 +32,21 @@ import be.hctel.renaissance.hideandseek.gamespecific.enums.GameTeam;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.JoinMessages;
 import be.hctel.renaissance.hideandseek.nongame.utils.PackettedUtils;
 import be.hctel.renaissance.hideandseek.nongame.utils.Utils;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 
 public class PlayerListener implements Listener {
+	
+	private static TextComponent reportBug = new TextComponent ("       §eIf there's any error, click this link to report the issue: ");
+	static {
+		TextComponent url = new TextComponent("§9§nReport bug");
+		url.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://github.com/hctel/hideandseek/issues"));
+		reportBug.addExtra(url);
+	}
+	
+	
+	
+	
 	public void onLogin(PlayerLoginEvent a) {
 		if(Hide.isServerStarting) {
 			a.getPlayer().kickPlayer("Server not started yet.");
@@ -58,7 +71,10 @@ public class PlayerListener implements Listener {
 		Hide.votesHandler.sendMapChoices(p);
 		Utils.sendHeaderFooter(p, "\n§6Renaissance §eProject\n§fBringing back good memories\n", "\n§aPlaying in §bHide §aAnd §eSeek.\n");
 		Hide.preGameTimer.loadPlayer(p);
-		p.sendMessage(Hide.header + "§aWelcome on HnS indev v1 release!");
+		p.sendMessage("");
+		p.sendMessage("");
+		Utils.sendCenteredMessage(e.getPlayer(), "§6Welcome on the HnS Alpha release v1!");
+		e.getPlayer().spigot().sendMessage(reportBug);
 	}
 	@EventHandler
 	public void onDisconnect(PlayerQuitEvent e) throws SQLException {

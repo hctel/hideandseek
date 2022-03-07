@@ -155,7 +155,13 @@ public class Hide extends JavaPlugin {
 			user = "root";
 			database = "testdb";
 			password = "1234";
-			port = 3306;			
+			port = 3306;
+		} else {
+			host = "localhost";
+			user = "lineal";
+			database = "testdb";
+			password = "N89RuUAM";
+			port = 3306;
 		}
 	}
 	private void registerListeners() {
