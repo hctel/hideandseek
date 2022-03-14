@@ -22,17 +22,6 @@ public class CosmeticsManager {
 	public CosmeticsManager(Connection con, Plugin plugin) {
 		this.con = con;
 		this.plugin = plugin;
-		new BukkitRunnable() {
-			@Override
-			public void run() {
-				try {
-					con.createStatement().execute("a;");
-				} catch (SQLException e) {
-					System.out.println("Pinged DB");
-				}
-			}
-			
-		}.runTaskTimer(plugin, 0L, 15*60*20L);
 	}
 	
 	public void loadPlayer(Player player) throws SQLException {

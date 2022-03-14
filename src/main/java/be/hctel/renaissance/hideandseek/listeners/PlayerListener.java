@@ -37,7 +37,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 
 public class PlayerListener implements Listener {
 	
-	private static TextComponent reportBug = new TextComponent ("       §eIf there's any error, click this link to report the issue: ");
+	private static TextComponent reportBug = new TextComponent (" §eIf there's any error, click this link to report the issue: ");
 	static {
 		TextComponent url = new TextComponent("§9§nReport bug");
 		url.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://github.com/hctel/hideandseek/issues"));
@@ -102,13 +102,14 @@ public class PlayerListener implements Listener {
 			if(Hide.preGameTimer.gameStarted) {
 				if (Hide.gameEngine.areSameTeam((Player) e.getEntity(), (Player) e.getDamager())) {
 					e.setCancelled(true);
-					e.getEntity().getWorld().playSound(e.getEntity().getLocation(), Sound.ENTITY_PLAYER_ATTACK_NODAMAGE, 1.0f, 1.0f);
+					for(Player P : Bukkit.getOnlinePlayers()) PackettedUtils.sendSound(P, e.getEntity().getLocation(), "entity.player.death", 1.0f, 0.5f);
 				}
 				else if(Hide.gameEngine.getTeam((Player) e.getDamager()) == GameTeam.SEEKER) {
 					System.out.println("Not same team");
+					((Player) e.getEntity()).playSound(e.getDamager().getLocation(), Sound.ENTITY_PLAYER_DEATH, 2.0f, 0.5f);
 					for(Player P : Bukkit.getOnlinePlayers()) PackettedUtils.sendSound(P, e.getEntity().getLocation(), "entity.player.death", 1.0f, 0.5f);
-						Player damaged = (Player) e.getEntity();
-						e.setDamage(7);
+					Player damaged = (Player) e.getEntity();
+					e.setDamage(7);
 				} 				
 			} else e.setCancelled(true);
 		} else e.setCancelled(true);
@@ -134,16 +135,7 @@ public class PlayerListener implements Listener {
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onBlockBreak(BlockBreakEvent e) {
-		if(e.getPlayer().getLocation().getWorld().getName().contains("TEMPWORLD") || e.getPlayer().getLocation().getWorld().getName().equals("HIDE_Lobby")) {
-			new BukkitRunnable() {
-				
-				@Override
-				public void run() {
-					e.setCancelled(true);
-					
-				}
-			}.runTaskLater(Hide.plugin, 1L);
-		}
+		if(e.getPlayer().getGameMode() != GameMode.CREATIVE) e.setCancelled(true);
 	}
 	
 	@EventHandler

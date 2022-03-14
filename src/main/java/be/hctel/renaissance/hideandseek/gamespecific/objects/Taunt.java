@@ -3,15 +3,15 @@ package be.hctel.renaissance.hideandseek.gamespecific.objects;
 import java.util.Random;
 
 import org.bukkit.Bukkit;
+import org.bukkit.DyeColor;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
+import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.entity.Sheep;
 import org.bukkit.util.Vector;
 
 import be.hctel.renaissance.hideandseek.Hide;
@@ -48,7 +48,7 @@ public class Taunt {
 			Random r = new Random();
 			for(int i = 0; i < 4; i++) {
 				Location loc = new Location(player.getWorld(), player.getLocation().getBlockX()+(r.nextDouble()-0.5), player.getLocation().getBlockY(),  player.getLocation().getBlockZ()+(r.nextDouble()-0.5));
-				player.getWorld().dropItemNaturally(loc, new ItemStack(Material.EGG));
+				player.getWorld().spawnEntity(loc, EntityType.EGG);
 			}
 			break;
 		case FLAME:
@@ -65,7 +65,7 @@ public class Taunt {
 			Random ra = new Random();
 			for(int i = 0; i < 4; i++) {
 				Location loc = new Location(player.getWorld(), player.getLocation().getBlockX()+(ra.nextDouble()-0.5), player.getLocation().getBlockY(),  player.getLocation().getBlockZ()+(ra.nextDouble()-0.5));
-				player.getWorld().dropItemNaturally(loc, new ItemStack(Material.SPLASH_POTION));
+				player.getWorld().spawnEntity(loc, EntityType.SPLASH_POTION);
 			}
 			break;
 		case BAT:
@@ -75,7 +75,7 @@ public class Taunt {
 				e.setInvulnerable(true);
 				Bukkit.getScheduler().scheduleSyncDelayedTask(Hide.plugin, new Runnable() {
 					public void run() {
-						e.getWorld().spawnParticle(Particle.CRIT_MAGIC, e.getLocation(), 1);
+						e.getWorld().spawnParticle(Particle.CRIT_MAGIC, e.getLocation(), 5);
 						e.getWorld().playSound(e.getLocation(), Sound.ENTITY_BAT_DEATH, 1.0f, 1.0f);
 						e.remove();
 					}
@@ -83,9 +83,10 @@ public class Taunt {
 			}
 			break;
 		case FLY_CREEPER:
-			final LivingEntity e1 = (LivingEntity) player.getWorld().spawnEntity(player.getLocation(), EntityType.CREEPER);
+			final Creeper e1 = (Creeper) player.getWorld().spawnEntity(player.getLocation(), EntityType.CREEPER);
+			e1.setPowered(true);
 			e1.setGravity(false);
-			e1.setVelocity(new Vector(0, 1, 0));
+			e1.setVelocity(new Vector(0, 2, 0));
 			e1.setCustomName("Buzz Buzz I'm a beeee");
 			e1.setInvulnerable(true);
 			e1.setSilent(true);
@@ -99,16 +100,17 @@ public class Taunt {
 			}, 60L);
 			break;
 		case SHEEPER:
-			final LivingEntity e2 = (LivingEntity) player.getWorld().spawnEntity(player.getLocation(), EntityType.SHEEP);
+			final Sheep e2 = (Sheep) player.getWorld().spawnEntity(player.getLocation(), EntityType.SHEEP);
+			e2.setColor(DyeColor.YELLOW);
 			e2.setGravity(false);
-			e2.setVelocity(new Vector(0, 1, 0));
+			e2.setVelocity(new Vector(0, 2, 0));
 			e2.setCustomName("Buzz Buzz I'm a beeee");
 			e2.setInvulnerable(true);
 			e2.setAI(false);
 			Bukkit.getScheduler().scheduleSyncDelayedTask(Hide.plugin, new Runnable() {
 				public void run() {
 					e2.getWorld().playSound(e2.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1.0f, 1.0f);
-					e2.getWorld().spawnParticle(Particle.EXPLOSION_HUGE, e2.getLocation(), 1);
+					e2.getWorld().spawnParticle(Particle.EXPLOSION_HUGE, e2.getLocation(), 1, 1.5, 1.5, 1.5);
 					e2.remove();
 				}
 			}, 60L);

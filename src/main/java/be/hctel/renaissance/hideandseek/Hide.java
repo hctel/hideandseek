@@ -34,7 +34,7 @@ import be.hctel.renaissance.hideandseek.nongame.utils.MapLoader;
 import be.hctel.renaissance.ranks.RankManager;
 
 public class Hide extends JavaPlugin {
-	public static boolean testServer = true;
+	public static boolean testServer = false;
 	public static boolean isServerStarting = true;
 	
 	public static String header = "§8▍ §bHide§aAnd§eSeek§8 ▏ ";
@@ -150,17 +150,18 @@ public class Hide extends JavaPlugin {
 	    }
 	}
 	private void loadSQLCred() {
+		saveDefaultConfig();
+		testServer = getConfig().getBoolean("testServer");
+		host = getConfig().getString("SQL.host");
+		user = getConfig().getString("SQL.user");
+		database = getConfig().getString("SQL.database");
+		password = getConfig().getString("SQL.password");
+		port = 3306;
 		if(testServer) {
 			host = "localhost";
 			user = "root";
 			database = "testdb";
 			password = "1234";
-			port = 3306;
-		} else {
-			host = "localhost";
-			user = "lineal";
-			database = "testdb";
-			password = "N89RuUAM";
 			port = 3306;
 		}
 	}

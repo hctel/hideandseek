@@ -1,0 +1,7 @@
+testServer: false
+SQL:
+  user: "lineal"
+  password: "N89RuUAM"
+  database: "testdb"
+  port: 3306
+  host: "localhost"
