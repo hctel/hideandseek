@@ -17,7 +17,7 @@ public enum GameMap {
 	VENICE("Venice Bridge", "HIDE_Venice", new SpawnLocation("HIDE_Venice", -8.0, 65, 6.0, 0.1f, 0.1f), new SpawnLocation("HIDE_Venice", 43.5, 74, -46.5, 0.1f, 0.1f)),
 	INDUSTRIA("Industria", "HIDE_Industria", new SpawnLocation("HIDE_Industria", -33.5, 4,27.5, 0.1f, 0.1f), new SpawnLocation("HIDE_Industria", -8.5, 16, -23.5, 0.1f, 0.1f)),
 	SUNSET_TERRACE("Sunset Terrace", "HIDE_Sunset", new SpawnLocation("HIDE_Sunset", 68.5, 25, 9.5, 0.1f, 0.1f), new SpawnLocation("HIDE_Sunset", 105.5, 44, 16.5, 90.1f, 0.1f)),
-	//TEITAKU("Teitaku", "HIDE_Teitaku", new SpawnLocation("HIDE_Teitaku", -79.5, 24, 48.5, 0.1f, 0.1f), new SpawnLocation("HIDE_Teitaku", -160.5, 12, 447.5, 90.1f, 0.1f)),
+	TEITAKU("Teitaku", "HIDE_Teitaku", new SpawnLocation("HIDE_Teitaku", -79.5, 24, 48.5, 0.1f, 0.1f), new SpawnLocation("HIDE_Teitaku", -160.5, 12, 447.5, 90.1f, 0.1f)),
 	SEQUOIA("Sequoia", "HIDE_Sequoia", new SpawnLocation("HIDE_Sequoia", -91.5, 38, -2.5, -90.1f, 0.1f), new SpawnLocation("HIDE_Sequoia", -79.5, 24, 48.5, 0.1f, 0.1f)),
 	HOTEL_CALIFORNIA("Hotel California", "HIDE_HotelCalifornia",new SpawnLocation("HIDE_HotelCalifornia", 18.5, 25, 0.5, 0.1f, 0.1f), new SpawnLocation("HIDE_HotelCalifornia", 18.5, 25, 6.5, 180.1f, 0.1f)),
 	LOTUS("Lotus", "HIDE_Lotus", new SpawnLocation("HIDE_Lotus", -9.5, 126, 0.5, 0.1f, 0.1f), new SpawnLocation("HIDE_Lotus", 12.5, 113, 0.5, 90.1f, 0.1f)),
@@ -25,6 +25,9 @@ public enum GameMap {
 	HEARTHSTONE_VILLAGE("Hearthstone Village", "HIDE_Hearthstone", new SpawnLocation("HIDE_Hearthstone", -9.5, 16.0, 6.5, 0.1f, 0.1f), new SpawnLocation("HIDE_Hearthstone", -40.5, 32.0, 11.5, 0.1f, 0.1f)),
 	NEXUS_CITY("Nexus City", "HIDE_Nexus", new SpawnLocation("HIDE_Nexus", -15.5, 27.5, -12.5, 0.1f, 0.1f), new SpawnLocation("HIDE_Nexus", -1.5, 34.5, 29.5, 180.1f, 0.1f)),
 	DEPARTURE("Departure", "HIDE_Departure", new SpawnLocation("HIDE_Departure", 33.5, 36.2, 26.5, 90.1f, 0.1f), new SpawnLocation("HIDE_Departure", 14.5, 31.2, 49.5, -90.1f, 0.1f)),
+	PINEAPPLE("Pineapple Port", "HIDE_Pineapple", new SpawnLocation("HIDE_Pineapple", 7.5, 12.0, 2.5, 0.1f, 0.1f), new SpawnLocation("HIDE_Pineapple", 55.5, 13, -7.5, 0.1f, 0.1f)),
+	KINGSTON("Kingston", "HIDE_Kingston", new SpawnLocation("HIDE_Kingston", 45.5, 4, 53.5, 0.1f, 0.1f), new SpawnLocation("HIDE_Kingston", 66.5, 13, 26.5, 0.1f, 0.1f)),
+	PRIP("Pripyat", "HIDE_Pripyat", new SpawnLocation("HIDE_Pripyat", 30.0, 65, -39, 0.1f, 0.1f), new SpawnLocation("HIDE_Pripyat", 30.5, 96, -27.5, 180.1f, 0.1f)),
 	HOTEL("Hotel", "HIDE_Hotel", new SpawnLocation("HIDE_Hotel", -2, 64, -35, 0.1f, 0.1f), new SpawnLocation("HIDE_Hotel", -3, 61, -21, 0.1f, 0.1f));
 	
 	String mapName;
@@ -261,6 +264,46 @@ public enum GameMap {
 			toAdd.add(d);
 			ItemStack e = new ItemStack(Material.QUARTZ_BLOCK);
 			toAdd.add(e);
+		}
+		if(this == GameMap.PINEAPPLE) {
+			ItemStack a = new ItemStack(Material.CAULDRON);
+			toAdd.add(a);
+			ItemStack b = new ItemStack(Material.ANVIL);
+			toAdd.add(b);
+			ItemStack c = new ItemStack(Material.BOOKSHELF);
+			toAdd.add(c);
+			ItemStack d = new ItemStack(Material.BRICK);
+			toAdd.add(d);
+			ItemStack e = new ItemStack(Material.WORKBENCH);
+			toAdd.add(e);
+		}
+		if(this == GameMap.KINGSTON) {
+			ItemStack a = new ItemStack(Material.CAKE);
+			toAdd.add(a);
+			ItemStack b = new ItemStack(Material.ANVIL);
+			toAdd.add(b);
+			ItemStack c = new ItemStack(Material.LEAVES);
+			toAdd.add(c);
+			ItemStack d = new ItemStack(Material.BOOKSHELF);
+			toAdd.add(d);
+			ItemStack e = new ItemStack(Material.BEACON);
+			toAdd.add(e);
+			@SuppressWarnings("deprecation")
+			ItemStack f = new ItemStack(Material.PRISMARINE, 1, (short) 0, (byte) 2);
+			toAdd.add(f);
+			@SuppressWarnings("deprecation")
+			ItemStack g = new ItemStack(Material.WOOD, 1, (short) 0, (byte) 1);
+			toAdd.add(g);
+		}
+		if(this == GameMap.PRIP) {
+			ItemStack a = new ItemStack(Material.BOOKSHELF);
+			toAdd.add(a);
+			ItemStack b = new ItemStack(Material.LEAVES);
+			toAdd.add(b);
+			ItemStack c = new ItemStack(Material.BOOKSHELF);
+			toAdd.add(c);
+			ItemStack d = new ItemStack(Material.DARK_OAK_STAIRS);
+			toAdd.add(d);
 		}
 		return toAdd;
 	}

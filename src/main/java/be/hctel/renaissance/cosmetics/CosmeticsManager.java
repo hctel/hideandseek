@@ -7,8 +7,6 @@ import java.util.HashMap;
 
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.scheduler.BukkitRunnable;
-
 import be.hctel.renaissance.hideandseek.nongame.utils.Utils;
 
 /*

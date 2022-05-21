@@ -123,7 +123,7 @@ public class Taunt {
 					te1.getWorld().spawnParticle(Particle.EXPLOSION_NORMAL, te1.getLocation(), 1);
 					te1.remove();
 				}
-			}, 3L);
+			}, 5L);
 			break;
 		default:
 			break;

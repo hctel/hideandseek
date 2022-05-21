@@ -3,5 +3,6 @@ encoding//src/main/java/be/hctel/renaissance/hideandseek/Hide.java=UTF-8
 encoding//src/main/java/be/hctel/renaissance/hideandseek/commands/StatCommands.java=UTF-8
 encoding//src/main/java/be/hctel/renaissance/hideandseek/gamespecific/objects/DisguiseBlockManager.java=UTF-8
 encoding//src/main/java/be/hctel/renaissance/hideandseek/gamespecific/objects/DisguiseBlockManager2.java=UTF-8
+encoding//src/main/java/be/hctel/renaissance/hideandseek/gamespecific/objects/test/DisguiseBlockManager2.java=UTF-8
 encoding//src/main/java/be/hctel/renaissance/hideandseek/listeners/PlayerListener.java=UTF-8
 encoding//src/main/java/be/hctel/renaissance/hideandseek/nongame/sql/Stats.java=UTF-8

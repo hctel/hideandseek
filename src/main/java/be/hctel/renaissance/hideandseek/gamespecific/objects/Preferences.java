@@ -25,5 +25,8 @@ public class Preferences {
 	public void loadPlayer(Player player) throws SQLException {
 		Statement st = con.createStatement();
 		ResultSet rs = st.executeQuery("SELECT * FROM HIDE WHERE UUID = '" + Utils.getUUID(player) + "';");
+		if(rs.next()) {
+			
+		}
 	}
 }

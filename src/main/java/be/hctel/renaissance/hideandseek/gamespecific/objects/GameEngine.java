@@ -20,6 +20,7 @@ import be.hctel.renaissance.hideandseek.gamespecific.enums.GameMap;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.GameTeam;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.ItemsManager;
 import be.hctel.renaissance.hideandseek.nongame.utils.Utils;
+import be.hctel.renaissance.hideandseek.gamespecific.objects.test.DisguiseBlockManager2;
 
 public class GameEngine {
 	private Plugin plugin;

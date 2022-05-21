@@ -28,6 +28,7 @@ import be.hctel.renaissance.hideandseek.gamespecific.objects.BlockPicker;
 import be.hctel.renaissance.hideandseek.gamespecific.objects.GameEngine;
 import be.hctel.renaissance.hideandseek.gamespecific.objects.PreGameTimer;
 import be.hctel.renaissance.hideandseek.listeners.InventoryListener;
+import be.hctel.renaissance.hideandseek.listeners.MiscListeners;
 import be.hctel.renaissance.hideandseek.listeners.PlayerListener;
 import be.hctel.renaissance.hideandseek.nongame.sql.Stats;
 import be.hctel.renaissance.hideandseek.nongame.utils.MapLoader;
@@ -168,5 +169,6 @@ public class Hide extends JavaPlugin {
 	private void registerListeners() {
 		getServer().getPluginManager().registerEvents(new PlayerListener(), this);
 		getServer().getPluginManager().registerEvents(new InventoryListener(), this);
+		getServer().getPluginManager().registerEvents(new MiscListeners(), this);
 	}
 }

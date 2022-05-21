@@ -14,9 +14,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.concurrent.RecursiveTask;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
@@ -543,11 +540,18 @@ public class Utils {
 	public static Location locationFlattenner(Location loc) {
 		return new Location(loc.getWorld(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), loc.getYaw(), loc.getPitch());
 	}
+	public static Location substractLocation(Location loc, double x, double y, double z) {
+		return new Location(loc.getWorld(), loc.getX() - x, loc.getY() - y, loc.getZ() - z, loc.getYaw(), loc.getPitch());
+	}
+	public static Location substractLocation(Location loc, double x, double y, double z, boolean ignoreYawPitch) {
+		if(ignoreYawPitch) return new Location(loc.getWorld(), loc.getX() - x, loc.getY() - y, loc.getZ() - z, 0.1f, 0.1f);
+		else return new Location(loc.getWorld(), loc.getX() - x, loc.getY() - y, loc.getZ() - z, loc.getYaw(), loc.getPitch());
+	}
 	public static String formatSeconds(int timeInSeconds)
 	{
 	    int secondsLeft = timeInSeconds % 3600 % 60;
 	    int minutes = (int) Math.floor(timeInSeconds % 3600 / 60);
-	    int hours = (int) Math.floor(timeInSeconds / 3600);
+	    //int hours = (int) Math.floor(timeInSeconds / 3600);
 	    String MM = ((minutes     < 10) ? "0" : "") + minutes;
 	    String SS = ((secondsLeft < 10) ? "0" : "") + secondsLeft;
 

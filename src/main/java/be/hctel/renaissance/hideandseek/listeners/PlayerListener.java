@@ -17,6 +17,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
@@ -24,8 +25,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.scheduler.BukkitRunnable;
-
 import be.hctel.renaissance.hideandseek.Hide;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.GameRanks;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.GameTeam;
@@ -107,8 +106,8 @@ public class PlayerListener implements Listener {
 				else if(Hide.gameEngine.getTeam((Player) e.getDamager()) == GameTeam.SEEKER) {
 					System.out.println("Not same team");
 					((Player) e.getEntity()).playSound(e.getDamager().getLocation(), Sound.ENTITY_PLAYER_DEATH, 2.0f, 0.5f);
-					for(Player P : Bukkit.getOnlinePlayers()) PackettedUtils.sendSound(P, e.getEntity().getLocation(), "entity.player.death", 1.0f, 0.5f);
-					Player damaged = (Player) e.getEntity();
+					for(Player P : Bukkit.getOnlinePlayers()) P.playSound(e.getDamager().getLocation(), Sound.ENTITY_PLAYER_DEATH, 1.0f, 0.5f);
+					//Player damaged = (Player) e.getEntity();
 					e.setDamage(7);
 				} 				
 			} else e.setCancelled(true);
@@ -123,7 +122,7 @@ public class PlayerListener implements Listener {
 		if(Hide.gameEngine.getTeam(p) == GameTeam.SEEKER) {
 			for(Player i : Hide.gameEngine.disguises.keySet()) {
 				if(Hide.gameEngine.disguises.get(i).getBlock().equals(b)) {
-					Player damaged = i;
+					//Player damaged = i;
 					Hide.gameEngine.disguises.get(i).makeUnsolid();
 					onDamageByEntity(new EntityDamageByEntityEvent(p, i, DamageCause.ENTITY_ATTACK, 0));
 					i.damage(7);
@@ -168,5 +167,10 @@ public class PlayerListener implements Listener {
 			Player player = e.getPlayer();
 			Bukkit.broadcastMessage("§e" + Hide.stats.getPoints(player) + " §8▍ "+ GameRanks.getMatchingRank(Hide.stats.getPoints(player)).getChatColor() + GameRanks.getMatchingRank(Hide.stats.getPoints(player)).getName() +" " + Hide.rankManager.getRankColor(player) + player.getName() + " §8» §f" + msg);
 		}
+	}
+	
+	@EventHandler
+	public void onFood(FoodLevelChangeEvent e) {
+		e.setCancelled(true);
 	}
 }

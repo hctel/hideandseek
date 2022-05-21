@@ -197,7 +197,7 @@ public class Stats {
 	}
 	public ArrayList<GameAchievement> getCompletedAchievements(OfflinePlayer player) {
 		if(jsonList.get(Utils.getUUID(player)).get("achievements") == null) {
-			ArrayList<GameAchievement> out = new ArrayList<GameAchievement>();
+			//ArrayList<GameAchievement> out = new ArrayList<GameAchievement>();
 			if(jsonList.get(Utils.getUUID(player)).get("achievements") == null) {
 				return new ArrayList<GameAchievement>();
 			}
@@ -415,14 +415,14 @@ public class Stats {
 		jsonList.get(Utils.getUUID(player)).put("deaths", oldValue + 1);
 	}
 	public void completeAchievement(Player player, GameAchievement achievement) {
-		JSONObject ach = jsonList.get(Utils.getUUID(player)).getJSONObject("achievements");
+		//JSONObject ach = jsonList.get(Utils.getUUID(player)).getJSONObject("achievements");
 		JSONObject e = new JSONObject();
 		e.put("progress", achievement.getUnlockProgress());
 		e.put("unlockedAt", new Date().getTime());
 	}
 	public void addAchievementProgress(Player player, GameAchievement achievement, int toAdd) {
 		int oldValue = getAchievementProgress(player, achievement);
-		JSONObject ach = jsonList.get(Utils.getUUID(player)).getJSONObject("achievements");
+		//JSONObject ach = jsonList.get(Utils.getUUID(player)).getJSONObject("achievements");
 		JSONObject e = new JSONObject();
 		e.put("progress", oldValue + toAdd);
 		e.put("unlockedAt", -1);
@@ -444,14 +444,14 @@ public class Stats {
 		jsonList.get(Utils.getUUID(player)).put("deaths", oldValue + 1);
 	}
 	public void completeAchievement(OfflinePlayer player, GameAchievement achievement) {
-		JSONObject ach = jsonList.get(Utils.getUUID(player)).getJSONObject("achievements");
+		//JSONObject ach = jsonList.get(Utils.getUUID(player)).getJSONObject("achievements");
 		JSONObject e = new JSONObject();
 		e.put("progress", achievement.getUnlockProgress());
 		e.put("unlockedAt", new Date().getTime());
 	}
 	public void addAchievementProgress(OfflinePlayer player, GameAchievement achievement, int toAdd) {
 		int oldValue = getAchievementProgress(player, achievement);
-		JSONObject ach = jsonList.get(Utils.getUUID(player)).getJSONObject("achievements");
+		//JSONObject ach = jsonList.get(Utils.getUUID(player)).getJSONObject("achievements");
 		JSONObject e = new JSONObject();
 		e.put("progress", oldValue + toAdd);
 		e.put("unlockedAt", -1);

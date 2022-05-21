@@ -38,42 +38,42 @@ public class StaffComands implements CommandExecutor {
 								}
 							} else if(args[1].equalsIgnoreCase("victories")) {
 								try {
-									int i = Utils.convertToInt(args[2]);
+									//int i = Utils.convertToInt(args[2]);
 									if(!(Hide.stats.isLoaded(t))) Hide.stats.load(t);
 								} catch (NumberFormatException e) {
 									player.sendMessage(Hide.header + "§cPlease enter a correct number in the value field.");
 								}
 							} else if(args[1].equalsIgnoreCase("gamesplayed")) {
 								try {
-									int i = Utils.convertToInt(args[2]);
+									//int i = Utils.convertToInt(args[2]);
 									if(!(Hide.stats.isLoaded(t))) Hide.stats.load(t);
 								} catch (NumberFormatException e) {
 									player.sendMessage(Hide.header + "§cPlease enter a correct number in the value field.");
 								}
 							} else if(args[1].equalsIgnoreCase("killsasseeker")) {
 								try {
-									int i = Utils.convertToInt(args[2]);
+									//int i = Utils.convertToInt(args[2]);
 									if(!(Hide.stats.isLoaded(t))) Hide.stats.load(t);
 								} catch (NumberFormatException e) {
 									player.sendMessage(Hide.header + "§cPlease enter a correct number in the value field.");
 								}
 							} else if(args[1].equalsIgnoreCase("killsashider")) {
 								try {
-									int i = Utils.convertToInt(args[2]);
+									//int i = Utils.convertToInt(args[2]);
 									if(!(Hide.stats.isLoaded(t))) Hide.stats.load(t);
 								} catch (NumberFormatException e) {
 									player.sendMessage(Hide.header + "§cPlease enter a correct number in the value field.");
 								}
 							} else if(args[1].equalsIgnoreCase("deaths")) {
 								try {
-									int i = Utils.convertToInt(args[2]);
+									//int i = Utils.convertToInt(args[2]);
 									if(!(Hide.stats.isLoaded(t))) Hide.stats.load(t);
 								} catch (NumberFormatException e) {
 									player.sendMessage(Hide.header + "§cPlease enter a correct number in the value field.");
 								}
 							} else if(args[1].equalsIgnoreCase("blockunlock")) {
 								try {
-									int i = Utils.convertToInt(args[2]);
+									//int i = Utils.convertToInt(args[2]);
 									if(!(Hide.stats.isLoaded(t))) Hide.stats.load(t);
 								} catch (NumberFormatException e) {
 									player.sendMessage(Hide.header + "§cPlease enter a correct number in the value field.");
