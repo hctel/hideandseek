@@ -14,17 +14,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.concurrent.RecursiveTask;
+
 import org.apache.commons.lang.StringUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_12_R1.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_12_R1.entity.CraftFallingBlock;
 import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_12_R1.util.CraftMagicNumbers;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Firework;
@@ -46,6 +47,7 @@ import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.minecraft.server.v1_12_R1.BlockPosition;
+import net.minecraft.server.v1_12_R1.EntityFallingBlock;
 import net.minecraft.server.v1_12_R1.IChatBaseComponent;
 import net.minecraft.server.v1_12_R1.IChatBaseComponent.ChatSerializer;
 import net.minecraft.server.v1_12_R1.PacketPlayOutBlockChange;
@@ -503,21 +505,14 @@ public class Utils {
 		((CraftPlayer) player).getHandle().playerConnection.sendPacket((PacketPlayOutEntityDestroy) fbs.getHandle().getHandle());
 	}
 	
-	public static int testSpawnFakeBlockEntityNMS(Player player, Location location, Material material, byte data) {
+	public static EntityFallingBlock spawnFakeBlockEntity(Player player, Location location, Material material, byte data) {
 		@SuppressWarnings("deprecation")
-		Entity entity = location.getWorld().spawnFallingBlock(location, material, data);
-		PacketPlayOutSpawnEntity packet;
-			entity.setGravity(false);
-			entity.setInvulnerable(true);
-			entity.setTicksLived(1);
-			packet = new PacketPlayOutSpawnEntity(((CraftEntity) entity).getHandle(), entity.getEntityId());
-			try {
-			((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
-			entity.remove();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return entity.getEntityId();
+		EntityFallingBlock f = ((CraftFallingBlock) player.getWorld().spawnFallingBlock(location.add(0.0, 0.01, 0.0), material, data)).getHandle();
+		f.setNoGravity(true);
+		f.setInvulnerable(true);
+		PacketPlayOutEntityDestroy ed = new PacketPlayOutEntityDestroy(f.getId());
+		for(Player P : Bukkit.getOnlinePlayers()) if(P != player) ((CraftPlayer) P).getHandle().playerConnection.sendPacket(ed);
+		return f;
 	}
 	public static void testEntotyDestroyNMS(Player player,int entityID) {
 		PacketPlayOutEntityDestroy packet = new PacketPlayOutEntityDestroy(entityID);

@@ -22,6 +22,7 @@ import com.comphenix.protocol.events.PacketEvent;
 import net.minecraft.server.v1_12_R1.Entity;
 import net.minecraft.server.v1_12_R1.EntityFallingBlock;
 import net.minecraft.server.v1_12_R1.PacketPlayOutEntityDestroy;
+import net.minecraft.server.v1_12_R1.PacketPlayOutNamedEntitySpawn;
 import net.minecraft.server.v1_12_R1.PacketPlayOutSpawnEntity;
 
 public class FallingBlockDisguise implements Listener {
@@ -84,7 +85,6 @@ public class FallingBlockDisguise implements Listener {
 		passenger.locX = p.getLocation().getX();
 		passenger.locY = p.getLocation().getY();
 		passenger.locZ = p.getLocation().getZ();
-		this.passenger = passenger;
 		try {
 
 		    Field f = Entity.class.getDeclaredField("id");
@@ -101,11 +101,10 @@ public class FallingBlockDisguise implements Listener {
 		    	continue;
 		    }
 
-		    ((CraftPlayer) o).getHandle().playerConnection.sendPacket(new PacketPlayOutSpawnEntity(passenger, 70, m.getId() | ((int) d << 12)));
+		    ((CraftPlayer) o).getHandle().playerConnection.sendPacket(new PacketPlayOutSpawnEntity(passenger, 70, getDataInt()));
 		}
 	}
 	
-	@SuppressWarnings("deprecation")
 	private void sendToPlayer(Player player) {
 		PacketPlayOutEntityDestroy ed = new PacketPlayOutEntityDestroy(p.getEntityId());
 		((CraftPlayer) player).getHandle().playerConnection.sendPacket(ed);
@@ -123,14 +122,28 @@ public class FallingBlockDisguise implements Listener {
 				e.printStackTrace();
 			}
 
-		((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutSpawnEntity(passenger, 70, m.getId() | ((int) d << 12)));
+		((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutSpawnEntity(passenger, 70, getDataInt()));
 	}
 	
-	@EventHandler
+	/*@EventHandler
 	public void onChunkLoad(ChunkLoadEvent e) {
 		if(e.getChunk().equals(p.getLocation().getChunk())) {
 			send();
 		}
+	}*/
+	
+	public void cancel() {
+		remove();
+		PacketPlayOutEntityDestroy ed = new PacketPlayOutEntityDestroy(p.getEntityId());
+		for(Player P : Bukkit.getOnlinePlayers()) if(P != p) ((CraftPlayer) P).getHandle().playerConnection.sendPacket(ed);
+		PacketPlayOutNamedEntitySpawn ps = new PacketPlayOutNamedEntitySpawn(((CraftPlayer) p).getHandle());
+		for(Player P : Bukkit.getOnlinePlayers()) if(P != p) ((CraftPlayer) P).getHandle().playerConnection.sendPacket(ps);
+		
+	}
+	
+	@SuppressWarnings("deprecation")
+	private int getDataInt() {
+		return m.getId() | ((int) d << 0xC);
 	}
 		
 }

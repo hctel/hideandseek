@@ -40,15 +40,21 @@ public class Hide extends JavaPlugin {
 	
 	public static String header = "§8▍ §bHide§aAnd§eSeek§8 ▏ ";
 	
+	//Declaring every core variables
+	
 	public static Plugin plugin;
 	public static MultiverseCore core;
 	public static MVWorldManager worldManager;
 	public static ProtocolManager protocolLibManager;
 	public static BungeeCordMessenger bm;
 	
+	//Declaring every saveables helper variables
+	
 	public static Stats stats;
 	public static RankManager rankManager;
 	public static CosmeticsManager cosmeticManager;
+	
+	//Declaring every project variables
 	
 	public static MapLoader mapLoader;
 	public static VotesHandler votesHandler;
@@ -56,6 +62,7 @@ public class Hide extends JavaPlugin {
 	public static PreGameTimer preGameTimer;
 	public static GameEngine gameEngine;
 	
+	//Declaring SQL variables
 	
 	private String host, user, database, password;
 	private int port;
@@ -64,30 +71,40 @@ public class Hide extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		plugin = this;
+		
+		//Enables external libraries
 		core = (MultiverseCore) Bukkit.getServer().getPluginManager().getPlugin("Multiverse-Core");
 		protocolLibManager = ProtocolLibrary.getProtocolManager();
 		worldManager = core.getMVWorldManager();
+		
+		//Starts SQL connection
 		loadSQLCred();
 		openConnection();
+		
+		//Creating every helpers
 		stats = new Stats(con);
 		rankManager = new RankManager(con);
 		cosmeticManager = new CosmeticsManager(con, this);
 		mapLoader = new MapLoader(plugin);
 		mapLoader.loadMaps();
 		preGameTimer = new PreGameTimer(this);
-		registerListeners();
-		loadCommands();
 		votesHandler = new VotesHandler(plugin);
 		bm = new BungeeCordMessenger(this);
+		
+		//Speaks bby itself
+		registerListeners();
+		loadCommands();
 	}
 	
 	
 	@Override
 	public void onDisable() {
 		try {
+			//Disable clean-up and data save
 			stats.saveAll();
 			rankManager.saveAll();
 			mapLoader.deleteTempWorld();
+			plugin = null;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -108,6 +125,7 @@ public class Hide extends JavaPlugin {
 		getCommand("taunt").setTabCompleter(new TauntCommandTabCompleter());
 		getCommand("s").setExecutor(new StaffComands());
 	}
+	
 	private void openConnection() {
 		getLogger().info("[ " + getName() + "] Enabling SQL connection to database");
 		try {

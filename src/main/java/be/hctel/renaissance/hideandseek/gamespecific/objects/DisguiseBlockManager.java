@@ -5,15 +5,18 @@ import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
+import be.hctel.api.disguies.FallingBlockDisguise;
 import be.hctel.renaissance.hideandseek.Hide;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.ItemsManager;
 import be.hctel.renaissance.hideandseek.nongame.utils.Utils;
-import me.libraryaddict.disguise.disguisetypes.DisguiseType;
-import me.libraryaddict.disguise.disguisetypes.MiscDisguise;
+import net.minecraft.server.v1_12_R1.EntityFallingBlock;
+import net.minecraft.server.v1_12_R1.PacketPlayOutEntityDestroy;
 
 public class DisguiseBlockManager {
 	Player player;
@@ -24,17 +27,26 @@ public class DisguiseBlockManager {
 	Location solidLocation;
 	int timeInLocation = 0;
 	public boolean isSolid = false;
-	MiscDisguise disguise;
+	FallingBlockDisguise disguise;
 	public boolean isAlive = true;
 	int fakeEntityId = 0;
+	BukkitRunnable run;
+	EntityFallingBlock solidPlayerBlock;
 	@SuppressWarnings("deprecation")
 	public DisguiseBlockManager(Player player, ItemStack block, Plugin plugin) {
 		this.player = player;
 		this.block = block;
 		this.plugin = plugin;
 		this.lastLocation = player.getLocation();
-		disguise = new MiscDisguise(DisguiseType.FALLING_BLOCK, block.getType(), block.getData().getData());
 		startDisguise();
+		run = new BukkitRunnable() {
+			@Override
+			public void run() {
+				if(isSolid && isAlive) for(Player P : Bukkit.getOnlinePlayers()) if(P != player) P.sendBlockChange(solidLocation, block.getType(), block.getData().getData());
+			}
+		};
+		run.runTaskTimer(plugin, 0L, 20L);
+		for(Player P : Bukkit.getOnlinePlayers()) P.hidePlayer(P);
 	}
 	
 	public void tick() {
@@ -44,9 +56,6 @@ public class DisguiseBlockManager {
 			
 			
 			if(timeInLocation == 0 && isSolid) {
-				isSolid = false;
-				player.sendTitle("§6You are now §cvisible!", "", 5, 25, 20);
-				player.sendMessage(Hide.header + "§aYou are now visible. §7Be careful!");
 				makeUnsolid();
 			}
 			else if(timeInLocation == 20) {
@@ -76,44 +85,49 @@ public class DisguiseBlockManager {
 			player.sendTitle("§aYou are now solid", "", 5, 60, 20);
 			player.getInventory().setItem(4, ItemsManager.tauntButton);
 			solidLocation = Utils.locationFlattenner(lastLocation);
-			solidLocation.getBlock().setType(block.getType());
-			solidLocation.getBlock().setData(block.getData().getData(), false);
-			solidLocation.getBlock().getState().update();
+			//solidLocation.getBlock().setType(block.getType());
+			//solidLocation.getBlock().setData(block.getData().getData(), false);
+			//solidLocation.getBlock().getState().update();
 			player.getWorld().playEffect(player.getLocation(), Effect.COLOURED_DUST, 0, 2);
 			player.sendMessage(Hide.header + "§6You are now §ahidden");
 			b = solidLocation.getBlock();
-			fakeEntityId = Utils.spawnBlockTestFGDSHGDFSQGFD(player, solidLocation, block.getTypeId(), block.getData().getData());
 			//Utils.sendBlockChange(player, Material.AIR, solidLocation);
-			player.sendBlockChange(solidLocation, 0, (byte) 0);
-			for(Player p : Bukkit.getOnlinePlayers()) {
-				p.hidePlayer(plugin, player);
-			}
+			System.out.println(player.getName() + " went solid at " + solidLocation);
+			PacketPlayOutEntityDestroy ed = new PacketPlayOutEntityDestroy(player.getEntityId());
+			for(Player P : Bukkit.getOnlinePlayers()) if(P != player) ((CraftPlayer) P).getHandle().playerConnection.sendPacket(ed);
+			solidPlayerBlock = Utils.spawnFakeBlockEntity(player, solidLocation, block.getType(), block.getData().getData());
 		} else {
 			player.sendMessage(Hide.header + "§cYou can't go solid here!");
 			player.sendTitle("§c§l✖", "§6You can't go solid here", 0, 20, 70);
 		}
 	}
-	private void makeUnsolid() {
+	@SuppressWarnings("deprecation")
+	public void makeUnsolid() {
+		isSolid = false;
+		timeInLocation = 0;
+		player.sendTitle("§6You are now §cvisible!", "", 5, 25, 20);
+		player.sendMessage(Hide.header + "§aYou are now visible. §7Be careful!");
 		for(Player p : Bukkit.getOnlinePlayers()) {
-			p.showPlayer(plugin, player);
+			p.sendBlockChange(solidLocation, Material.AIR, (byte) 0);
 		}
 		startDisguise();
-		solidLocation.getBlock().setType(Material.AIR);
-		Utils.testEntotyDestroyNMS(player, fakeEntityId);
+		//solidLocation.getBlock().setType(Material.AIR);
+		solidPlayerBlock.killEntity();
 	}
 	
+	@SuppressWarnings("deprecation")
 	private void startDisguise() {
-		disguise.setEntity(player);
-		disguise.startDisguise();
+		if(disguise == null) disguise = new FallingBlockDisguise(player, block.getType(), block.getData().getData(), plugin).restart();
+		else disguise.restart();
 	}
 	private void stopDisguise() {
-		disguise.stopDisguise();
+		disguise.cancel();
 	}
 	
 	public void kill() {
 		isAlive = false;
 		stopDisguise();
-		
+		run.cancel();
 	}
 	
 	public Block getBlock() {
