@@ -128,6 +128,7 @@ public class DisguiseBlockManager {
 		isAlive = false;
 		stopDisguise();
 		run.cancel();
+		for(Player P : Bukkit.getOnlinePlayers()) P.showPlayer(plugin, player);
 	}
 	
 	public Block getBlock() {

@@ -7,9 +7,6 @@ import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_12_R1.entity.CraftFallingBlock;
 import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.plugin.Plugin;
 
 import com.comphenix.packetwrapper.WrapperPlayServerNamedEntitySpawn;
@@ -25,16 +22,12 @@ import net.minecraft.server.v1_12_R1.PacketPlayOutEntityDestroy;
 import net.minecraft.server.v1_12_R1.PacketPlayOutNamedEntitySpawn;
 import net.minecraft.server.v1_12_R1.PacketPlayOutSpawnEntity;
 
-public class FallingBlockDisguise implements Listener {
+public class FallingBlockDisguise {
 	Player p;
 	Plugin plugin;
 	Material m;
 	byte d;
-	
-	double lastX = 0;
-	double lastY = 0;
-	double lastZ = 0;
-	
+		
 	EntityFallingBlock passenger;
 	
 	@SuppressWarnings("deprecation")
@@ -124,13 +117,6 @@ public class FallingBlockDisguise implements Listener {
 
 		((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutSpawnEntity(passenger, 70, getDataInt()));
 	}
-	
-	/*@EventHandler
-	public void onChunkLoad(ChunkLoadEvent e) {
-		if(e.getChunk().equals(p.getLocation().getChunk())) {
-			send();
-		}
-	}*/
 	
 	public void cancel() {
 		remove();
