@@ -29,6 +29,7 @@ public class FallingBlockDisguise {
 	Plugin plugin;
 	Material m;
 	byte d;
+	boolean isCancelled = false;
 		
 	EntityFallingBlock passenger;
 	
@@ -44,7 +45,7 @@ public class FallingBlockDisguise {
 											PacketType.Play.Server.NAMED_ENTITY_SPAWN) {
 					@Override
 					public void onPacketSending(PacketEvent e) {
-						if(e.getPlayer() != p) {
+						if(e.getPlayer() != p && !isCancelled) {
 							WrapperPlayServerNamedEntitySpawn pk = new WrapperPlayServerNamedEntitySpawn(e.getPacket());
 							if(pk.getEntityID() == p.getEntityId()) {
 								
@@ -59,7 +60,14 @@ public class FallingBlockDisguise {
 	
 	
 	public void remove() {
+		System.out.println("Kills passenger");
 		passenger.killEntity();
+		PacketPlayOutEntityDestroy ed = new PacketPlayOutEntityDestroy(p.getEntityId());
+		for(Player P : Bukkit.getOnlinePlayers()) if(P != p) {
+			((CraftPlayer) P).getHandle().playerConnection.sendPacket(ed);
+			System.out.println("Sent packet to " + P.getName());
+		}
+		
 	}
 	
 	
@@ -120,9 +128,8 @@ public class FallingBlockDisguise {
 	}
 	
 	public void cancel() {
+		isCancelled = true;
 		remove();
-		PacketPlayOutEntityDestroy ed = new PacketPlayOutEntityDestroy(p.getEntityId());
-		for(Player P : Bukkit.getOnlinePlayers()) if(P != p) ((CraftPlayer) P).getHandle().playerConnection.sendPacket(ed);
 		for(Player P : Bukkit.getOnlinePlayers()) if(P != p) ((CraftPlayer) P).getHandle().playerConnection.sendPacket(new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.ADD_PLAYER, ((CraftPlayer) p).getHandle()));
 		PacketPlayOutNamedEntitySpawn ps = new PacketPlayOutNamedEntitySpawn(((CraftPlayer) p).getHandle());
 		for(Player P : Bukkit.getOnlinePlayers()) if(P != p) ((CraftPlayer) P).getHandle().playerConnection.sendPacket(ps);

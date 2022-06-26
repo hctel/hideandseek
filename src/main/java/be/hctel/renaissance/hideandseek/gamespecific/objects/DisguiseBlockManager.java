@@ -95,7 +95,7 @@ public class DisguiseBlockManager {
 			System.out.println(player.getName() + " went solid at " + solidLocation);
 			PacketPlayOutEntityDestroy ed = new PacketPlayOutEntityDestroy(player.getEntityId());
 			for(Player P : Bukkit.getOnlinePlayers()) if(P != player) ((CraftPlayer) P).getHandle().playerConnection.sendPacket(ed);
-			solidPlayerBlock = Utils.spawnFakeBlockEntity(player, solidLocation, block.getType(), block.getData().getData());
+			solidPlayerBlock = Utils.spawnFakeBlockEntity(player, solidLocation.add(-0.5, 0, -0.5), block.getType(), block.getData().getData());
 		} else {
 			player.sendMessage(Hide.header + "§cYou can't go solid here!");
 			player.sendTitle("§c§l✖", "§6You can't go solid here", 0, 20, 70);
