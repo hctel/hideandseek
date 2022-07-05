@@ -4,17 +4,26 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Sound;
+import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
+import com.mojang.authlib.GameProfile;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 
 import be.hctel.api.bungee.BungeeCordMessenger;
+import be.hctel.api.fakeentities.FakePlayer;
+import be.hctel.api.runnables.ArgumentRunnable;
 import be.hctel.renaissance.cosmetics.CosmeticsManager;
 import be.hctel.renaissance.hideandseek.commands.RankCommands;
 import be.hctel.renaissance.hideandseek.commands.StaffComands;
@@ -32,6 +41,7 @@ import be.hctel.renaissance.hideandseek.listeners.MiscListeners;
 import be.hctel.renaissance.hideandseek.listeners.PlayerListener;
 import be.hctel.renaissance.hideandseek.nongame.sql.Stats;
 import be.hctel.renaissance.hideandseek.nongame.utils.MapLoader;
+import be.hctel.renaissance.hideandseek.nongame.utils.Utils;
 import be.hctel.renaissance.ranks.RankManager;
 
 public class Hide extends JavaPlugin {
@@ -61,6 +71,8 @@ public class Hide extends JavaPlugin {
 	public static BlockPicker blockPicker;
 	public static PreGameTimer preGameTimer;
 	public static GameEngine gameEngine;
+	
+	public static FakePlayer shopPlayer;
 	
 	//Declaring SQL variables
 	
@@ -94,6 +106,22 @@ public class Hide extends JavaPlugin {
 		//Speaks bby itself
 		registerListeners();
 		loadCommands();
+		shopPlayer = new FakePlayer(((CraftWorld) Bukkit.getWorld("HIDE_Lobby")).getHandle(), new GameProfile(UUID.fromString("fef039ef-e6cd-4987-9c84-26a3e6134277"), "§eShop"), new Location(Bukkit.getWorld("HIDE_Lobby"), -82.5, 90.01, 65.5, -135.0f, 0.0f), plugin);
+		shopPlayer.setSkin(UUID.fromString("5a7e8a16-e191-4fb8-8c92-869434202089"));
+		shopPlayer.setOnRightClickTask(new ArgumentRunnable() {
+			@Override
+			public void run(Object o) {
+				if(o instanceof String) {
+					Player p = Bukkit.getPlayer((String) o);
+					new BukkitRunnable() {
+						@Override
+						public void run() {
+							p.sendMessage(Hide.header + "§cThis menu is not yet available. §aStay tuned for updates!");	
+						}
+					}.runTaskAsynchronously(plugin);
+				}
+			}
+		});
 	}
 	
 	

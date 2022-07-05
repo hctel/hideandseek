@@ -65,8 +65,6 @@ public class FakePlayer extends EntityPlayer implements Listener {
         this.plugin = plugin;
         this.loc = loc;
         this.id = this.getId();
-        this.setCustomName("Punch to join §bSEEKER QUEUE");
-        this.setCustomNameVisible(true);
         setLocation(loc.getX(), loc.getY(), loc.getZ(), loc.getYaw(), loc.getPitch()); // set location
         Bukkit.getServer().getPluginManager().registerEvents(this, plugin);
         manager.addPacketListener(new PacketAdapter(plugin, PacketType.Play.Client.USE_ENTITY) {

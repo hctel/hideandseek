@@ -232,6 +232,7 @@ public class GameEngine {
 					}
 					
 				}.runTaskLater(plugin, 30*20L);
+				checkForHidersRemaining();
 			} else {
 				deaths.replace(killed, deaths.get(killed)+1);
 				Bukkit.broadcastMessage(Hide.header + "§6Seeker " + Hide.rankManager.getRankColor(killed) + killed.getName() + " §6has died.");
@@ -289,6 +290,12 @@ public class GameEngine {
 			hiders.remove(player);
 		} else if(seekers.contains(player)) {
 			seekers.remove(player);
+			if(seekers.size() == 0) {
+				Player o = getNewSeeker();
+				System.out.println("Picked seeker: " + o.getName());
+				o.sendMessage(Hide.header + "§7you have been picked to be a seeker as all the previous seekers left");
+				addKill(null, o, true);
+			}
 			if(!isGameFinished) Bukkit.broadcastMessage(Hide.header + "§6Seeker " + Hide.rankManager.getRankColor(player) + player.getName() + " §6has left.");
 		}
 	}
@@ -345,7 +352,7 @@ public class GameEngine {
 				for(Player P : Bukkit.getOnlinePlayers()) Hide.bm.sendToServer(P, "LOBBY02");
 				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "stop");
 			}
-		}.runTaskLater(plugin, 10*20L);
+		}.runTaskLater(plugin, 195L);
 	}
 	private void checkForHidersRemaining() {
 		if(hiders.size() < 1) {

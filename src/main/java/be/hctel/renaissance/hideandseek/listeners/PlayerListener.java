@@ -70,6 +70,7 @@ public class PlayerListener implements Listener {
 		Hide.votesHandler.sendMapChoices(p);
 		Utils.sendHeaderFooter(p, "\n§6Renaissance §eProject\n§fBringing back good memories\n", "\n§aPlaying in §bHide §aAnd §eSeek.\n");
 		Hide.preGameTimer.loadPlayer(p);
+		Hide.shopPlayer.spawnFor(p);
 		p.sendMessage("");
 		p.sendMessage("");
 		Utils.sendCenteredMessage(e.getPlayer(), "§6Welcome on the HnS Alpha release v1!");
@@ -95,16 +96,13 @@ public class PlayerListener implements Listener {
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onDamageByEntity(EntityDamageByEntityEvent e) {
-		System.out.println("Main events trigger: EntityDamageByEntityEvent " + e);
 		if(e.getDamager() instanceof Player && e.getEntity() instanceof Player) {
-			System.out.println("Both entities players");
 			if(Hide.preGameTimer.gameStarted) {
 				if (Hide.gameEngine.areSameTeam((Player) e.getEntity(), (Player) e.getDamager())) {
 					e.setCancelled(true);
 					for(Player P : Bukkit.getOnlinePlayers()) PackettedUtils.sendSound(P, e.getEntity().getLocation(), "entity.player.death", 1.0f, 0.5f);
 				}
 				else if(Hide.gameEngine.getTeam((Player) e.getDamager()) == GameTeam.SEEKER) {
-					System.out.println("Not same team");
 					((Player) e.getEntity()).playSound(e.getDamager().getLocation(), Sound.ENTITY_PLAYER_DEATH, 2.0f, 0.5f);
 					for(Player P : Bukkit.getOnlinePlayers()) P.playSound(e.getDamager().getLocation(), Sound.ENTITY_PLAYER_DEATH, 1.0f, 0.5f);
 					//Player damaged = (Player) e.getEntity();
@@ -116,13 +114,11 @@ public class PlayerListener implements Listener {
 	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onBlockDamage(BlockDamageEvent e) {
-		System.out.println("Block damage !");
 		Player p = e.getPlayer();
 		Block b = e.getBlock();
 		if(Hide.gameEngine.getTeam(p) == GameTeam.SEEKER) {
 			for(Player i : Hide.gameEngine.disguises.keySet()) {
 				if(Hide.gameEngine.disguises.get(i).getBlock().equals(b)) {
-					//Player damaged = i;
 					Hide.gameEngine.disguises.get(i).makeUnsolid();
 					onDamageByEntity(new EntityDamageByEntityEvent(p, i, DamageCause.ENTITY_ATTACK, 0));
 					i.damage(7);

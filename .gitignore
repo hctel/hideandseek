@@ -11,3 +11,4 @@ buildNumber.properties
 org/*
 src/main/java/com/*
 src/main/java/me/*
+src/main/java/be/hctel/renaissance/hideandseek/nongame/utils/KADetector.java

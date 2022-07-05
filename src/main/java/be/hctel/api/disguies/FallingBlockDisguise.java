@@ -29,8 +29,7 @@ public class FallingBlockDisguise {
 	Plugin plugin;
 	Material m;
 	byte d;
-	boolean isCancelled = false;
-		
+	boolean isCancelled = false;		
 	EntityFallingBlock passenger;
 	
 	@SuppressWarnings("deprecation")
@@ -48,7 +47,6 @@ public class FallingBlockDisguise {
 						if(e.getPlayer() != p && !isCancelled) {
 							WrapperPlayServerNamedEntitySpawn pk = new WrapperPlayServerNamedEntitySpawn(e.getPacket());
 							if(pk.getEntityID() == p.getEntityId()) {
-								
 								e.setCancelled(true);
 								sendToPlayer(e.getPlayer());
 							}
@@ -60,12 +58,10 @@ public class FallingBlockDisguise {
 	
 	
 	public void remove() {
-		System.out.println("Kills passenger");
 		passenger.killEntity();
 		PacketPlayOutEntityDestroy ed = new PacketPlayOutEntityDestroy(p.getEntityId());
 		for(Player P : Bukkit.getOnlinePlayers()) if(P != p) {
 			((CraftPlayer) P).getHandle().playerConnection.sendPacket(ed);
-			System.out.println("Sent packet to " + P.getName());
 		}
 		
 	}

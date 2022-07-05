@@ -85,17 +85,13 @@ public class DisguiseBlockManager {
 			player.sendTitle("§aYou are now solid", "", 5, 60, 20);
 			player.getInventory().setItem(4, ItemsManager.tauntButton);
 			solidLocation = Utils.locationFlattenner(lastLocation);
-			//solidLocation.getBlock().setType(block.getType());
-			//solidLocation.getBlock().setData(block.getData().getData(), false);
-			//solidLocation.getBlock().getState().update();
 			player.getWorld().playEffect(player.getLocation(), Effect.COLOURED_DUST, 0, 2);
 			player.sendMessage(Hide.header + "§6You are now §ahidden");
 			b = solidLocation.getBlock();
-			//Utils.sendBlockChange(player, Material.AIR, solidLocation);
 			System.out.println(player.getName() + " went solid at " + solidLocation);
 			PacketPlayOutEntityDestroy ed = new PacketPlayOutEntityDestroy(player.getEntityId());
 			for(Player P : Bukkit.getOnlinePlayers()) if(P != player) ((CraftPlayer) P).getHandle().playerConnection.sendPacket(ed);
-			solidPlayerBlock = Utils.spawnFakeBlockEntity(player, solidLocation.add(-0.5, 0, -0.5), block.getType(), block.getData().getData());
+			solidPlayerBlock = Utils.spawnFakeBlockEntity(player, solidLocation.add(0.5, 0, 0.5), block.getType(), block.getData().getData());
 		} else {
 			player.sendMessage(Hide.header + "§cYou can't go solid here!");
 			player.sendTitle("§c§l✖", "§6You can't go solid here", 0, 20, 70);
@@ -111,7 +107,6 @@ public class DisguiseBlockManager {
 			p.sendBlockChange(solidLocation, Material.AIR, (byte) 0);
 		}
 		startDisguise();
-		//solidLocation.getBlock().setType(Material.AIR);
 		solidPlayerBlock.killEntity();
 	}
 	
