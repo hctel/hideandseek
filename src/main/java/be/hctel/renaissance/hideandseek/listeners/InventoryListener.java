@@ -21,6 +21,11 @@ public class InventoryListener implements Listener {
 				if(e.getCurrentItem().getType() != Material.AIR) Hide.gameEngine.getTauntManager().triggerMenu(e);
 			}
 		}
+		else if(e.getInventory().getName().equalsIgnoreCase("Block Shop!")) {
+			if(!Hide.preGameTimer.choosingBlock && !Hide.preGameTimer.gameStarted && e.getCurrentItem() != null) {
+				if(e.getCurrentItem().getType() != Material.AIR) Hide.blockShop.eventHandler(e);
+			}
+		}
 	}
 	@EventHandler
 	public void onInteract(PlayerInteractEvent e) {

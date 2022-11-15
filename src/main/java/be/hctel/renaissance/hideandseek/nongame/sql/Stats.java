@@ -11,6 +11,7 @@ import java.util.UUID;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -24,8 +25,8 @@ public class Stats {
 	private Connection con;
 	private String baseJson = "{\"UUID\":\"%UUID\",\"total_points\":0,\"victories\":0,\"hiderkills\":0,\"seekerkills\":0,\"deaths\":0,\"gamesplayed\":0,\"blocks\":\"\",\"bookupgrade\":null,\"timealive\":0,\"rawBlockExperience\":{},\"blockExperience\":{},\"achievements\":{\"SEEKER25\":{\"progress\":0,\"unlockedAt\":0},\"SEEKER1\":{\"progress\":0,\"unlockedAt\":0},\"SETINPLACE\":{\"progress\":0,\"unlockedAt\":0},\"HIDER500\":{\"progress\":0,\"unlockedAt\":0},\"HIDER250\":{\"progress\":0,\"unlockedAt\":0},\"HIDER50\":{\"progress\":0,\"unlockedAt\":0},\"HIDER1000\":{\"progress\":0,\"unlockedAt\":0},\"HIDER1\":{\"progress\":0,\"unlockedAt\":0},},\"lastlogin\":%TIME%,\"firstlogin\":%TIME%,\"title\":\"Blind\"}";
 	private HashMap<String, JSONObject> jsonList = new HashMap<String , JSONObject>();
-	private HashMap<Player, Integer> unlockedJMS = new HashMap<Player, Integer>();
-	private HashMap<Player, Integer> jms = new HashMap<Player, Integer>();
+	private HashMap<OfflinePlayer, Integer> unlockedJMS = new HashMap<OfflinePlayer, Integer>();
+	private HashMap<OfflinePlayer, Integer> jms = new HashMap<OfflinePlayer, Integer>();
 	
 	
 	public Stats(Connection con) {
@@ -112,6 +113,7 @@ public class Stats {
 		return jsonList.get(Utils.getUUID(player)).getInt("deaths");
 	}
 	public int getDeaths(OfflinePlayer player) {
+		System.out.println(player);
 		return jsonList.get(Utils.getUUID(player)).getInt("deaths");
 	}
 	public ArrayList<GameAchievement> getAchievements(Player player) {
@@ -264,16 +266,16 @@ public class Stats {
 	public int getKilledHiders(OfflinePlayer player) {
 		return jsonList.get(Utils.getUUID(player)).getInt("seekerkills");
 	}
-	public ArrayList<ItemStack> getUnlockedBlocks(Player player) {
+	public ArrayList<Material> getUnlockedBlocks(Player player) {
 		JSONObject json = jsonList.get(Utils.getUUID(player));
-		if(json.get("blocks") == null) return new ArrayList<ItemStack>();
+		if(json.get("blocks") == null) return new ArrayList<Material>();
 		else {
-			ArrayList<ItemStack> out = new ArrayList<ItemStack>();
+			ArrayList<Material> out = new ArrayList<Material>();
 			String[] l = json.getString("blocks").split(",");
 			for(String f : l) {
 				if(f != "") {
 					try {
-					out.add(Utils.getItemStackFromNumericalID(Utils.convertToInt(f)));
+					out.add(Utils.getItemStackFromNumericalID(Utils.convertToInt(f)).getType());
 					} catch (NumberFormatException e) {
 						System.out.println("bad number detected. Ignored.");
 					}
@@ -282,15 +284,20 @@ public class Stats {
 			return out;
 		}
 	}
-	public ArrayList<ItemStack> getUnlockedBlocks(OfflinePlayer player) {
+	public ArrayList<Material> getUnlockedBlocks(OfflinePlayer player) {
+		if(!jsonList.containsKey(Utils.getUUID(player))) load(player);
 		JSONObject json = jsonList.get(Utils.getUUID(player));
-		if(json.get("blocks") == null) return new ArrayList<ItemStack>();
+		if(json.get("blocks") == null) return new ArrayList<Material>();
 		else {
-			ArrayList<ItemStack> out = new ArrayList<ItemStack>();
+			ArrayList<Material> out = new ArrayList<Material>();
 			String[] l = json.getString("blocks").split(",");
 			for(String f : l) {
 				if(f != "") {
-					out.add(Utils.getItemStackFromNumericalID(Utils.convertToInt(f)));
+					try {
+					out.add(Utils.getItemStackFromNumericalID(Utils.convertToInt(f)).getType());
+					} catch (NumberFormatException e) {
+						System.out.println("bad number detected. Ignored.");
+					}
 				}
 			}
 			return out;
@@ -466,16 +473,16 @@ public class Stats {
 		}
 	}
 	
-	public void savePlayer(Player player) throws SQLException {
-		if(jsonList.containsKey(Utils.getUUID(player))) {
+	public void savePlayer(OfflinePlayer offlinePlayer) throws SQLException {
+		if(jsonList.containsKey(Utils.getUUID(offlinePlayer))) {
 			Statement st = con.createStatement();
-			String u = Utils.getUUID(player);
+			String u = Utils.getUUID(offlinePlayer);
 			st.execute("UPDATE HIDE SET JSON = '" + jsonList.get(u).toString() + "' WHERE UUID = '" + u + "';");
 			st.execute("UPDATE HIDE SET unlockedJoinMessage = " + unlockedJMS.get(Bukkit.getPlayer(UUID.fromString(Utils.getFullUUID(u)))) + " WHERE UUID = '" + u + "';");
 			st.execute("UPDATE HIDE SET usedJoinMessage = " +jms.get(Bukkit.getPlayer(UUID.fromString(Utils.getFullUUID(u)))) + " WHERE UUID = '" + u + "';");
 			jsonList.remove(u);
-			unlockedJMS.remove(player);
-			jms.remove(player);
+			unlockedJMS.remove(offlinePlayer);
+			jms.remove(offlinePlayer);
 		}
 	}
 	

@@ -34,7 +34,8 @@ public class BlockPicker {
 	public void buildBlockSelector(Player player) {
 		Random r = new Random();
 		ArrayList<ItemStack> def = map.getDefaultBlocks();
-		ArrayList<ItemStack> cus = stats.getUnlockedBlocks(player);
+		ArrayList<ItemStack> cus = new ArrayList<ItemStack>();
+		for(Material M : stats.getUnlockedBlocks(player)) cus.add(new ItemStack(M));
 		ArrayList<ItemStack> dis = map.getDisabledBlocks();
 		for(int o = 0; o < cus.size(); o++) {
 			ItemStack i = cus.get(o);

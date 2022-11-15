@@ -2,7 +2,8 @@ package be.hctel.renaissance.ranks;
 
 import java.util.HashMap;
 
-import net.md_5.bungee.api.ChatColor;
+import org.bukkit.ChatColor;
+
 
 /*
  * This file is a part of the Renaissance Project API
@@ -43,7 +44,12 @@ public enum Ranks {
 			lookup.put(a.getIndex(), a);
 		}
 	}
-	
+	private static HashMap<ChatColor, Ranks> lookupColor = new HashMap<ChatColor, Ranks>();
+	static {
+		for(Ranks a : Ranks.values()) {
+			lookupColor.put(a.getColor(), a);
+		}
+	}
 	
 	String name;
 	ChatColor color;
@@ -70,5 +76,8 @@ public enum Ranks {
 	}
 	public static Ranks getRank(int index) {
 		return lookup.get(index);
+	}
+	public static Ranks getFromChatColor(ChatColor color) {
+		return lookupColor.get(color);
 	}
 }

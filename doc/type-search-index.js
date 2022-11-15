@@ -1,1 +1,1 @@
-typeSearchIndex = [{"l":"All Classes","u":"allclasses-index.html"},{"p":"be.hctel.renaissance.ranks","l":"Ranks"}];updateSearchResults();
+typeSearchIndex = [{"l":"All Classes","u":"allclasses-index.html"},{"p":"be.hctel.renaissance.hideandseek.nongame.utils","l":"Utils"}];updateSearchResults();

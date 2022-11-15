@@ -140,10 +140,107 @@ public class Utils {
 	 */
 	public static String getUserItemName(ItemStack it) {
 		Material a = it.getType();
-		String aN = a.toString().toLowerCase();
+		String aN = a.toString().toLowerCase().replace('_', ' ');
 		String aN1 = StringUtils.capitalize(aN);
 		@SuppressWarnings("deprecation")
 		int b = it.getData().getData();
+		if(a == Material.STONE) {
+			 switch (b) {
+			 case 0:
+				 return "Stone";
+			 case 1:
+				 return "Granite";
+			 case 2:
+				 return "Polished granite";
+			 case 3:
+				 return "Diorite";
+			 case 4:
+				 return "Polished diorite";
+			 case 5:
+				 return "Andesite";
+			 case 6:
+				 return "Polished andesite";
+			 }
+		} else if(a == Material.STAINED_CLAY) {
+			 switch (b) {
+			 case 0:
+				 return "White clay";
+			 case 1:
+				 return "Orange clay";
+			 case 2:
+				 return "Magenta clay";
+			 case 3:
+				 return "Light blue clay";
+			 case 4:
+				 return "Yellow clay";
+			 case 5:
+				 return "Lime clay";
+			 case 6:
+				 return "Pink clay";
+			 case 7:
+				 return "Gray clay";
+			 case 8:
+				 return "Light gay clay";
+			 case 9:
+				 return "Cyan clay";
+			 case 10:
+				 return "Purple clay";
+			 case 11:
+				 return "Blue clay";
+			 case 12:
+				 return "Brown clay";
+			 case 13:
+				 return "Green clay";
+			 case 14:
+				 return "Red clay";
+			 case 15:
+				 return "Black clay";	 
+			 }
+		} else if(a == Material.WOOD) {
+			switch (b) {
+			 case 0:
+				 return "Oak planks";
+			 case 1:
+				 return "Spruce planks";
+			 case 2:
+				 return "Birch planks";
+			 case 3:
+				 return "Jungle planks";
+			 case 4:
+				 return "Acacia planks";
+			 case 5:
+				 return "Dark oak planks";
+			}
+		} else if(a == Material.LOG) {
+			switch (b) {
+			 case 0:
+				 return "Oak log";
+			 case 1:
+				 return "Spruce log";
+			 case 2:
+				 return "Birch log";
+			 case 3:
+				 return "Jungle log";
+			 case 4:
+				 return "Acacia log";
+			 case 5:
+				 return "Dark oak log";
+			}
+		}
+		else {
+			return aN1;
+		}
+		return aN1;
+	}
+	/**
+	 * Get the user-friendly name of a material
+	 * @param a the Material to get the name of
+	 * @return the name of te ItemStack
+	 */
+	public static String getUserItemName(Material a) {
+		String aN = a.toString().toLowerCase().replace('_', ' ');
+		String aN1 = StringUtils.capitalize(aN);
+		int b = 0;
 		if(a == Material.STONE) {
 			 switch (b) {
 			 case 0:
@@ -397,6 +494,13 @@ public class Utils {
 	public static void sendActionBarMessage(Player player, String msg) {
 		player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(msg));
 	}
+	/**
+	 * A quick way to create an ItemStack and make the code cleaner
+	 * @param material the material of the ItemStack
+	 * @param damage the durability value of the ItemStack
+	 * @param name the name of the ItemStack
+	 * @return the generated ItemStack
+	 */
 	public static ItemStack createQuickItemStack(Material material, short damage, String name) {
 		ItemStack toReturn = new ItemStack(material, 1, damage);
 		ItemMeta meta = toReturn.getItemMeta();
@@ -406,13 +510,13 @@ public class Utils {
 		
 	}
 	/**
+	 * A quick way to create an ItemStack and make the code cleaner
 	 * @deprecated This method uses an anmbiguous data type object
-	 * @param player
-	 * @param material
-	 * @param damage
-	 * @param data
-	 * @param name
-	 * @return
+	 * @param material the material of the ItemStack
+	 * @param damage the durability value of the ItemStack
+	 * @param data the data value of the ItemStack
+	 * @param name the name of the ItemStack
+	 * @return the generated ItemStack
 	 */
 	public static ItemStack createQuickItemStack(Material material, short damage, byte data, String name) {
 		ItemStack toReturn = new ItemStack(material, 1, damage, data);
@@ -450,12 +554,22 @@ public class Utils {
 			}
 		}.runTaskTimer(plugin, 0L, delay);
 	}
+	/**
+	 * Gets the full UUID (untrimmed UUID) from a trimmed UUID
+	 * @param formattedUUID the trimmed UUID
+	 * @return the full UUID
+	 */
 	public static String getFullUUID(String formattedUUID) {
 		String uuid = formattedUUID.replaceAll(                                            
 			    "(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})",                            
 			    "$1-$2-$3-$4-$5");
 		return uuid;
 	}
+	/**
+	 * Generates a random string
+	 * @param lenght the lenght of the string
+	 * @return a random string
+	 */
 	public static String randomString(int lenght) {
 	    int leftLimit = 48; // numeral '0'
 	    int rightLimit = 122; // letter 'z'
@@ -470,6 +584,12 @@ public class Utils {
 
 	    return generatedString;
 	}
+	/**
+	 * Checks if two locations have a deltaY less than 4
+	 * @param a the first location
+	 * @param b the second location
+	 * @return whether the two locations have a deltaY less than 4
+	 */
 	public static boolean locationComparator(Location a, Location b) {
 		return (a.getBlockX() == b.getBlockX() && a.getBlockZ() == b.getBlockZ() && (a.getBlockY() - b.getBlockY()) < 4);
 	}
@@ -642,6 +762,6 @@ public class Utils {
 			    }
 			    return null;
 			}
-	
+		
  
 }

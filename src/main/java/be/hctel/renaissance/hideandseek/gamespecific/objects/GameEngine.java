@@ -8,6 +8,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -206,6 +207,7 @@ public class GameEngine {
 		if(player == null) {
 			if(seekerKill) {
 				deaths.replace(killed, deaths.get(killed)+1);
+				Hide.stats.addDeath(killed);
 				Bukkit.broadcastMessage(Hide.header + "§6Hider " + Hide.rankManager.getRankColor(killed) + killed.getName() + " §6has died.");
 				hiders.remove(killed);
 				disguises.get(killed).kill();
@@ -234,6 +236,7 @@ public class GameEngine {
 				}.runTaskLater(plugin, 30*20L);
 				checkForHidersRemaining();
 			} else {
+				Hide.stats.addDeath(killed);
 				deaths.replace(killed, deaths.get(killed)+1);
 				Bukkit.broadcastMessage(Hide.header + "§6Seeker " + Hide.rankManager.getRankColor(killed) + killed.getName() + " §6has died.");
 				killed.teleport(hiderSpawn);
@@ -241,6 +244,11 @@ public class GameEngine {
 		} else {
 			if(seekerKill) {
 				seekerKills.replace(player, seekerKills.get(player)+1);
+				Hide.stats.addKilledHider(player);
+				Hide.stats.addPoints(player, 30);
+				Hide.stats.addDeath(killed);
+				Hide.cosmeticManager.addTokens(player, 15);
+				player.sendMessage(Hide.header + "§6You gained §b30 points §6and §a15 Tokens §6for killing " + Hide.rankManager.getRankColor(killed) + killed.getName() + "§6.");
 				deaths.replace(killed, deaths.get(killed)+1);
 				Bukkit.broadcastMessage(Hide.header + "§6Hider " + Hide.rankManager.getRankColor(killed) + killed.getName() + " §6was killed by " + Hide.rankManager.getRankColor(player) + player.getName());
 				hiders.remove(killed);
@@ -274,6 +282,11 @@ public class GameEngine {
 				}.runTaskLater(plugin, 10*20L);
 				checkForHidersRemaining();
 			} else {
+				Hide.stats.addKilledSeeker(player);
+				Hide.stats.addPoints(player, 30);
+				Hide.stats.addDeath(killed);
+				Hide.cosmeticManager.addTokens(player, 15);
+				player.sendMessage(Hide.header + "§6You gained §b30 points §6and §a15 Tokens §6for killing " + Hide.rankManager.getRankColor(killed) + killed.getName() + "§6.");
 				hiderKills.replace(player, hiderKills.get(player)+1);
 				deaths.replace(killed, deaths.get(killed)+1);
 				Bukkit.broadcastMessage(Hide.header + "§6Seeker " + Hide.rankManager.getRankColor(killed) + killed.getName() + " §6was killed by " + Hide.rankManager.getRankColor(player) + player.getName());
@@ -282,21 +295,21 @@ public class GameEngine {
 			}
 		}
 	}
-	public void disconnect(Player player) {
-		if(hiders.contains(player)) {
-			disguises.get(player).kill();
-			disguises.remove(player);
-			if(!isGameFinished) Bukkit.broadcastMessage(Hide.header + "§6Hider " + Hide.rankManager.getRankColor(player) + player.getName() + " §6has died.");
-			hiders.remove(player);
-		} else if(seekers.contains(player)) {
-			seekers.remove(player);
+	public void disconnect(OfflinePlayer offlinePlayer) {
+		if(hiders.contains(offlinePlayer)) {
+			disguises.get(offlinePlayer).kill();
+			disguises.remove(offlinePlayer);
+			if(!isGameFinished) Bukkit.broadcastMessage(Hide.header + "§6Hider " + Hide.rankManager.getRankColor(offlinePlayer) + offlinePlayer.getName() + " §6has died.");
+			hiders.remove(offlinePlayer);
+		} else if(seekers.contains(offlinePlayer)) {
+			seekers.remove(offlinePlayer);
 			if(seekers.size() == 0) {
 				Player o = getNewSeeker();
 				System.out.println("Picked seeker: " + o.getName());
 				o.sendMessage(Hide.header + "§7you have been picked to be a seeker as all the previous seekers left");
 				addKill(null, o, true);
 			}
-			if(!isGameFinished) Bukkit.broadcastMessage(Hide.header + "§6Seeker " + Hide.rankManager.getRankColor(player) + player.getName() + " §6has left.");
+			if(!isGameFinished) Bukkit.broadcastMessage(Hide.header + "§6Seeker " + Hide.rankManager.getRankColor(offlinePlayer) + offlinePlayer.getName() + " §6has left.");
 		}
 	}
 	private Player getNewSeeker() {
@@ -325,9 +338,12 @@ public class GameEngine {
 						p.sendMessage(Hide.header + "§cGame Over! §3You will be sent to hub in 10 seconds.");
 					}
 				}
-			}.runTaskAsynchronously(plugin);
+			}.runTask(plugin);
 			for(Player p : hiders) {
 				Hide.stats.addVictory(p);
+				p.sendMessage(Hide.header + "§eWinners team! §6You gained §b60 §6points and §a30 Tokens §6for winning as a hider.");
+				Hide.stats.addPoints(p, 60);
+				Hide.cosmeticManager.addTokens(p, 30);
 			}
 		} else if(winners == GameTeam.SEEKER) {
 			new BukkitRunnable() {
@@ -339,9 +355,12 @@ public class GameEngine {
 						p.sendMessage(Hide.header + "§cGame Over! §3You will be sent to hub in 10 seconds.");
 					}
 				}
-			}.runTaskAsynchronously(plugin);
+			}.runTask(plugin);
 			for(Player p : seekers) {
 				Hide.stats.addVictory(p);
+				p.sendMessage(Hide.header + "§eWinners team! §6You gained §b60 §6points and §a30 Tokens §6for winning as a seeker.");
+				Hide.stats.addPoints(p, 60);
+				Hide.cosmeticManager.addTokens(p, 30);
 			}
 		}
 		for(Player P : sidebars.keySet()) sidebars.get(P).removeReceiver(P);

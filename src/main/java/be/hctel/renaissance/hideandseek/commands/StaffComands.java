@@ -6,10 +6,12 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import be.hctel.renaissance.hideandseek.Hide;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.GameMap;
 import be.hctel.renaissance.hideandseek.nongame.utils.ChatMessages;
+import be.hctel.renaissance.hideandseek.nongame.utils.KADetector;
 import be.hctel.renaissance.hideandseek.nongame.utils.Utils;
 
 public class StaffComands implements CommandExecutor {
@@ -109,9 +111,21 @@ public class StaffComands implements CommandExecutor {
 						}
 					}
 				}
+				else if(cmd.getName().equalsIgnoreCase("katest")) {
+					KADetector t = new KADetector(Bukkit.getPlayer(args[0]), Hide.plugin);
+					t.spawnAndDespawnPlayers();
+					player.sendMessage("§aRunning KATest on" + args[0]);
+					new BukkitRunnable() {
+						@Override
+						public void run() {
+							player.sendMessage("§aDetected hits: " + t.getPunchedEntities());
+						}
+					}.runTaskLater(Hide.plugin, 15L);
+				}
 			} else {
 				player.sendMessage(Hide.header + ChatMessages.NOPERM);
 			}
+			
 		}
 		if(cmd.getName().equalsIgnoreCase("s")) {
 			Bukkit.broadcastMessage(Hide.header + "§c§lServer restarting!");
@@ -120,6 +134,7 @@ public class StaffComands implements CommandExecutor {
 			for(Player P : Bukkit.getOnlinePlayers()) Hide.bm.sendToServer(P, "LOBBY02");
 			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "stop");
 		}
+		
 		return false;
 	}
 

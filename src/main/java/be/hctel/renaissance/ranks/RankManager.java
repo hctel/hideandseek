@@ -6,12 +6,16 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
 
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.scoreboard.Team;
 
 import be.hctel.renaissance.hideandseek.Hide;
 import be.hctel.renaissance.hideandseek.nongame.utils.ChatMessages;
 import be.hctel.renaissance.hideandseek.nongame.utils.Utils;
-import net.md_5.bungee.api.ChatColor;
 
 /*
  * This file is a part of the Renaissance Project API
@@ -21,10 +25,17 @@ public class RankManager {
 	Connection con;
 	HashMap<String, Ranks> cache = new HashMap<String, Ranks>();
 	HashMap<String, Integer> hideCache = new HashMap<String, Integer >(); 
-	public RankManager(Connection con) {
+	HashMap<Ranks, Team> teams = new HashMap<Ranks, Team>();
+	String[] n = {"i", "h", "g", "f", "e", "d", "c", "b", "a"};
+	public RankManager(Connection con, Plugin plugin) {
 		this.con = con;
+		for(Ranks R : Ranks.values()) {
+			Team team = Bukkit.getScoreboardManager().getNewScoreboard().registerNewTeam(n[R.getIndex()-1]);
+			team.setColor(R.getColor());
+			teams.put(R, team);
+		}
 	}
-	
+
 	/**
 	 * Loads the rank of a player
 	 * @param player
@@ -38,6 +49,7 @@ public class RankManager {
 				if(rs.next()) {
 					cache.put(Utils.getUUID(player), Ranks.getRank(rs.getInt("rankID")));
 					hideCache.put(Utils.getUUID(player), rs.getInt("hiddenRank"));
+					teams.get(Ranks.getFromChatColor(getRankColor(player))).addEntry(player.getName());
 				} else {
 					st.execute("INSERT INTO RANKS (UUID) VALUES ('" + Utils.getUUID(player) + "');");
 				}
@@ -50,11 +62,11 @@ public class RankManager {
 	public Ranks getRank(Player player) {
 		return cache.get(Utils.getUUID(player));
 	}
-	public ChatColor getRankColor(Player player) {
-		if(cache.containsKey(Utils.getUUID(player))) {
-			if(hideCache.get(Utils.getUUID(player)) > 0) {
-				return Ranks.getRank(hideCache.get(Utils.getUUID(player))).getColor();
-			} else return cache.get(Utils.getUUID(player)).getColor();
+	public ChatColor getRankColor(OfflinePlayer offlinePlayer) {
+		if(cache.containsKey(Utils.getUUID(offlinePlayer))) {
+			if(hideCache.get(Utils.getUUID(offlinePlayer)) > 0) {
+				return Ranks.getRank(hideCache.get(Utils.getUUID(offlinePlayer))).getColor();
+			} else return cache.get(Utils.getUUID(offlinePlayer)).getColor();
 		} else return ChatColor.BLUE;
 	}
 	

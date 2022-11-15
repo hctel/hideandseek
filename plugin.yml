@@ -6,27 +6,27 @@ softdepend: ['Multiverse-Core', 'LibsDisguises', 'ViaVersion']
 commands: 
   stats:
     usage: /stats [player]
-    permission: hide.stats
+    permission: hide.default
     description: Check the stats of a player
   setrank:
     usage: /setrank <0-9>
-    permission: hide.setrank
+    permission: hide.rank
     description: Disguise your rank as another rank
   togglerank:
     usage: /togglerank
-    permission: hide.setrank
+    permission: hide.rank
     description: Toggles your rank visibility
   updateprofile:
     usage: /updateprofile <player> <category> <value>
-    permission: hide.staff
+    permission: hide.admin
     description: update a player's stats
   vote:
     usage: /vote <#>
-    permission: hide.vote
+    permission: hide.default
     description: Vote for a map
   v:
     usage: /v <#>
-    permission: hive.vote
+    permission: hide.default
     description: Vote for a map
   gotoworld:
     usage: /gotoworld <worldname>
@@ -34,9 +34,13 @@ commands:
     description: Go to a world
   taunt:
     usage: /taunt <taunt type>
-    permission: hide.taunt
+    permission: hide.default
     description: Taunt!
   s:
     usage: /s
     permission: hide.admin
     description: Stops the server and sends everyone to the lobby
+  katest:
+    usage: /katest <player>
+    permission: hide.admin
+    description: test command do not use

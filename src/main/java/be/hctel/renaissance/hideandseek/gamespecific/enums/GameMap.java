@@ -28,6 +28,8 @@ public enum GameMap {
 	PINEAPPLE("Pineapple Port", "HIDE_Pineapple", new SpawnLocation("HIDE_Pineapple", 7.5, 12.0, 2.5, 0.1f, 0.1f), new SpawnLocation("HIDE_Pineapple", 55.5, 13, -7.5, 0.1f, 0.1f)),
 	KINGSTON("Kingston", "HIDE_Kingston", new SpawnLocation("HIDE_Kingston", 45.5, 4, 53.5, 0.1f, 0.1f), new SpawnLocation("HIDE_Kingston", 66.5, 13, 26.5, 0.1f, 0.1f)),
 	PRIP("Pripyat", "HIDE_Pripyat", new SpawnLocation("HIDE_Pripyat", 30.0, 65, -39, 0.1f, 0.1f), new SpawnLocation("HIDE_Pripyat", 30.5, 96, -27.5, 180.1f, 0.1f)),
+	LIGHTHOUSE("Lighthouse", "HIDE_Lighthouse", new SpawnLocation("HIDE_Lighthouse", 385.5, 59, 514.5, -90.1f, 0.1f), new SpawnLocation("HIDE_Lighthouse", 372.5, 115, 496.5, 0.1f, 0.1f)),
+	ARCH("Archaeology", "HIDE_Arch", new SpawnLocation("HIDE_Arch", -2.5, 4, 12.5, 90.1f, 0.1f), new SpawnLocation("HIDE_Arch", -32.5, 46, 8.5, 180.1f, 0.1f)),
 	HOTEL("Hotel", "HIDE_Hotel", new SpawnLocation("HIDE_Hotel", -2, 64, -35, 0.1f, 0.1f), new SpawnLocation("HIDE_Hotel", -3, 61, -21, 0.1f, 0.1f));
 	
 	String mapName;
@@ -194,7 +196,7 @@ public enum GameMap {
 			ItemStack f = new ItemStack(Material.HARD_CLAY);
 			toAdd.add(f);
 		}
-		/*if(this == GameMap.TEITAKU) {
+		if(this == GameMap.TEITAKU) {
 			ItemStack a = new ItemStack(Material.WORKBENCH);
 			toAdd.add(a);
 			ItemStack b = new ItemStack(Material.BOOKSHELF);
@@ -207,7 +209,7 @@ public enum GameMap {
 			toAdd.add(f);
 			ItemStack g = new ItemStack(Material.FLOWER_POT);
 			toAdd.add(g);
-		}*/
+		}
 		if(this == GameMap.SEQUOIA) {
 			@SuppressWarnings("deprecation")
 			ItemStack a = new ItemStack(Material.STAINED_CLAY, 1, (short) 0, (byte) 5);
@@ -305,7 +307,36 @@ public enum GameMap {
 			ItemStack d = new ItemStack(Material.DARK_OAK_STAIRS);
 			toAdd.add(d);
 		}
+		if(this == GameMap.LIGHTHOUSE) {
+			ItemStack a = new ItemStack(Material.HAY_BLOCK);
+			toAdd.add(a);
+			ItemStack b = new ItemStack(Material.COAL_BLOCK);
+			toAdd.add(b);
+			ItemStack c = new ItemStack(Material.LEAVES);
+			toAdd.add(c);
+			@SuppressWarnings("deprecation")
+			ItemStack d = new ItemStack(Material.WOOD, 1, (short) 0, (byte) 5);
+			toAdd.add(d);
+		}
+		if(this == GameMap.ARCH) {
+			ItemStack a = new ItemStack(Material.WORKBENCH);
+			toAdd.add(a);
+			ItemStack b = new ItemStack(Material.QUARTZ_ORE);
+			toAdd.add(b);
+			ItemStack c = new ItemStack(Material.JUNGLE_WOOD_STAIRS);
+			toAdd.add(c);
+			ItemStack d = new ItemStack(Material.REDSTONE_TORCH_OFF);
+			toAdd.add(d);
+			@SuppressWarnings("deprecation")
+			ItemStack f = new ItemStack(Material.STONE, 1, (short) 0, (byte) 6);
+			toAdd.add(f);
+			@SuppressWarnings("deprecation")
+			ItemStack g = new ItemStack(Material.WOOL, 1, (short) 0, (byte) 15);
+			toAdd.add(g);
+		}
 		return toAdd;
+		
+		
 	}
 	public ArrayList<ItemStack> getDisabledBlocks() {
 		ArrayList<ItemStack> toAdd = new ArrayList<ItemStack>();

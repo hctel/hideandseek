@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -80,8 +81,8 @@ public class PlayerListener implements Listener {
 	public void onDisconnect(PlayerQuitEvent e) throws SQLException {
 		Hide.rankManager.unLoad(e.getPlayer());
 		Hide.cosmeticManager.unloadPlayer(e.getPlayer());
-		Hide.stats.savePlayer(e.getPlayer());
-		if(Hide.preGameTimer.gameStarted) Hide.gameEngine.disconnect(e.getPlayer());
+		Hide.stats.savePlayer((OfflinePlayer) e.getPlayer());
+		if(Hide.preGameTimer.gameStarted) Hide.gameEngine.disconnect((OfflinePlayer) e.getPlayer());
 	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST)

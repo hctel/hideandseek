@@ -8,7 +8,6 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Sound;
 import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -34,6 +33,7 @@ import be.hctel.renaissance.hideandseek.commands.completers.StaffCommandsTabComp
 import be.hctel.renaissance.hideandseek.commands.completers.TauntCommandTabCompleter;
 import be.hctel.renaissance.hideandseek.commonclass.VotesHandler;
 import be.hctel.renaissance.hideandseek.gamespecific.objects.BlockPicker;
+import be.hctel.renaissance.hideandseek.gamespecific.objects.BlockShop;
 import be.hctel.renaissance.hideandseek.gamespecific.objects.GameEngine;
 import be.hctel.renaissance.hideandseek.gamespecific.objects.PreGameTimer;
 import be.hctel.renaissance.hideandseek.listeners.InventoryListener;
@@ -41,7 +41,6 @@ import be.hctel.renaissance.hideandseek.listeners.MiscListeners;
 import be.hctel.renaissance.hideandseek.listeners.PlayerListener;
 import be.hctel.renaissance.hideandseek.nongame.sql.Stats;
 import be.hctel.renaissance.hideandseek.nongame.utils.MapLoader;
-import be.hctel.renaissance.hideandseek.nongame.utils.Utils;
 import be.hctel.renaissance.ranks.RankManager;
 
 public class Hide extends JavaPlugin {
@@ -71,6 +70,7 @@ public class Hide extends JavaPlugin {
 	public static BlockPicker blockPicker;
 	public static PreGameTimer preGameTimer;
 	public static GameEngine gameEngine;
+	public static BlockShop blockShop;
 	
 	public static FakePlayer shopPlayer;
 	
@@ -95,13 +95,14 @@ public class Hide extends JavaPlugin {
 		
 		//Creating every helpers
 		stats = new Stats(con);
-		rankManager = new RankManager(con);
+		rankManager = new RankManager(con, this);
 		cosmeticManager = new CosmeticsManager(con, this);
 		mapLoader = new MapLoader(plugin);
 		mapLoader.loadMaps();
 		preGameTimer = new PreGameTimer(this);
 		votesHandler = new VotesHandler(plugin);
 		bm = new BungeeCordMessenger(this);
+		blockShop = new BlockShop(this);
 		
 		//Speaks bby itself
 		registerListeners();
@@ -113,15 +114,18 @@ public class Hide extends JavaPlugin {
 			public void run(Object o) {
 				if(o instanceof String) {
 					Player p = Bukkit.getPlayer((String) o);
-					new BukkitRunnable() {
-						@Override
-						public void run() {
-							p.sendMessage(Hide.header + "§cThis menu is not yet available. §aStay tuned for updates!");	
-						}
-					}.runTaskAsynchronously(plugin);
+					blockShop.openInventory(p);
 				}
 			}
 		});
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				if(!preGameTimer.mapSelected) {
+					Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "s");
+				}
+			}
+		}.runTaskLater(this, 30*60*20L);
 	}
 	
 	
@@ -152,6 +156,7 @@ public class Hide extends JavaPlugin {
 		getCommand("taunt").setExecutor(new TauntCommand());
 		getCommand("taunt").setTabCompleter(new TauntCommandTabCompleter());
 		getCommand("s").setExecutor(new StaffComands());
+		getCommand("katest").setExecutor(new StaffComands());
 	}
 	
 	private void openConnection() {
