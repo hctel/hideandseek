@@ -20,7 +20,7 @@ import be.hctel.renaissance.hideandseek.Hide;
 import be.hctel.renaissance.hideandseek.nongame.utils.Utils;
 
 public class BlockShop {
-	private Plugin plugin;
+	Plugin plugin;
 	Material[] availableBlocks = {Material.OBSIDIAN, Material.QUARTZ_ORE, Material.REDSTONE_BLOCK, Material.REDSTONE_ORE, Material.SOUL_SAND, Material.JACK_O_LANTERN, Material.JUKEBOX, Material.LAPIS_BLOCK, Material.ICE, Material.BOOKSHELF, Material.MELON_BLOCK, Material.PUMPKIN, Material.REDSTONE_LAMP_OFF, Material.LEAVES, Material.ENDER_PORTAL_FRAME, Material.ENCHANTMENT_TABLE, Material.IRON_BLOCK, Material.DIAMOND_BLOCK, Material.EMERALD_BLOCK, Material.TNT};
 	HashMap<OfflinePlayer, ArrayList<Material>> blocks = new HashMap<OfflinePlayer, ArrayList<Material>>();
 	public BlockShop(Plugin plugin) {
@@ -59,7 +59,7 @@ public class BlockShop {
 				if(Hide.cosmeticManager.getTokens(p) >= getItemPrice(e.getCurrentItem().getType())) {
 					p.sendMessage(Hide.header + "§aYou bought the " + Utils.getUserItemName(e.getCurrentItem()) + " block. Enjoy it in your next game!");
 					p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 0.975f);
-					Hide.cosmeticManager.addTokens(p, getItemPrice(e.getCurrentItem().getType()));
+					Hide.cosmeticManager.addTokens(p, -getItemPrice(e.getCurrentItem().getType()));
 					Hide.stats.unlockBlock(p, e.getCurrentItem());
 					e.setCancelled(true);
 					blocks.get(p).add(e.getCurrentItem().getType());

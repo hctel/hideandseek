@@ -52,6 +52,19 @@ public class CosmeticsManager {
 	public void unloadPlayer(Player player) throws SQLException {
 		if(tokens.containsKey(player)) {
 			con.createStatement().execute("UPDATE cosmetics SET TOKENS = " + tokens.get(player) + " WHERE UUID = '" + Utils.getUUID(player) + "';");
+			tokens.remove(player);
+		}
+	}
+	
+	public void saveAll() {
+		for(Player p : tokens.keySet()) {
+			try {
+				con.createStatement().execute("UPDATE cosmetics SET TOKENS = " + tokens.get(p) + " WHERE UUID = '" + Utils.getUUID(p) + "';");
+				tokens.remove(p);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 }

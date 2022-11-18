@@ -167,4 +167,16 @@ public class PreGameTimer {
 		sidebars.get(player).addReceiver(player);
 		seekerQueueNPC.spawnFor(player);
 	}
+	
+	public void updatePlayerScoreboard(Player player) {
+		sidebars.get(player).setLine(Hide.stats.getPoints(player), "§bPoints", false);
+		sidebars.get(player).setLine(Hide.cosmeticManager.getTokens(player), "§aTokens", false);
+		sidebars.get(player).setLine(Hide.stats.getGamesPlayed(player), "§bGames Played", false);
+		sidebars.get(player).setLine(Hide.stats.getDeaths(player), "§bTotal Deaths", false);
+		sidebars.get(player).setLine(Hide.stats.getKills(player), "§bTotal Kills", false);
+		sidebars.get(player).setLine(Hide.stats.getKilledHiders(player), "§bKills as Seeker", false);
+		sidebars.get(player).setLine(Hide.stats.getVictories(player), "§bVictories", false);
+		sidebars.get(player).setLine(Hide.stats.getKilledSeekers(player), "§bKills as Hider", false);
+		sidebars.get(player).addReceiver(player);
+	}
 }

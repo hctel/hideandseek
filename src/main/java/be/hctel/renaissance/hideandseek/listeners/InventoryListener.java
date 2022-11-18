@@ -26,6 +26,11 @@ public class InventoryListener implements Listener {
 				if(e.getCurrentItem().getType() != Material.AIR) Hide.blockShop.eventHandler(e);
 			}
 		}
+		else if(e.getInventory().getName().equalsIgnoreCase("Join messages menu")) {
+			if(!Hide.preGameTimer.choosingBlock && !Hide.preGameTimer.gameStarted && e.getCurrentItem() != null) {
+				if(e.getCurrentItem().getType() != Material.AIR) Hide.joinMessageMenu.eventHandler(e);
+			}
+		}
 	}
 	@EventHandler
 	public void onInteract(PlayerInteractEvent e) {
@@ -39,6 +44,9 @@ public class InventoryListener implements Listener {
 				if(Hide.preGameTimer.gameStarted) {
 					Hide.gameEngine.getTauntManager().openMenu(e.getPlayer());
 				}
+			}
+			if(e.getItem().getType().equals(Material.DIAMOND) && e.getItem().getItemMeta().getDisplayName().equalsIgnoreCase("§b§lJoin messages") && !Hide.preGameTimer.gameStarted) {
+				Hide.joinMessageMenu.openInventory(e.getPlayer());
 			}
 		}
 			

@@ -15,9 +15,11 @@ import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import be.hctel.renaissance.hideandseek.gamespecific.enums.GameAchievement;
+import be.hctel.renaissance.hideandseek.gamespecific.enums.JoinMessages;
 import be.hctel.renaissance.hideandseek.nongame.utils.AdvancedMath;
 import be.hctel.renaissance.hideandseek.nongame.utils.Utils;
 
@@ -25,7 +27,7 @@ public class Stats {
 	private Connection con;
 	private String baseJson = "{\"UUID\":\"%UUID\",\"total_points\":0,\"victories\":0,\"hiderkills\":0,\"seekerkills\":0,\"deaths\":0,\"gamesplayed\":0,\"blocks\":\"\",\"bookupgrade\":null,\"timealive\":0,\"rawBlockExperience\":{},\"blockExperience\":{},\"achievements\":{\"SEEKER25\":{\"progress\":0,\"unlockedAt\":0},\"SEEKER1\":{\"progress\":0,\"unlockedAt\":0},\"SETINPLACE\":{\"progress\":0,\"unlockedAt\":0},\"HIDER500\":{\"progress\":0,\"unlockedAt\":0},\"HIDER250\":{\"progress\":0,\"unlockedAt\":0},\"HIDER50\":{\"progress\":0,\"unlockedAt\":0},\"HIDER1000\":{\"progress\":0,\"unlockedAt\":0},\"HIDER1\":{\"progress\":0,\"unlockedAt\":0},},\"lastlogin\":%TIME%,\"firstlogin\":%TIME%,\"title\":\"Blind\"}";
 	private HashMap<String, JSONObject> jsonList = new HashMap<String , JSONObject>();
-	private HashMap<OfflinePlayer, Integer> unlockedJMS = new HashMap<OfflinePlayer, Integer>();
+	private HashMap<OfflinePlayer, JSONArray> unlockedJMS = new HashMap<OfflinePlayer, JSONArray>();
 	private HashMap<OfflinePlayer, Integer> jms = new HashMap<OfflinePlayer, Integer>();
 	
 	
@@ -37,7 +39,7 @@ public class Stats {
 	public void load(Player player) {
 		String json = baseJson;
 		int joinMessage = 0;
-		int unlockedjms = 1000000;
+		JSONArray unlockedjms = new JSONArray("[\"HIDE\"]");
 		String uuid = Utils.getUUID(player);
 		try {
 			Statement st = con.createStatement();
@@ -45,7 +47,7 @@ public class Stats {
 			if(rs.next()) {
 				json = rs.getString("JSON");
 				joinMessage  = rs.getInt("usedJoinMessage");
-				unlockedjms = rs.getInt("unlockedJoinMessage");
+				unlockedjms = new JSONArray(rs.getString("unlockedJoinMessage"));
 			} else {
 				json.replace("%UUID", Utils.getUUID(player));
 				json.replace("%TIME%", new Date().getTime()+ "");
@@ -64,21 +66,30 @@ public class Stats {
 	}
 	public void load(OfflinePlayer player) {
 		String json = baseJson;
+		int joinMessage = 0;
+		JSONArray unlockedjms = new JSONArray("[\"HIDE\"]");
 		String uuid = Utils.getUUID(player);
 		try {
 			Statement st = con.createStatement();
 			ResultSet rs = st.executeQuery("SELECT * FROM HIDE WHERE UUID = '" + uuid + "';");
 			if(rs.next()) {
 				json = rs.getString("JSON");
-			} 
+				joinMessage  = rs.getInt("usedJoinMessage");
+				unlockedjms = new JSONArray(rs.getInt("unlockedJoinMessage"));
+			} else {
+				json.replace("%UUID", Utils.getUUID(player));
+				json.replace("%TIME%", new Date().getTime()+ "");
+				st.execute("INSERT INTO HIDE (UUID, JSON) VALUES ('" + Utils.getUUID(player) + "', '" + json.toString() + "');");
+			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		json.replace("%UUID", Utils.getUUID(player));
-		json.replace("%TIME%", new Date().getTime()+ "");
 		JSONObject j = new JSONObject(json);
 		jsonList.put(Utils.getUUID(player), j);
+		unlockedJMS.put(player, unlockedjms);
+		jms.put(player, joinMessage);
+		Bukkit.getServer().getLogger().log(Level.INFO, "Loaded stats! UUID : " + uuid + ", points " + j.getInt("total_points") + ", joinMessages " + joinMessage +  "," + unlockedjms);
 	}
 	public boolean isLoaded(OfflinePlayer player) {
 		return jsonList.containsKey(Utils.getUUID(player));
@@ -88,8 +99,13 @@ public class Stats {
 	public int getJoinMessageIndex(Player player) {
 		return jms.get(player);
 	}
-	public int getUnlockedJoinMessages(Player player) {
-		return unlockedJMS.get(player);
+	public ArrayList<JoinMessages> getUnlockedJoinMessages(Player player) {
+		JSONArray a = unlockedJMS.get(player);
+		ArrayList<JoinMessages> r = new ArrayList<JoinMessages>();
+		for(int i = 0; i < a.length(); i++) {
+			r.add(JoinMessages.getFromString(a.getString(i)));
+		}
+		return r;
 	}
 	public int getPoints(OfflinePlayer player) {
 		return jsonList.get(Utils.getUUID(player)).getInt("total_points");
@@ -463,12 +479,18 @@ public class Stats {
 		e.put("progress", oldValue + toAdd);
 		e.put("unlockedAt", -1);
 	}
+	public void unlockJoinMessage(OfflinePlayer player, JoinMessages message) {
+		unlockedJMS.get(player).put(message.toString());
+	}
+	public void setJoinMessage(OfflinePlayer player, JoinMessages message) {
+		jms.put(player, message.getStorageCode());
+	}
 	
 	public void saveAll() throws SQLException {
 		Statement st = con.createStatement();
 		for(String u : jsonList.keySet()) {
 			st.execute("UPDATE HIDE SET JSON = '" + jsonList.get(u).toString() + "' WHERE UUID = '" + u + "';");
-			st.execute("UPDATE HIDE SET unlockedJoinMessage = " + unlockedJMS.get(Bukkit.getPlayer(UUID.fromString(Utils.getFullUUID(u)))) + " WHERE UUID = '" + u + "';");
+			st.execute("UPDATE HIDE SET unlockedJoinMessage = '" + unlockedJMS.get(Bukkit.getPlayer(UUID.fromString(Utils.getFullUUID(u)))).toString() + "' WHERE UUID = '" + u + "';");
 			st.execute("UPDATE HIDE SET usedJoinMessage = " +jms.get(Bukkit.getPlayer(UUID.fromString(Utils.getFullUUID(u)))) + " WHERE UUID = '" + u + "';");
 		}
 	}
@@ -478,7 +500,7 @@ public class Stats {
 			Statement st = con.createStatement();
 			String u = Utils.getUUID(offlinePlayer);
 			st.execute("UPDATE HIDE SET JSON = '" + jsonList.get(u).toString() + "' WHERE UUID = '" + u + "';");
-			st.execute("UPDATE HIDE SET unlockedJoinMessage = " + unlockedJMS.get(Bukkit.getPlayer(UUID.fromString(Utils.getFullUUID(u)))) + " WHERE UUID = '" + u + "';");
+			st.execute("UPDATE HIDE SET unlockedJoinMessage = '" + unlockedJMS.get(Bukkit.getPlayer(UUID.fromString(Utils.getFullUUID(u)))).toString() + "' WHERE UUID = '" + u + "';");
 			st.execute("UPDATE HIDE SET usedJoinMessage = " +jms.get(Bukkit.getPlayer(UUID.fromString(Utils.getFullUUID(u)))) + " WHERE UUID = '" + u + "';");
 			jsonList.remove(u);
 			unlockedJMS.remove(offlinePlayer);

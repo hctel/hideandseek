@@ -35,6 +35,7 @@ import be.hctel.renaissance.hideandseek.commonclass.VotesHandler;
 import be.hctel.renaissance.hideandseek.gamespecific.objects.BlockPicker;
 import be.hctel.renaissance.hideandseek.gamespecific.objects.BlockShop;
 import be.hctel.renaissance.hideandseek.gamespecific.objects.GameEngine;
+import be.hctel.renaissance.hideandseek.gamespecific.objects.JoinMessageHandler;
 import be.hctel.renaissance.hideandseek.gamespecific.objects.PreGameTimer;
 import be.hctel.renaissance.hideandseek.listeners.InventoryListener;
 import be.hctel.renaissance.hideandseek.listeners.MiscListeners;
@@ -71,6 +72,7 @@ public class Hide extends JavaPlugin {
 	public static PreGameTimer preGameTimer;
 	public static GameEngine gameEngine;
 	public static BlockShop blockShop;
+	public static JoinMessageHandler joinMessageMenu;
 	
 	public static FakePlayer shopPlayer;
 	
@@ -103,6 +105,7 @@ public class Hide extends JavaPlugin {
 		votesHandler = new VotesHandler(plugin);
 		bm = new BungeeCordMessenger(this);
 		blockShop = new BlockShop(this);
+		joinMessageMenu = new JoinMessageHandler(this);
 		
 		//Speaks bby itself
 		registerListeners();
@@ -133,6 +136,7 @@ public class Hide extends JavaPlugin {
 	public void onDisable() {
 		try {
 			//Disable clean-up and data save
+			cosmeticManager.saveAll();
 			stats.saveAll();
 			rankManager.saveAll();
 			mapLoader.deleteTempWorld();

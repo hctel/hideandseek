@@ -37,11 +37,13 @@ import net.md_5.bungee.api.chat.TextComponent;
 
 public class PlayerListener implements Listener {
 	
-	private static TextComponent reportBug = new TextComponent (" §eIf there's any error, click this link to report the issue: ");
+	private static TextComponent reportBug = new TextComponent (" §eIf there's any error, click ");
 	static {
-		TextComponent url = new TextComponent("§9§nReport bug");
+		TextComponent url = new TextComponent("§9§nthis link");
 		url.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://github.com/hctel/hideandseek/issues"));
+		TextComponent end = new TextComponent(" §e to report an issue.");
 		reportBug.addExtra(url);
+		reportBug.addExtra(end);
 	}
 	
 	
@@ -61,7 +63,7 @@ public class PlayerListener implements Listener {
 		p.teleport(new Location(Bukkit.getWorld("HIDE_Lobby"), -79.5, 90.5, 61.5, 0.1f, 0.1f));
 		p.setGameMode(GameMode.ADVENTURE);
 		p.getInventory().clear();
-		if(!(Hide.stats.isLoaded(p))) Hide.stats.load(p);
+		Hide.stats.load(p);
 		Hide.rankManager.load(p);
 		Hide.cosmeticManager.loadPlayer(p);
 		p.setDisplayName(Hide.rankManager.getRankColor(p) + p.getName());
@@ -76,6 +78,7 @@ public class PlayerListener implements Listener {
 		p.sendMessage("");
 		Utils.sendCenteredMessage(e.getPlayer(), "§6Welcome on the HnS Alpha release v1!");
 		e.getPlayer().spigot().sendMessage(reportBug);
+		p.getInventory().setItem(0, Utils.createQuickItemStack(Material.DIAMOND, (short) 0, "§b§lJoin messages"));
 	}
 	@EventHandler
 	public void onDisconnect(PlayerQuitEvent e) throws SQLException {
@@ -146,6 +149,7 @@ public class PlayerListener implements Listener {
 	@EventHandler
 	public void onDeath(PlayerDeathEvent e) {
 		e.setDeathMessage(null);
+		//e.getEntity().spigot().respawn();
 		if(Hide.preGameTimer.gameStarted) {
 			Hide.gameEngine.addKill(e.getEntity().getKiller(), (Player) e.getEntity(), Hide.gameEngine.isSeeker(e.getEntity().getKiller()));
 		}
