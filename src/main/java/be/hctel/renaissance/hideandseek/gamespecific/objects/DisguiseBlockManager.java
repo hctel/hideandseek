@@ -15,6 +15,7 @@ import be.hctel.api.disguies.FallingBlockDisguise;
 import be.hctel.renaissance.hideandseek.Hide;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.ItemsManager;
 import be.hctel.renaissance.hideandseek.nongame.utils.Utils;
+import me.libraryaddict.disguise.disguisetypes.TargetedDisguise.TargetType;
 import net.minecraft.server.v1_12_R1.EntityFallingBlock;
 import net.minecraft.server.v1_12_R1.PacketPlayOutEntityDestroy;
 
@@ -88,7 +89,7 @@ public class DisguiseBlockManager {
 			player.getWorld().playEffect(player.getLocation(), Effect.COLOURED_DUST, 0, 2);
 			player.sendMessage(Hide.header + "§6You are now §ahidden");
 			b = solidLocation.getBlock();
-			System.out.println(player.getName() + " went solid at " + solidLocation);
+			plugin.getLogger().info(player.getName() + " went solid at " + solidLocation.getBlockX() + ", " + solidLocation.getBlockY() + ", " + solidLocation.getBlockZ() + " as a " + block.getType().toString());
 			PacketPlayOutEntityDestroy ed = new PacketPlayOutEntityDestroy(player.getEntityId());
 			for(Player P : Bukkit.getOnlinePlayers()) if(P != player) ((CraftPlayer) P).getHandle().playerConnection.sendPacket(ed);
 			solidPlayerBlock = Utils.spawnFakeBlockEntity(player, solidLocation.add(0.5, 0, 0.5), block.getType(), block.getData().getData());

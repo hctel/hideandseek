@@ -250,7 +250,7 @@ public class GameEngine {
 				Hide.cosmeticManager.addTokens(player, 15);
 				player.sendMessage(Hide.header + "§6You gained §b30 points §6and §a15 Tokens §6for killing " + Hide.rankManager.getRankColor(killed) + killed.getName() + "§6.");
 				deaths.replace(killed, deaths.get(killed)+1);
-				Bukkit.broadcastMessage(Hide.header + "§6Hider " + Hide.rankManager.getRankColor(killed) + killed.getName() + " §6was killed by " + Hide.rankManager.getRankColor(player) + player.getName());
+				Bukkit.broadcastMessage(Hide.header + "§6 " + Utils.getUserItemName(disguises.get(killed).getBlock().getType()) + " " + Hide.rankManager.getRankColor(killed) + killed.getName() + " §6was killed by " + Hide.rankManager.getRankColor(player) + player.getName());
 				hiders.remove(killed);
 				seekers.add(killed);
 				disguises.get(killed).kill();
