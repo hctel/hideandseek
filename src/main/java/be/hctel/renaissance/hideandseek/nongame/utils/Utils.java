@@ -12,6 +12,7 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.RecursiveTask;
 
@@ -26,6 +27,7 @@ import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_12_R1.entity.CraftFallingBlock;
 import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_12_R1.util.CraftMagicNumbers;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Firework;
@@ -41,6 +43,8 @@ import org.json.JSONObject;
 import com.comphenix.packetwrapper.WrapperPlayServerBlockChange;
 import com.comphenix.packetwrapper.WrapperPlayServerEntityDestroy;
 import com.comphenix.packetwrapper.WrapperPlayServerSpawnEntity;
+import com.comphenix.packetwrapper.WrapperPlayServerWorldBorder;
+import com.comphenix.protocol.wrappers.EnumWrappers.WorldBorderAction;
 import com.comphenix.protocol.wrappers.WrappedBlockData;
 
 import net.md_5.bungee.api.ChatColor;
@@ -54,6 +58,8 @@ import net.minecraft.server.v1_12_R1.PacketPlayOutBlockChange;
 import net.minecraft.server.v1_12_R1.PacketPlayOutEntityDestroy;
 import net.minecraft.server.v1_12_R1.PacketPlayOutPlayerListHeaderFooter;
 import net.minecraft.server.v1_12_R1.PacketPlayOutSpawnEntity;
+import net.minecraft.server.v1_12_R1.PacketPlayOutWorldBorder;
+import net.minecraft.server.v1_12_R1.WorldBorder;
 
 /*
  * This file is a part of the Renaissance Project API
@@ -334,17 +340,15 @@ public class Utils {
 	 * @param location the location where the firewxork should be spawned
 	 */
 	public static void spawnFireworks(Location location){
-	        Location loc = location;
-	        Firework fw = (Firework) loc.getWorld().spawnEntity(loc, EntityType.FIREWORK);
-	        FireworkMeta fwm = fw.getFireworkMeta();
-	       
-	        fwm.setPower(1);
-	        fwm.addEffect(FireworkEffect.builder().withColor(Color.RED).flicker(false).build());
-	        fwm.addEffect(FireworkEffect.builder().withColor(Color.YELLOW).flicker(false).build());
-	       
-	        fw.setFireworkMeta(fwm);
-	        fw.detonate();
-	}
+        Firework fw = (Firework) location.getWorld().spawnEntity(location, EntityType.FIREWORK);
+        FireworkMeta fwm = fw.getFireworkMeta();
+       
+        fwm.setPower(1);
+        fwm.addEffect(FireworkEffect.builder().withColor(Color.RED).withFade(Color.ORANGE).flicker(true).build());
+       
+        fw.setFireworkMeta(fwm);
+        fw.detonate();	
+        }
 	/**
 	 * Maps a value into a new range
 	 * @param x The value to map
@@ -605,9 +609,7 @@ public class Utils {
 	        fbs.setOptionalSpeedX(0);
 	        fbs.setOptionalSpeedY(0);
 	        fbs.setOptionalSpeedY(0);
-	        System.out.println("ProtocolLib packet done");
 			((CraftPlayer) player).getHandle().playerConnection.sendPacket((PacketPlayOutSpawnEntity) fbs.getHandle().getHandle());
-			System.out.println("send packet");
 			return entityID;
 	}
 	
@@ -697,7 +699,31 @@ public class Utils {
 		double z = a.getZ() - b.getZ();
 		return new Location(a.getWorld(), x, y, z);
 	}
-	
+	public static void sendRedVignette(Player player) {
+		CraftPlayer cp = (CraftPlayer) player;
+		WrapperPlayServerWorldBorder p = new WrapperPlayServerWorldBorder();
+		p.setAction(WorldBorderAction.SET_SIZE);
+		p.setRadius(1);
+		p.setWarningDistance(0);
+		p.setSpeed(1);
+		cp.getHandle().playerConnection.sendPacket((PacketPlayOutWorldBorder) p.getHandle().getHandle());
+	}
+	public static void normalVignette(Player player) {
+		CraftPlayer cp = (CraftPlayer) player;
+		WrapperPlayServerWorldBorder p = new WrapperPlayServerWorldBorder();
+		p.setAction(WorldBorderAction.SET_SIZE);
+		p.setRadius(2^15);
+		p.setWarningDistance(0);
+		p.setSpeed(1);
+		cp.getHandle().playerConnection.sendPacket((PacketPlayOutWorldBorder) p.getHandle().getHandle());
+	}
+	public static boolean doubleContains(List<Entity> list, ArrayList<Player> seekers) {
+		for(Object elem : seekers) {
+			if(list.contains(elem)) return true;
+			else continue;
+		}
+		return false;
+	}
 	 private static String readAll(Reader rd) throws IOException {
 		    StringBuilder sb = new StringBuilder();
 		    int cp;

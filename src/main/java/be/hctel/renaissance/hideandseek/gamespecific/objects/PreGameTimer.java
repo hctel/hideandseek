@@ -61,7 +61,7 @@ public class PreGameTimer {
 									p.sendMessage("");
 									Utils.sendCenteredMessage(p, "§e§m-----------------------------");
 								} else {
-									p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BASS, 1.0f, 0.675f);
+									p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BASS, 1.0f, 0.5f);
 									seekerQueue.remove(p);
 									Utils.sendCenteredMessage(p, "§e§m-----------------------------");
 									p.sendMessage("");
@@ -144,6 +144,7 @@ public class PreGameTimer {
 							for(Player p : sidebars.keySet()) sidebars.get(p).removeReceiver(p);
 							Hide.gameEngine.start();
 							gameStarted = true;
+							Hide.SQLReloader.cancel();
 						}
 						if(timer > -1) {
 							timer--;

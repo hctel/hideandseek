@@ -12,6 +12,8 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Sheep;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 import be.hctel.renaissance.hideandseek.Hide;
@@ -29,20 +31,28 @@ public class Taunt {
 		switch(type) {
 		case BARK:
 			player.getWorld().playSound(player.getLocation(), Sound.ENTITY_WOLF_AMBIENT, 1.0f, 1.0f);
+			break;
 		case CREEPER:
 			player.getWorld().playSound(player.getLocation(), Sound.ENTITY_CREEPER_HURT, 1.0f, 1.0f);
+			break;
 		case GHAST:
 			player.getWorld().playSound(player.getLocation(), Sound.ENTITY_GHAST_SCREAM, 1.0f, 1.0f);
+			break;
 		case ENDERMAN:
 			player.getWorld().playSound(player.getLocation(), Sound.ENTITY_ENDERMEN_SCREAM, 1.0f, 1.0f);
+			break;
 		case WATER:
 			player.getWorld().playSound(player.getLocation(), Sound.ENTITY_PLAYER_SPLASH, 1.0f, 0.5f);
+			break;
 		case PIG: 
 			player.getWorld().playSound(player.getLocation(), Sound.ENTITY_PIG_AMBIENT, 1.0f, 1.0f);
+			break;
 		case DRAGON:
 			player.getWorld().playSound(player.getLocation(), Sound.ENTITY_ENDERDRAGON_GROWL, 1.0f, 1.0f);
+			break;
 		case TNT:
 			player.getWorld().playSound(player.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1.0f, 1.0f);
+			break;
 		case EGGS:
 			player.getWorld().playSound(player.getLocation(), Sound.ENTITY_CHICKEN_EGG, 1.0f, 1.0f);
 			Random r = new Random();
@@ -61,6 +71,7 @@ public class Taunt {
 			break;
 		case FIREWORKS:
 			Utils.spawnFireworks(player.getLocation());
+			break;
 		case POTION:
 			Random ra = new Random();
 			for(int i = 0; i < 4; i++) {
@@ -107,6 +118,8 @@ public class Taunt {
 			e2.setCustomName("Buzz Buzz I'm a beeee");
 			e2.setInvulnerable(true);
 			e2.setAI(false);
+			e2.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 60, 1, false, false));
+			e2.getLocation().getWorld().playSound(e2.getLocation(), Sound.ENTITY_SHEEP_AMBIENT, 1.0f, 1.0f);
 			Bukkit.getScheduler().scheduleSyncDelayedTask(Hide.plugin, new Runnable() {
 				public void run() {
 					e2.getWorld().playSound(e2.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1.0f, 1.0f);
@@ -120,7 +133,7 @@ public class Taunt {
 			te1.setVelocity(this.a(player.getLocation(), 5));
 			Bukkit.getScheduler().scheduleSyncDelayedTask(Hide.plugin, new Runnable() {
 				public void run() {
-					te1.getWorld().spawnParticle(Particle.EXPLOSION_NORMAL, te1.getLocation(), 1);
+					player.getWorld().spawnParticle(Particle.EXPLOSION_HUGE, te1.getLocation(), 1);
 					te1.remove();
 				}
 			}, 5L);

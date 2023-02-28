@@ -13,7 +13,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
-
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.mojang.authlib.GameProfile;
@@ -76,6 +75,7 @@ public class Hide extends JavaPlugin {
 	
 	public static FakePlayer shopPlayer;
 	
+	public static BukkitRunnable SQLReloader;
 	//Declaring SQL variables
 	
 	private String host, user, database, password;
@@ -121,14 +121,15 @@ public class Hide extends JavaPlugin {
 				}
 			}
 		});
-		new BukkitRunnable() {
+		SQLReloader = new BukkitRunnable() {
 			@Override
 			public void run() {
 				if(!preGameTimer.mapSelected) {
 					Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "s");
 				}
 			}
-		}.runTaskLater(this, 30*60*20L);
+		};
+		SQLReloader.runTaskLater(this, 30*60*20L);
 	}
 	
 	

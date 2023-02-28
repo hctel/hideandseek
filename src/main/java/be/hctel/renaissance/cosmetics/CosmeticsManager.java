@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import be.hctel.renaissance.hideandseek.nongame.utils.Utils;
@@ -16,7 +17,7 @@ import be.hctel.renaissance.hideandseek.nongame.utils.Utils;
 public class CosmeticsManager {
 	Connection con;
 	Plugin plugin;
-	HashMap<Player, Integer> tokens = new HashMap<Player, Integer>();
+	HashMap<OfflinePlayer, Integer> tokens = new HashMap<OfflinePlayer, Integer>();
 	public CosmeticsManager(Connection con, Plugin plugin) {
 		this.con = con;
 		this.plugin = plugin;
@@ -57,10 +58,9 @@ public class CosmeticsManager {
 	}
 	
 	public void saveAll() {
-		for(Player p : tokens.keySet()) {
+		for(OfflinePlayer p : tokens.keySet()) {
 			try {
 				con.createStatement().execute("UPDATE cosmetics SET TOKENS = " + tokens.get(p) + " WHERE UUID = '" + Utils.getUUID(p) + "';");
-				tokens.remove(p);
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

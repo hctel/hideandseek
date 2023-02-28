@@ -1,5 +1,7 @@
 package be.hctel.renaissance.hideandseek.gamespecific.objects;
 
+import java.awt.List;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
@@ -13,6 +15,8 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import be.hctel.api.scoreboard.DynamicScoreboard;
@@ -30,6 +34,7 @@ public class GameEngine {
 	private Location seekerSpawn;
 	private Location hiderSpawn;
 	private TauntManager tauntManager;
+	long tick = 0;
 	
 	private int timer = 330;
 	private boolean warmup = true;
@@ -38,6 +43,7 @@ public class GameEngine {
 	
 	private ArrayList<Player> hiders = new ArrayList<Player>();
 	private ArrayList<Player> seekers = new ArrayList<Player>();
+	private ArrayList<Player> heartbeat = new ArrayList<Player>();
 	private ArrayList<Player> queuedSeekers;
 	
 	private HashMap<Player, Integer> hiderKills = new HashMap<Player, Integer>();
@@ -47,6 +53,8 @@ public class GameEngine {
 	private HashMap<Player, DynamicScoreboard> sidebars = new HashMap<Player, DynamicScoreboard>();
 	public HashMap<Player, DisguiseBlockManager> disguises = new HashMap<Player, DisguiseBlockManager>();
 	public HashMap<Player, Integer> durability = new HashMap<Player, Integer>();
+	
+	private PotionEffect hbeft = new PotionEffect(PotionEffectType.SPEED, 5, 1, false, false);
 	
 	public GameEngine(Plugin plugin, GameMap map) {
 		this.plugin = plugin;
@@ -99,6 +107,13 @@ public class GameEngine {
 			Utils.sendCenteredMessage(p, "§cThe seeker will be released in §l30 seconds!");
 			Utils.sendCenteredMessage(p, "§6§m--------------------------------");
 			disguises.put(p, new DisguiseBlockManager(p, Hide.blockPicker.playerBlock.get(p), plugin));
+			if(Utils.doubleContains(p.getNearbyEntities(5.0, 5.0, 5.0), seekers)) {
+				heartbeat.add(p);
+				Utils.sendRedVignette(p);
+			} else {
+				heartbeat.remove(p);
+				Utils.normalVignette(p);
+			}
 		}
 		for(Player p : seekers) {
 			p.teleport(seekerSpawn);
@@ -140,7 +155,7 @@ public class GameEngine {
 							}
 							warmup = false;
 						}
-						if(timer == 240) {
+						if(timer == 230) {
 							for(Player p : hiders) {
 								p.getInventory().setItem(0, ItemsManager.hidersSword());
 							}
@@ -148,7 +163,7 @@ public class GameEngine {
 						if(timer == 30) {
 							for(Player p : Bukkit.getOnlinePlayers()) p.sendTitle("§c30 seconds remaining", "", 10, 70, 20);
 						}
-						if(timer < 6 && timer > 0) {
+						if(timer < 4 && timer > 0) {
 							for(Player p : Bukkit.getOnlinePlayers()) {
 								p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BASS, 1.0f, 1.0f);
 							}
@@ -184,8 +199,19 @@ public class GameEngine {
 			@Override
 			public void run() {
 				if(isPlaying) {
+					tick++;
 					for(Player p : hiders) {
 						disguises.get(p).tick();
+					}
+					for(Player P : heartbeat) {
+						if(tick%40L == 0) {
+							P.addPotionEffect(hbeft);
+							P.playSound(P.getLocation(), Sound.BLOCK_NOTE_BASEDRUM, 2.0f, 0.8f);
+						}
+						if(tick%45L == 0) {
+							P.removePotionEffect(PotionEffectType.SPEED);
+							P.playSound(P.getLocation(), Sound.BLOCK_NOTE_BASEDRUM, 2.0f, 0.8f);
+						}
 					}
 				}
 			}
@@ -206,6 +232,8 @@ public class GameEngine {
 		killed.spigot().respawn();
 		if(player == null) {
 			if(seekerKill) {
+				heartbeat.remove(killed);
+				Utils.normalVignette(killed);
 				deaths.replace(killed, deaths.get(killed)+1);
 				Hide.stats.addDeath(killed);
 				Bukkit.broadcastMessage(Hide.header + "§6Hider " + Hide.rankManager.getRankColor(killed) + killed.getName() + " §6has died.");
@@ -243,6 +271,8 @@ public class GameEngine {
 			}
 		} else {
 			if(seekerKill) {
+				heartbeat.remove(killed);
+				Utils.normalVignette(killed);
 				seekerKills.replace(player, seekerKills.get(player)+1);
 				Hide.stats.addKilledHider(player);
 				Hide.stats.addPoints(player, 30);
@@ -250,7 +280,7 @@ public class GameEngine {
 				Hide.cosmeticManager.addTokens(player, 15);
 				player.sendMessage(Hide.header + "§6You gained §b30 points §6and §a15 Tokens §6for killing " + Hide.rankManager.getRankColor(killed) + killed.getName() + "§6.");
 				deaths.replace(killed, deaths.get(killed)+1);
-				Bukkit.broadcastMessage(Hide.header + "§6 " + Utils.getUserItemName(disguises.get(killed).getBlock().getType()) + " " + Hide.rankManager.getRankColor(killed) + killed.getName() + " §6was killed by " + Hide.rankManager.getRankColor(player) + player.getName());
+				Bukkit.broadcastMessage(Hide.header + "§6 " + Utils.getUserItemName(disguises.get(killed).block.getType()) + " " + Hide.rankManager.getRankColor(killed) + killed.getName() + " §6was killed by " + Hide.rankManager.getRankColor(player) + player.getName());
 				hiders.remove(killed);
 				seekers.add(killed);
 				disguises.get(killed).kill();
@@ -370,8 +400,21 @@ public class GameEngine {
 			public void run() {
 				for(Player P : Bukkit.getOnlinePlayers()) Hide.bm.sendToServer(P, "LOBBY02");
 				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "stop");
+				try {
+					Hide.stats.saveAll();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}.runTaskLater(plugin, 195L);
+		new BukkitRunnable() {
+			
+			@Override
+			public void run() {
+				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "stop");
+			}
+		}.runTaskLater(plugin, 250L);
 	}
 	private void checkForHidersRemaining() {
 		if(hiders.size() < 1) {

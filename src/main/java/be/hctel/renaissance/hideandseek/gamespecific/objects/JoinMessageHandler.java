@@ -18,7 +18,6 @@ import org.bukkit.plugin.Plugin;
 
 import be.hctel.renaissance.hideandseek.Hide;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.JoinMessages;
-import be.hctel.renaissance.hideandseek.nongame.utils.Utils;
 
 public class JoinMessageHandler {
 	Plugin plugin;

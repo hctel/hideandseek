@@ -11,17 +11,23 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import com.comphenix.packetwrapper.WrapperPlayServerNamedEntitySpawn;
+import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.events.ListenerPriority;
+import com.comphenix.protocol.events.PacketAdapter;
+import com.comphenix.protocol.events.PacketEvent;
+
 import be.hctel.api.disguies.FallingBlockDisguise;
 import be.hctel.renaissance.hideandseek.Hide;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.ItemsManager;
 import be.hctel.renaissance.hideandseek.nongame.utils.Utils;
-import me.libraryaddict.disguise.disguisetypes.TargetedDisguise.TargetType;
 import net.minecraft.server.v1_12_R1.EntityFallingBlock;
 import net.minecraft.server.v1_12_R1.PacketPlayOutEntityDestroy;
 
 public class DisguiseBlockManager {
 	Player player;
-	ItemStack block;
+	public ItemStack block;
 	Block b = null;
 	Plugin plugin;
 	Location lastLocation;
@@ -39,6 +45,19 @@ public class DisguiseBlockManager {
 		this.block = block;
 		this.plugin = plugin;
 		this.lastLocation = player.getLocation();
+		ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(plugin,
+				ListenerPriority.NORMAL,
+				PacketType.Play.Server.NAMED_ENTITY_SPAWN) {
+			@Override
+			public void onPacketSending(PacketEvent e) {
+				if(e.getPlayer() != player && isAlive) {
+					WrapperPlayServerNamedEntitySpawn pk = new WrapperPlayServerNamedEntitySpawn(e.getPacket());
+					if(pk.getEntityID() == player.getEntityId()) {
+						e.setCancelled(true);
+					}
+				}
+			}
+		});
 		startDisguise();
 		run = new BukkitRunnable() {
 			@Override
@@ -48,6 +67,7 @@ public class DisguiseBlockManager {
 		};
 		run.runTaskTimer(plugin, 0L, 20L);
 		for(Player P : Bukkit.getOnlinePlayers()) P.hidePlayer(P);
+		
 	}
 	
 	public void tick() {
@@ -130,4 +150,5 @@ public class DisguiseBlockManager {
 	public Block getBlock() {
 		return b;
 	}
+	
 }
