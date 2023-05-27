@@ -45,6 +45,7 @@ public class DisguiseBlockManager {
 		this.block = block;
 		this.plugin = plugin;
 		this.lastLocation = player.getLocation();
+		player.setPlayerListName(null);
 		ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(plugin,
 				ListenerPriority.NORMAL,
 				PacketType.Play.Server.NAMED_ENTITY_SPAWN) {
@@ -100,7 +101,7 @@ public class DisguiseBlockManager {
 	
 	@SuppressWarnings("deprecation")
 	private void makeSolid() {
-		if(lastLocation.getBlock().getType() == Material.AIR) {
+		if(isAllowedBlock()) {
 			stopDisguise();
 			isSolid = true;
 			player.sendTitle("§aYou are now solid", "", 5, 60, 20);
@@ -145,10 +146,15 @@ public class DisguiseBlockManager {
 		stopDisguise();
 		run.cancel();
 		for(Player P : Bukkit.getOnlinePlayers()) P.showPlayer(plugin, player);
+		player.setPlayerListName(player.getName());
 	}
 	
 	public Block getBlock() {
 		return b;
+	}
+	
+	public boolean isAllowedBlock() {
+		return lastLocation.getBlock().getType() == Material.AIR || lastLocation.getBlock().getType() == Material.STATIONARY_WATER || lastLocation.getBlock().getType() == Material.WATER || lastLocation.getBlock().getType() == Material.LAVA || lastLocation.getBlock().getType() == Material.STATIONARY_LAVA || lastLocation.getBlock().getType() == Material.FENCE || lastLocation.getBlock().getType() == Material.ACACIA_FENCE || lastLocation.getBlock().getType() == Material.BIRCH_FENCE || lastLocation.getBlock().getType() == Material.DARK_OAK_FENCE || lastLocation.getBlock().getType() == Material.JUNGLE_FENCE || lastLocation.getBlock().getType() == Material.NETHER_FENCE || lastLocation.getBlock().getType() == Material.SPRUCE_FENCE;
 	}
 	
 }

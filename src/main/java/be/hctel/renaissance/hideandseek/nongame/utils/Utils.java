@@ -59,7 +59,6 @@ import net.minecraft.server.v1_12_R1.PacketPlayOutEntityDestroy;
 import net.minecraft.server.v1_12_R1.PacketPlayOutPlayerListHeaderFooter;
 import net.minecraft.server.v1_12_R1.PacketPlayOutSpawnEntity;
 import net.minecraft.server.v1_12_R1.PacketPlayOutWorldBorder;
-import net.minecraft.server.v1_12_R1.WorldBorder;
 
 /*
  * This file is a part of the Renaissance Project API
@@ -703,9 +702,11 @@ public class Utils {
 		CraftPlayer cp = (CraftPlayer) player;
 		WrapperPlayServerWorldBorder p = new WrapperPlayServerWorldBorder();
 		p.setAction(WorldBorderAction.SET_SIZE);
-		p.setRadius(1);
+		p.setRadius(0);
 		p.setWarningDistance(0);
 		p.setSpeed(1);
+		p.setCenterX(player.getLocation().getX());
+		p.setCenterZ(player.getLocation().getZ());
 		cp.getHandle().playerConnection.sendPacket((PacketPlayOutWorldBorder) p.getHandle().getHandle());
 	}
 	public static void normalVignette(Player player) {
@@ -715,11 +716,13 @@ public class Utils {
 		p.setRadius(2^15);
 		p.setWarningDistance(0);
 		p.setSpeed(1);
+		p.setCenterX(0);
+		p.setCenterZ(0);
 		cp.getHandle().playerConnection.sendPacket((PacketPlayOutWorldBorder) p.getHandle().getHandle());
 	}
 	public static boolean doubleContains(List<Entity> list, ArrayList<Player> seekers) {
-		for(Object elem : seekers) {
-			if(list.contains(elem)) return true;
+		for(Entity elem : list) {
+			if(elem instanceof Player && seekers.contains(elem)) return true;
 			else continue;
 		}
 		return false;

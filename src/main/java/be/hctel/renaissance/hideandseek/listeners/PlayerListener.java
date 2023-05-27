@@ -79,6 +79,7 @@ public class PlayerListener implements Listener {
 		Utils.sendCenteredMessage(e.getPlayer(), "§6Welcome on the HnS Alpha release v1!");
 		e.getPlayer().spigot().sendMessage(reportBug);
 		p.getInventory().setItem(0, Utils.createQuickItemStack(Material.DIAMOND, (short) 0, "§b§lJoin messages"));
+		p.setPlayerListName(Hide.rankManager.getRankColor(p) + p.getName());
 	}
 	@EventHandler
 	public void onDisconnect(PlayerQuitEvent e) throws SQLException {

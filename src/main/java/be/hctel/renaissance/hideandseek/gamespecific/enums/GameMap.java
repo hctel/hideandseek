@@ -7,6 +7,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
+import be.hctel.renaissance.hideandseek.gamespecific.objects.BlockShop;
 import be.hctel.renaissance.hideandseek.nongame.utils.SpawnLocation;
 
 public enum GameMap {
@@ -30,6 +31,7 @@ public enum GameMap {
 	PRIP("Pripyat", "HIDE_Pripyat", new SpawnLocation("HIDE_Pripyat", 30.0, 65, -39, 0.1f, 0.1f), new SpawnLocation("HIDE_Pripyat", 30.5, 96, -27.5, 180.1f, 0.1f)),
 	LIGHTHOUSE("Lighthouse", "HIDE_Lighthouse", new SpawnLocation("HIDE_Lighthouse", 385.5, 59, 514.5, -90.1f, 0.1f), new SpawnLocation("HIDE_Lighthouse", 372.5, 115, 496.5, 0.1f, 0.1f)),
 	ARCH("Archaeology", "HIDE_Arch", new SpawnLocation("HIDE_Arch", -2.5, 4, 12.5, 90.1f, 0.1f), new SpawnLocation("HIDE_Arch", -32.5, 46, 8.5, 180.1f, 0.1f)),
+	FROZEN("Frozen", "HIDE_Frozen", new SpawnLocation("HIDE_Frozen", 50.5, 66, 6.5, -90.1f, 0.1f), new SpawnLocation("HIDE_Frozen", 52.5, 92, 57.5, 180.1f, 0.1f)),
 	HOTEL("Hotel", "HIDE_Hotel", new SpawnLocation("HIDE_Hotel", -2, 64, -35, 0.1f, 0.1f), new SpawnLocation("HIDE_Hotel", -3, 61, -21, 0.1f, 0.1f));
 	
 	String mapName;
@@ -325,7 +327,7 @@ public enum GameMap {
 			toAdd.add(b);
 			ItemStack c = new ItemStack(Material.JUNGLE_WOOD_STAIRS);
 			toAdd.add(c);
-			ItemStack d = new ItemStack(Material.REDSTONE_TORCH_OFF);
+			ItemStack d = new ItemStack(Material.REDSTONE_BLOCK);
 			toAdd.add(d);
 			@SuppressWarnings("deprecation")
 			ItemStack f = new ItemStack(Material.STONE, 1, (short) 0, (byte) 6);
@@ -333,6 +335,14 @@ public enum GameMap {
 			@SuppressWarnings("deprecation")
 			ItemStack g = new ItemStack(Material.WOOL, 1, (short) 0, (byte) 15);
 			toAdd.add(g);
+		}
+		if(this == GameMap.FROZEN) {
+			ItemStack a = new ItemStack(Material.COAL_BLOCK);
+			toAdd.add(a);
+			ItemStack b = new ItemStack(Material.BOOKSHELF);
+			toAdd.add(b);
+			ItemStack c = new ItemStack(Material.FLOWER_POT);
+			toAdd.add(c);
 		}
 		return toAdd;
 		
@@ -345,9 +355,24 @@ public enum GameMap {
 		}if(this == GameMap.HEARTHSTONE_VILLAGE) {
 			toAdd.add(new ItemStack(Material.ICE));
 		}
+		if(this == GameMap.FROZEN) {
+			toAdd.add(new ItemStack(Material.ICE));
+		}
 		return toAdd;
 	}
-	public Location getSeekerStart() {
+	public ArrayList<Material> getAllBlocksAvailable() {
+		ArrayList<Material> toAdd = new ArrayList<Material>();
+		for(ItemStack I : this.getDefaultBlocks()) {
+			toAdd.add(I.getType());
+		}
+		for(Material M : BlockShop.availableBlocks) {
+			for(ItemStack I : this.getDisabledBlocks()) {
+				if (!(I.getType() == M)) toAdd.add(M);
+			}
+		}
+		return toAdd;
+	}
+ 	public Location getSeekerStart() {
 		return this.seekerlocation.getLocation();
 	}
 	public Location getHiderStart() {

@@ -38,6 +38,8 @@ public class MapLoader {
 			w.setGameRuleValue("announceAdvancements", "false");
 			w.setGameRuleValue("doDaylightCycle", "false");
 			w.setGameRuleValue("doWeatherCycle", "false");
+			w.setGameRuleValue("doEntitySpawn", "false");
+			w.setGameRuleValue("showDeathMessages", "false");
 			w.setStorm(false);
 			w.setDifficulty(Difficulty.PEACEFUL);
 		}
@@ -50,6 +52,15 @@ public class MapLoader {
 			Hide.worldManager.cloneWorld(map.get(i).getSystemName(), "TEMPWORLD" + i);
 			Hide.worldManager.loadWorld("TEMPWORLD" + i);
 			Bukkit.getWorld("TEMPWORLD" + i).setGameRuleValue("keepInventory", "true"); 
+			Bukkit.getWorld("TEMPWORLD" + i).setGameRuleValue("randomTickSpeed", "0");
+			Bukkit.getWorld("TEMPWORLD" + i).setGameRuleValue("doFireTick", "false");
+			Bukkit.getWorld("TEMPWORLD" + i).setGameRuleValue("doMobSpawning", "false");
+			Bukkit.getWorld("TEMPWORLD" + i).setGameRuleValue("randomTickSpeed", "false");
+			Bukkit.getWorld("TEMPWORLD" + i).setGameRuleValue("announceAdvancements", "false");
+			Bukkit.getWorld("TEMPWORLD" + i).setGameRuleValue("doDaylightCycle", "false");
+			Bukkit.getWorld("TEMPWORLD" + i).setGameRuleValue("doWeatherCycle", "false");
+			Bukkit.getWorld("TEMPWORLD" + i).setGameRuleValue("doEntitySpawn", "false");
+			Bukkit.getWorld("TEMPWORLD" + i).setGameRuleValue("showDeathMessages", "false");
 			Bukkit.getWorld("TEMPWORLD" + i).setDifficulty(Difficulty.PEACEFUL);
 		}
 	}

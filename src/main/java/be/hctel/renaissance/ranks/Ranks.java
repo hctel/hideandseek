@@ -62,21 +62,49 @@ public enum Ranks {
 		this.votes = votes;
 	}
 	
+	/**
+	 * 
+	 * @return The storage index of the rank
+	 */
 	public int getIndex() {
 		return index;
 	}
+	/**
+	 * 
+	 * @return The default {@link ChatColor} of this rank
+	 */
 	public ChatColor getColor() {
 		return color;
 	}
+	/**
+	 * 
+	 * @return The full name of the rank
+	 */
 	public String getName() {
 		return name;
 	}
+	/**
+	 * 
+	 * @return The number of votes players possessing this rank have
+	 */
 	public int getVotes() {
 		return votes;
 	}
-	public static Ranks getRank(int index) {
+	/**
+	 * 
+	 * @param index : The storage index to get the rank from
+	 * @return The matching rank
+	 * @throws IllegalArgumentException If the index is outside the indexes range
+	 */
+	public static Ranks getRank(int index) throws IllegalArgumentException {
+		if(!lookup.containsKey(index)) throw new IllegalArgumentException("The rank system does not contain the specified rank index.");
 		return lookup.get(index);
 	}
+	/**
+	 * 
+	 * @param color
+	 * @return
+	 */
 	public static Ranks getFromChatColor(ChatColor color) {
 		return lookupColor.get(color);
 	}

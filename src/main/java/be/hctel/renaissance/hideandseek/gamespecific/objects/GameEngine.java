@@ -1,6 +1,5 @@
 package be.hctel.renaissance.hideandseek.gamespecific.objects;
 
-import java.awt.List;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,11 +34,14 @@ public class GameEngine {
 	private Location hiderSpawn;
 	private TauntManager tauntManager;
 	long tick = 0;
+	long every2second = 0;
+	long every2secondplus05 = 0;
 	
 	private int timer = 330;
 	private boolean warmup = true;
 	public static boolean isPlaying = false;
 	public static boolean isGameFinished = false;
+	public static boolean blocksLeftGiven = false;
 	
 	private ArrayList<Player> hiders = new ArrayList<Player>();
 	private ArrayList<Player> seekers = new ArrayList<Player>();
@@ -52,8 +54,10 @@ public class GameEngine {
 	
 	private HashMap<Player, DynamicScoreboard> sidebars = new HashMap<Player, DynamicScoreboard>();
 	public HashMap<Player, DisguiseBlockManager> disguises = new HashMap<Player, DisguiseBlockManager>();
+	public HashMap<Material, Integer> blocksLeft = new HashMap<Material, Integer>();
+	int prevBlockLeftKey = -1;
+	public HashMap<Material, ItemStack> blocksLeftItem = new HashMap<Material, ItemStack>();
 	public HashMap<Player, Integer> durability = new HashMap<Player, Integer>();
-	
 	private PotionEffect hbeft = new PotionEffect(PotionEffectType.SPEED, 5, 1, false, false);
 	
 	public GameEngine(Plugin plugin, GameMap map) {
@@ -71,13 +75,13 @@ public class GameEngine {
 		for(Player p : Bukkit.getOnlinePlayers()) {
 			sidebars.put(p, new DynamicScoreboard(Utils.randomString(16), "§b§lHide§a§lAnd§e§lSeek", Bukkit.getScoreboardManager()));
 			sidebars.get(p).setLine(14, "§e§lTime left");
-			sidebars.get(p).setLine(13, "0:30");
+			sidebars.get(p).setLine(13, "§8Waiting...");
 			sidebars.get(p).setLine(12, "     ");
 			sidebars.get(p).setLine(11, "§bHiders");
-			sidebars.get(p).setLine(10, "0 ");
+			sidebars.get(p).setLine(10, "§8Waiting...");
 			sidebars.get(p).setLine(9, "      ");
 			sidebars.get(p).setLine(8, "§aSeekers");
-			sidebars.get(p).setLine(7, "0");
+			sidebars.get(p).setLine(7, "§8Waiting...");
 			sidebars.get(p).setLine(6, "       ");
 			sidebars.get(p).setLine(5, "§7Points: §f0");
 			sidebars.get(p).setLine(4, "§7Kills: §f0");
@@ -94,6 +98,9 @@ public class GameEngine {
 			hiderKills.put(p, 0);
 			p.getInventory().clear();
 			p.setBedSpawnLocation(hiderSpawn, true);
+			for(Material M : map.getAllBlocksAvailable()) {
+				blocksLeft.put(M, 0);
+			}
 		}
 		Player firstSeeker = getNewSeeker();
 		hiders.remove(firstSeeker);
@@ -107,13 +114,6 @@ public class GameEngine {
 			Utils.sendCenteredMessage(p, "§cThe seeker will be released in §l30 seconds!");
 			Utils.sendCenteredMessage(p, "§6§m--------------------------------");
 			disguises.put(p, new DisguiseBlockManager(p, Hide.blockPicker.playerBlock.get(p), plugin));
-			if(Utils.doubleContains(p.getNearbyEntities(5.0, 5.0, 5.0), seekers)) {
-				heartbeat.add(p);
-				Utils.sendRedVignette(p);
-			} else {
-				heartbeat.remove(p);
-				Utils.normalVignette(p);
-			}
 		}
 		for(Player p : seekers) {
 			p.teleport(seekerSpawn);
@@ -137,6 +137,15 @@ public class GameEngine {
 			public void run() {
 				if(isPlaying) {
 					if(timer > 0) {
+						for(Player P : hiders) {
+							if(Utils.doubleContains(P.getNearbyEntities(5.0, 5.0, 5.0), seekers)) {
+								heartbeat.add(P);
+								Utils.sendRedVignette(P);
+							} else {
+								heartbeat.remove(P);
+								Utils.normalVignette(P);
+							}
+						}
 						if(timer < 304 && timer > 300) {
 							Bukkit.broadcastMessage(Hide.header + "§eStarting in §f" + (timer-300));
 							for(Player p : Bukkit.getOnlinePlayers()) {
@@ -145,7 +154,7 @@ public class GameEngine {
 						}
 						if(timer == 300) {
 							Bukkit.broadcastMessage(Hide.header + "§c§lReady or not, here they come!");
-							for(Player p : Bukkit.getOnlinePlayers()) {
+							for(Player p : hiders) {
 								p.playSound(p.getLocation(), Sound.ENTITY_ENDERDRAGON_GROWL, 1.0f, 1.0f);
 							}
 							for(Player p : seekers) {
@@ -159,6 +168,9 @@ public class GameEngine {
 							for(Player p : hiders) {
 								p.getInventory().setItem(0, ItemsManager.hidersSword());
 							}
+						}
+						if(timer == 0) {
+							blocksLeftGiven = true;
 						}
 						if(timer == 30) {
 							for(Player p : Bukkit.getOnlinePlayers()) p.sendTitle("§c30 seconds remaining", "", 10, 70, 20);
@@ -186,6 +198,7 @@ public class GameEngine {
 							if(durability.get(P) < 20) durability.replace(P, durability.get(P)+1);
 							Utils.sendActionBarMessage(P, "§6Durability: " + durability.get(P));
 						}
+						updateBlocksLeftItem();
 						timer--;
 					} else if (timer == 0) {
 						endGame(GameTeam.HIDER);
@@ -204,13 +217,15 @@ public class GameEngine {
 						disguises.get(p).tick();
 					}
 					for(Player P : heartbeat) {
-						if(tick%40L == 0) {
+						if(every2second-tick > 40) {
 							P.addPotionEffect(hbeft);
 							P.playSound(P.getLocation(), Sound.BLOCK_NOTE_BASEDRUM, 2.0f, 0.8f);
+							every2second = 0;
 						}
-						if(tick%45L == 0) {
+						if(every2secondplus05-tick > 45) {
 							P.removePotionEffect(PotionEffectType.SPEED);
 							P.playSound(P.getLocation(), Sound.BLOCK_NOTE_BASEDRUM, 2.0f, 0.8f);
+							every2secondplus05 = 0;
 						}
 					}
 				}
@@ -324,6 +339,7 @@ public class GameEngine {
 				sidebars.get(player).setLine(4, "§7Kills: §f" + hiderKills.get(player));
 			}
 		}
+		updateBlocksLeft();
 	}
 	public void disconnect(OfflinePlayer offlinePlayer) {
 		if(hiders.contains(offlinePlayer)) {
@@ -358,6 +374,7 @@ public class GameEngine {
 	
 	private void endGame(GameTeam winners) {
 		isGameFinished = true;
+		blocksLeftGiven = false;
 		if(winners == GameTeam.HIDER) {
 			new BukkitRunnable() {
 				@Override
@@ -416,12 +433,45 @@ public class GameEngine {
 			}
 		}.runTaskLater(plugin, 250L);
 	}
+	
 	private void checkForHidersRemaining() {
 		if(hiders.size() < 1) {
 			endGame(GameTeam.SEEKER);
 		}
 	}
+	
 	public TauntManager getTauntManager() {
 		return tauntManager;
+	}
+	
+	private void updateBlocksLeft() {
+		if(disguises.isEmpty()) return;
+		for(Material M : blocksLeft.keySet()) {
+			blocksLeft.replace(M, 0);
+		}
+		for(Player P : disguises.keySet()) {
+			blocksLeft.replace(disguises.get(P).getBlock().getType(), blocksLeft.get(disguises.get(P).getBlock().getType())+1);
+		}
+		for(Material M : blocksLeft.keySet()) {
+			if(blocksLeft.get(M) == 0) {
+				blocksLeft.remove(M);
+				blocksLeftItem.remove(M);
+			}
+			if(blocksLeftItem.isEmpty()) {
+				blocksLeftItem.put(M, new ItemStack(M, blocksLeft.get(M)));
+			} else {
+				blocksLeftItem.get(M).setAmount(blocksLeft.get(M));
+			}
+			
+		}
+	}
+	private void updateBlocksLeftItem() {
+		if(blocksLeftGiven) {
+			if(prevBlockLeftKey == blocksLeftItem.size()) prevBlockLeftKey = -1;
+			prevBlockLeftKey++;
+			for(Player P : seekers) {
+				P.getInventory().setItem(8, blocksLeftItem.get(blocksLeftItem.keySet().toArray()[prevBlockLeftKey]));
+			}
+		}
 	}
 }
