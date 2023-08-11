@@ -12,11 +12,11 @@ import org.bukkit.entity.Player;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.GameMap;
 
 public class StaffCommandsTabCompleter implements TabCompleter {
-
+	ArrayList<String> out = new ArrayList<String>();
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+		out.clear();
 		if(command.getName().equalsIgnoreCase("updateprofile")) {
-			ArrayList<String> out = new ArrayList<String>();
 			if(args.length == 1) for(Player P : Bukkit.getOnlinePlayers()) out.add(P.getName());
 			if(args.length == 2) {
 				out.add("points");
@@ -34,7 +34,6 @@ public class StaffCommandsTabCompleter implements TabCompleter {
 			return out;
 		}
 		else if(command.getName().equalsIgnoreCase("gotoworld")) {
-			ArrayList<String> out = new ArrayList<String>();
 			if(args.length == 1) {
 				for(GameMap M : GameMap.values()) {
 					out.add(M.getSystemName());
