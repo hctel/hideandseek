@@ -29,7 +29,8 @@ public class FallingBlockDisguise {
 	Plugin plugin;
 	Material m;
 	byte d;
-	boolean isCancelled = false;		
+	boolean isCancelled = false;
+	CraftFallingBlock a;
 	EntityFallingBlock passenger;
 	
 	@SuppressWarnings("deprecation")
@@ -37,7 +38,10 @@ public class FallingBlockDisguise {
 		this.plugin = plugin;	
 		this.p = player;
 		this.m = m;
-		passenger = ((CraftFallingBlock) p.getWorld().spawnFallingBlock(p.getLocation().add(255, 50, 255), m, d)).getHandle();
+		a = ((CraftFallingBlock) p.getWorld().spawnFallingBlock(p.getLocation().add(255, 50, 255), m, d));
+		a.setGravity(true);
+		passenger = a.getHandle();
+		//passenger.setNoGravity(true);
 		restart();
 		ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(plugin,
 											ListenerPriority.NORMAL,
@@ -77,8 +81,6 @@ public class FallingBlockDisguise {
 	@SuppressWarnings("deprecation")
 	private void send() {
 		passenger = ((CraftFallingBlock) p.getWorld().spawnFallingBlock(p.getLocation().add(255, 50, 255), m, d)).getHandle();
-				
-		passenger.setNoGravity(true);
 		passenger.locX = p.getLocation().getX();
 		passenger.locY = p.getLocation().getY();
 		passenger.locZ = p.getLocation().getZ();
@@ -106,7 +108,6 @@ public class FallingBlockDisguise {
 	private void sendToPlayer(Player player) {
 		PacketPlayOutEntityDestroy ed = new PacketPlayOutEntityDestroy(p.getEntityId());
 		((CraftPlayer) player).getHandle().playerConnection.sendPacket(ed);
-		passenger.setNoGravity(true);
 		passenger.locX = p.getLocation().getX();
 		passenger.locY = p.getLocation().getY();
 		passenger.locZ = p.getLocation().getZ();
