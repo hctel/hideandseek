@@ -26,7 +26,7 @@ public class RankManager {
 	HashMap<String, Ranks> cache = new HashMap<String, Ranks>();
 	HashMap<String, Integer> hideCache = new HashMap<String, Integer >(); 
 	HashMap<Ranks, Team> teams = new HashMap<Ranks, Team>();
-	String[] n = {"i", "h", "g", "f", "e", "d", "c", "b", "a"};
+	String[] n = {"o", "n", "m", "l", "k", "j", "i", "h", "g", "f", "e", "d", "c", "b", "a"};
 	public RankManager(Connection con, Plugin plugin) {
 		this.con = con;
 		for(Ranks R : Ranks.values()) {
