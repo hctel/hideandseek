@@ -32,10 +32,16 @@ public enum Ranks {
 	
 	EMERALD("Emerald Premium", ChatColor.GREEN, 4, 3),
 	ULTIMATE("Ultimate Premium", ChatColor.LIGHT_PURPLE , 5, 3),
-	HELPER("Helper", ChatColor.DARK_GREEN, 6, 3),
-	MOD("Moderator", ChatColor.RED, 7, 3), 
-	SR_MOD("Sr. Moderator", ChatColor.DARK_RED, 8, 3),
-	TEAM("Renaissance Team", ChatColor.YELLOW, 9, 4);
+	VIP("VIP", ChatColor.DARK_PURPLE , 6, 3),
+	TEAM_NECTAR("Team Nectar", ChatColor.DARK_AQUA, 7, 3),
+	HELPER("Helper", ChatColor.DARK_GREEN, 8, 3),
+	MOD("Moderator", ChatColor.RED, 9, 3), 
+	SR_MOD("Sr. Moderator", ChatColor.DARK_RED, 10, 3),
+	ASSISTANT("Staff Assistant", ChatColor.DARK_RED, 11, 3),
+	MANAGER("Staff Manager", ChatColor.DARK_RED, 12, 3),
+	COMMUNITY_MANAGER("Community Manager", ChatColor.DARK_RED, 13, 3),
+	DEV("Developer", ChatColor.GRAY, 14, 4),
+	TEAM("Renaissance Team", ChatColor.YELLOW, 15, 4);
 	
 	
 	private static HashMap<Integer, Ranks> lookup = new HashMap<Integer, Ranks>();
