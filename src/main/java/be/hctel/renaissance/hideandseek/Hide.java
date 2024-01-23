@@ -12,7 +12,7 @@ import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
+
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.mojang.authlib.GameProfile;
@@ -22,11 +22,14 @@ import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import be.hctel.api.bungee.BungeeCordMessenger;
 import be.hctel.api.fakeentities.FakePlayer;
 import be.hctel.api.runnables.ArgumentRunnable;
+import be.hctel.api.signs.Signer;
 import be.hctel.renaissance.cosmetics.CosmeticsManager;
 import be.hctel.renaissance.hideandseek.commands.RankCommands;
+import be.hctel.renaissance.hideandseek.commands.SignCommands;
 import be.hctel.renaissance.hideandseek.commands.StaffComands;
 import be.hctel.renaissance.hideandseek.commands.StatCommands;
 import be.hctel.renaissance.hideandseek.commands.TauntCommand;
+import be.hctel.renaissance.hideandseek.commands.UtilsCommands;
 import be.hctel.renaissance.hideandseek.commands.VoteCommand;
 import be.hctel.renaissance.hideandseek.commands.completers.StaffCommandsTabCompleter;
 import be.hctel.renaissance.hideandseek.commands.completers.TauntCommandTabCompleter;
@@ -56,6 +59,7 @@ public class Hide extends JavaPlugin {
 	public static MVWorldManager worldManager;
 	public static ProtocolManager protocolLibManager;
 	public static BungeeCordMessenger bm;
+	public static Signer signer;
 	
 	//Declaring every saveables helper variables
 	
@@ -74,8 +78,6 @@ public class Hide extends JavaPlugin {
 	public static JoinMessageHandler joinMessageMenu;
 	
 	public static FakePlayer shopPlayer;
-	
-	public static BukkitRunnable SQLReloader;
 	//Declaring SQL variables
 	
 	private String host, user, database, password;
@@ -84,6 +86,7 @@ public class Hide extends JavaPlugin {
 	
 	@Override
 	public void onEnable() {
+		getLogger().info("Enabling HideAndSeek...");
 		plugin = this;
 		
 		//Enables external libraries
@@ -106,6 +109,7 @@ public class Hide extends JavaPlugin {
 		bm = new BungeeCordMessenger(this);
 		blockShop = new BlockShop(this);
 		joinMessageMenu = new JoinMessageHandler(this);
+		signer = new Signer(this);
 		
 		//Speaks bby itself
 		registerListeners();
@@ -121,15 +125,6 @@ public class Hide extends JavaPlugin {
 				}
 			}
 		});
-		SQLReloader = new BukkitRunnable() {
-			@Override
-			public void run() {
-				if(!preGameTimer.mapSelected) {
-					Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "s");
-				}
-			}
-		};
-		SQLReloader.runTaskLater(this, 30*60*20L);
 	}
 	
 	
@@ -137,6 +132,7 @@ public class Hide extends JavaPlugin {
 	public void onDisable() {
 		try {
 			//Disable clean-up and data save
+			signer.onDisable();
 			cosmeticManager.saveAll();
 			stats.saveAll();
 			rankManager.saveAll();
@@ -162,10 +158,12 @@ public class Hide extends JavaPlugin {
 		getCommand("taunt").setTabCompleter(new TauntCommandTabCompleter());
 		getCommand("s").setExecutor(new StaffComands());
 		getCommand("katest").setExecutor(new StaffComands());
+		getCommand("ping").setExecutor(new UtilsCommands());
+		getCommand("signer").setExecutor(new SignCommands());
 	}
 	
 	private void openConnection() {
-		getLogger().info("[ " + getName() + "] Enabling SQL connection to database");
+		getLogger().info("Enabling SQL connection to database");
 		try {
 			if (con != null && !con.isClosed()) {
 			    return;
@@ -195,7 +193,7 @@ public class Hide extends JavaPlugin {
 				try {
 					@SuppressWarnings("unused")
 					Statement st = con.createStatement();
-					System.out.println("[ " + getName() + "] SQL is operational!");
+					getLogger().info("SQL is operational!");
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

@@ -66,7 +66,7 @@ public enum GameAchievement {
 	private static final Map<String, GameAchievement> lookup = new HashMap<String, GameAchievement>();
 	static {
 		for(GameAchievement d : GameAchievement.values()) {
-			lookup.put(d.getJsonCode(d), d);
+			lookup.put(d.getJsonCode(), d);
 		}
 	}
 	
@@ -75,22 +75,25 @@ public enum GameAchievement {
 		this.description = description;
 		this.json = json;
 		this.unlockLevel = unlockLevel;
+		
 	}
-	
-	public String getName(GameAchievement achievement) {
+	public String getName() {
 		return name;
 	}
-	public String getDescription(GameAchievement achievement) {
+	public String getDescription() {
 		return description;
 	}
-	public String getJsonCode(GameAchievement achievement) {
+	public String getJsonCode() {
 		return json;
 	}
 	public int getUnlockProgress() {
 		return unlockLevel;
 	}
+	
+	
 	public static GameAchievement getFromJSON(String jsoncode) {
 		if(lookup.containsKey(jsoncode))return lookup.get(jsoncode);
 		else return null;
 	}
+	
 }

@@ -44,7 +44,7 @@ public class FallingBlockDisguise {
 		//passenger.setNoGravity(true);
 		restart();
 		ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(plugin,
-											ListenerPriority.NORMAL,
+											ListenerPriority.HIGH,
 											PacketType.Play.Server.NAMED_ENTITY_SPAWN) {
 					@Override
 					public void onPacketSending(PacketEvent e) {

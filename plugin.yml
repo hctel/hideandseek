@@ -1,8 +1,8 @@
 name: HideAndSeek
 author: hctel
-version: a0.1
+version: beta1.1
 main: be.hctel.renaissance.hideandseek.Hide
-softdepend: ['Multiverse-Core', 'LibsDisguises', 'ViaVersion']
+softdepend: ['Multiverse-Core', 'ViaVersion']
 commands: 
   stats:
     usage: /stats [player]
@@ -44,3 +44,11 @@ commands:
     usage: /katest <player>
     permission: hide.admin
     description: test command do not use
+  ping:
+    usage: /ping
+    permission: hide.default
+    description: Calculates your ping
+  signer:
+    usage: /signer <operation>
+    permission: hide.admin
+    description: Signer system

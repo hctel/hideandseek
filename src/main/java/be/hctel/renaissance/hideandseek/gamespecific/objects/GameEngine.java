@@ -20,6 +20,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import be.hctel.api.scoreboard.DynamicScoreboard;
 import be.hctel.renaissance.hideandseek.Hide;
+import be.hctel.renaissance.hideandseek.gamespecific.enums.GameAchievement;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.GameMap;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.GameTeam;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.ItemsManager;
@@ -105,6 +106,9 @@ public class GameEngine {
 		Player firstSeeker = getNewSeeker();
 		hiders.remove(firstSeeker);
 		seekers.add(firstSeeker);
+		
+		unlockAch(firstSeeker, GameAchievement.THECHOSENONE);
+
 		
 		for(Player p : hiders) {
 			p.teleport(hiderSpawn);
@@ -286,6 +290,33 @@ public class GameEngine {
 			}
 		} else {
 			if(seekerKill) {
+				switch(disguises.get(killed).getBlock().getType()) {
+				case FURNACE:
+					unlockAch(player, GameAchievement.FURNACE);
+					break;
+				case ICE:
+					unlockAch(player, GameAchievement.ICE);
+					break;
+				case FLOWER_POT:
+					unlockAch(player, GameAchievement.PLANT);
+					break;
+				case LEAVES:
+					unlockAch(player, GameAchievement.LEAF);
+					break;
+				case ANVIL:
+					unlockAch(player, GameAchievement.ANVIL);
+					break;
+				case BEACON:
+					unlockAch(player, GameAchievement.BEACON);
+					break;
+				case SNOW:
+					unlockAch(player, GameAchievement.SNOW);
+					break;
+				default:
+					break;
+				
+				}
+				if(seekers.size() == 1) unlockAch(killed, GameAchievement.PEEKABOO);
 				heartbeat.remove(killed);
 				Utils.normalVignette(killed);
 				seekerKills.replace(player, seekerKills.get(player)+1);
@@ -471,7 +502,25 @@ public class GameEngine {
 			prevBlockLeftKey++;
 			for(Player P : seekers) {
 				P.getInventory().setItem(8, blocksLeftItem.get(blocksLeftItem.keySet().toArray()[prevBlockLeftKey]));
+				P.updateInventory();
 			}
 		}
+	}
+	/**
+	 * 
+	 * @param player
+	 * @param achievement
+	 * @return true if the achievement was added, false if the player already unlocked the achievement
+	 */
+	private boolean unlockAch(Player player, GameAchievement achievement) {
+		if(Hide.stats.getAchievements(player).contains(achievement)) return false;
+		Utils.sendCenteredMessage(player, "§e§m---------------------------------------------------");
+		Utils.sendCenteredMessage(player, "§lAchievement Unlocked!");
+		Utils.sendCenteredMessage(player, "§6§l" + achievement.getName());
+		Utils.sendCenteredMessage(player, "§7" + achievement.getDescription());
+		Utils.sendCenteredMessage(player, "§e§m---------------------------------------------------");
+		player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
+		Hide.stats.completeAchievement(player, achievement);
+		return true;
 	}
 }

@@ -144,7 +144,6 @@ public class PreGameTimer {
 							for(Player p : sidebars.keySet()) sidebars.get(p).removeReceiver(p);
 							Hide.gameEngine.start();
 							gameStarted = true;
-							Hide.SQLReloader.cancel();
 						}
 						if(timer > -1) {
 							timer--;

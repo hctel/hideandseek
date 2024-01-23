@@ -67,9 +67,7 @@ public class PlayerListener implements Listener {
 		Hide.rankManager.load(p);
 		Hide.cosmeticManager.loadPlayer(p);
 		p.setDisplayName(Hide.rankManager.getRankColor(p) + p.getName());
-		String joinMessage = JoinMessages.getFromStorageCode(Hide.stats.getJoinMessageIndex(p)).getMessage();
-		joinMessage = Hide.rankManager.getRankColor(p) + p.getName() + joinMessage;
-		e.setJoinMessage(joinMessage);
+		e.setJoinMessage(Hide.rankManager.getRankColor(p) + p.getName() + JoinMessages.getFromStorageCode(Hide.stats.getJoinMessageIndex(p)).getMessage());
 		Hide.votesHandler.sendMapChoices(p);
 		Utils.sendHeaderFooter(p, "\n§6Renaissance §eProject\n§fBringing back good memories\n", "\n§aPlaying in §bHide §aAnd §eSeek.\n");
 		Hide.preGameTimer.loadPlayer(p);
@@ -143,7 +141,7 @@ public class PlayerListener implements Listener {
 		if(e.getAction() == Action.RIGHT_CLICK_BLOCK && e.getAction() == Action.LEFT_CLICK_BLOCK) {
 			if(e.getClickedBlock().getType() == Material.SIGN) {
 				//Sign
-			} else if (e.getClickedBlock().getType() != Material.WOOD_DOOR) e.setCancelled(true);
+			} //else if (e.getClickedBlock().getType() != Material.WOOD_DOOR) e.setCancelled(true);
 		}
 	}
 	
