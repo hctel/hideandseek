@@ -42,7 +42,8 @@ public class PreGameTimer {
 		scheduler = Bukkit.getServer().getScheduler();
 		
 		seekerQueueNPC = new FakePlayer(((CraftWorld) Bukkit.getWorld("HIDE_Lobby")).getHandle(), new GameProfile(UUID.fromString("fef039ef-e6cd-4987-9c84-26a3e6134277"), "§bSeeker queue"), new Location(Bukkit.getWorld("HIDE_Lobby"), -75.5, 90.01, 65.5, 135.0f, 0.0f), plugin);
-		seekerQueueNPC.setSkin(UUID.fromString("4c13b583-2355-465f-aad8-d202d621176b"));
+		//seekerQueueNPC.setSkin(UUID.fromString("4c13b583-2355-465f-aad8-d202d621176b"));
+		seekerQueueNPC.setSkin("https://fr.namemc.com/texture/212dd1d9cafbb877.png");
 		seekerQueueNPC.setOnRightClickTask(new ArgumentRunnable() {
 			@Override
 			public void run(Object o) {

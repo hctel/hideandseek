@@ -156,6 +156,19 @@ public class PlayerListener implements Listener {
  	
 	@EventHandler
 	public void onChat(AsyncPlayerChatEvent e) {
+		if(Utils.getUUID(e.getPlayer()).equals(Hide.stats.getTopRankPlayer())) {
+			if(Hide.preGameTimer.gameStarted) {
+	 			String msg = e.getMessage();
+				e.setCancelled(true);
+				Player player = e.getPlayer();
+			  	Bukkit.broadcastMessage(GameRanks.MOD.getChatColor() + GameRanks.MOD.getName() +" " + Hide.rankManager.getRankColor(player) + player.getName() + " §8» §f" + msg);
+			 } else {
+				String msg = e.getMessage();
+				e.setCancelled(true);
+				Player player = e.getPlayer();
+				Bukkit.broadcastMessage("§e" + Hide.stats.getPoints(player) + " §8▍ "+ GameRanks.MOD.getChatColor() + GameRanks.MOD.getName() +" " + Hide.rankManager.getRankColor(player) + player.getName() + " §8» §f" + msg);
+			}
+		} else {
 		if(Hide.preGameTimer.gameStarted) {
  			String msg = e.getMessage();
 			e.setCancelled(true);
@@ -166,6 +179,7 @@ public class PlayerListener implements Listener {
 			e.setCancelled(true);
 			Player player = e.getPlayer();
 			Bukkit.broadcastMessage("§e" + Hide.stats.getPoints(player) + " §8▍ "+ GameRanks.getMatchingRank(Hide.stats.getPoints(player)).getChatColor() + GameRanks.getMatchingRank(Hide.stats.getPoints(player)).getName() +" " + Hide.rankManager.getRankColor(player) + player.getName() + " §8» §f" + msg);
+		}
 		}
 	}
 	

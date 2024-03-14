@@ -23,19 +23,41 @@ import be.hctel.renaissance.hideandseek.gamespecific.enums.JoinMessages;
 import be.hctel.renaissance.hideandseek.nongame.utils.AdvancedMath;
 import be.hctel.renaissance.hideandseek.nongame.utils.Utils;
 
+
+/**
+ * A class manipulating JSONObjects for eassy stats saving in an SQL Database.
+ * 
+ * Here the class was created for HideAndSeek (but can easily be adapted). 
+ * 
+ * @author hugod
+ *
+ */
 public class Stats {
 	private Connection con;
 	private String baseJson = "{\"UUID\":\"%UUID\",\"total_points\":0,\"victories\":0,\"hiderkills\":0,\"seekerkills\":0,\"deaths\":0,\"gamesplayed\":0,\"blocks\":\"\",\"bookupgrade\":null,\"timealive\":0,\"rawBlockExperience\":{},\"blockExperience\":{},\"achievements\":{\"SEEKER25\":{\"progress\":0,\"unlockedAt\":0},\"SEEKER1\":{\"progress\":0,\"unlockedAt\":0},\"SETINPLACE\":{\"progress\":0,\"unlockedAt\":0},\"HIDER500\":{\"progress\":0,\"unlockedAt\":0},\"HIDER250\":{\"progress\":0,\"unlockedAt\":0},\"HIDER50\":{\"progress\":0,\"unlockedAt\":0},\"HIDER1000\":{\"progress\":0,\"unlockedAt\":0},\"HIDER1\":{\"progress\":0,\"unlockedAt\":0},},\"lastlogin\":%TIME%,\"firstlogin\":%TIME%,\"title\":\"Blind\"}";
 	private HashMap<String, JSONObject> jsonList = new HashMap<String , JSONObject>();
 	private HashMap<OfflinePlayer, JSONArray> unlockedJMS = new HashMap<OfflinePlayer, JSONArray>();
 	private HashMap<OfflinePlayer, Integer> jms = new HashMap<OfflinePlayer, Integer>();
+	String topPlayerUUID = "";
 	
 	
 	public Stats(Connection con) {
 		this.con = con;
+		try {
+			ResultSet rs = con.createStatement().executeQuery("SELECT * FROM HIDE ORDER BY points DESC LIMIT 1;");
+			if(rs.next()) {
+				topPlayerUUID = rs.getString("UUID");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
-	//Loading voids	
+	/**
+	 * Loads a player into the cache
+	 * @param player the {@link Player} to load
+	 */
 	public void load(Player player) {
 		String json = baseJson;
 		int joinMessage = 0;
@@ -51,19 +73,27 @@ public class Stats {
 			} else {
 				json.replace("%UUID", Utils.getUUID(player));
 				json.replace("%TIME%", System.currentTimeMillis()+ "");
-				st.execute("INSERT INTO HIDE (UUID, JSON) VALUES ('" + Utils.getUUID(player) + "', '" + json.toString() + "');");
+				st.execute("INSERT INTO HIDE (UUID, JSON, unlockedJoinMessage) VALUES ('" + Utils.getUUID(player) + "', '" + json.toString() + "', '[\"HIDE\"]');");
+			}
+			JSONObject j = new JSONObject(json);
+			jsonList.put(Utils.getUUID(player), j);
+			unlockedJMS.put(player, unlockedjms);
+			jms.put(player, joinMessage);
+			Bukkit.getServer().getLogger().log(Level.INFO, "Loaded stats! UUID : " + uuid + ", points " + j.getInt("total_points") + ", joinMessages " + joinMessage +  "," + unlockedjms);
+			if(j.getInt("total_points") != rs.getInt("points")) {
+				st.execute(String.format("UPDATE HIDE SET points = %d WHERE UUID = '%s'", j.getInt("total_points"), uuid));
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		JSONObject j = new JSONObject(json);
-		jsonList.put(Utils.getUUID(player), j);
-		unlockedJMS.put(player, unlockedjms);
-		jms.put(player, joinMessage);
-		Bukkit.getServer().getLogger().log(Level.INFO, "Loaded stats! UUID : " + uuid + ", points " + j.getInt("total_points") + ", joinMessages " + joinMessage +  "," + unlockedjms);
-		
+		}		
 	}
+	
+	/**
+	 * Loads an OfflinePlayer to the cache. Same as {@link loadPlayer(Player)} but with an OfflinePlayer
+	 * <br>Useful for offline stats checking
+	 * @param player the {@link OfflinePlayer} to load
+	 */
 	public void load(OfflinePlayer player) {
 		String json = baseJson;
 		int joinMessage = 0;
@@ -91,14 +121,34 @@ public class Stats {
 		jms.put(player, joinMessage);
 		Bukkit.getServer().getLogger().log(Level.INFO, "Loaded stats! UUID : " + uuid + ", points " + j.getInt("total_points") + ", joinMessages " + joinMessage +  "," + unlockedjms);
 	}
+	
+	/**
+	 * Checks if a player is loaded
+	 * @param player
+	 * @return true if the player is loaded; false if it isn't
+	 */
 	public boolean isLoaded(OfflinePlayer player) {
 		return jsonList.containsKey(Utils.getUUID(player));
 	}	
 	
-	//Getting stats
+	/**
+	 * Gets the chosen {@link JoinMessages} index of the player
+	 * @param player
+	 * @return
+	 */
+	
+	public String getTopRankPlayer() {
+		return topPlayerUUID;
+	}
+	
 	public int getJoinMessageIndex(Player player) {
 		return jms.get(player);
 	}
+	/**
+	 * Gets the player's unlocked join messages
+	 * @param player
+	 * @return
+	 */
 	public ArrayList<JoinMessages> getUnlockedJoinMessages(Player player) {
 		JSONArray a = unlockedJMS.get(player);
 		ArrayList<JoinMessages> r = new ArrayList<JoinMessages>();
@@ -505,6 +555,7 @@ public class Stats {
 			st.execute("UPDATE HIDE SET JSON = '" + jsonList.get(u).toString() + "' WHERE UUID = '" + u + "';");
 			st.execute("UPDATE HIDE SET unlockedJoinMessage = '" + unlockedJMS.get(Bukkit.getPlayer(UUID.fromString(Utils.getFullUUID(u)))).toString() + "' WHERE UUID = '" + u + "';");
 			st.execute("UPDATE HIDE SET usedJoinMessage = " +jms.get(Bukkit.getPlayer(UUID.fromString(Utils.getFullUUID(u)))) + " WHERE UUID = '" + u + "';");
+			st.execute(String.format("UPDATE HIDE SET POINTS = %d WHERE UUID = '%s';", jsonList.get(u).getInt("total_points"), u));
 			jsonList.remove(u);
 			unlockedJMS.remove(offlinePlayer);
 			jms.remove(offlinePlayer);

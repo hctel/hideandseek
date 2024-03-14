@@ -370,7 +370,7 @@ public class GameEngine {
 				sidebars.get(player).setLine(4, "§7Kills: §f" + hiderKills.get(player));
 			}
 		}
-		updateBlocksLeft();
+		
 	}
 	public void disconnect(OfflinePlayer offlinePlayer) {
 		if(hiders.contains(offlinePlayer)) {
@@ -446,7 +446,7 @@ public class GameEngine {
 			
 			@Override
 			public void run() {
-				for(Player P : Bukkit.getOnlinePlayers()) Hide.bm.sendToServer(P, "LOBBY02");
+				for(Player P : Bukkit.getOnlinePlayers()) Hide.bm.sendToServer(P, "HUB01");
 				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "stop");
 				try {
 					Hide.stats.saveAll();
@@ -468,6 +468,8 @@ public class GameEngine {
 	private void checkForHidersRemaining() {
 		if(hiders.size() < 1) {
 			endGame(GameTeam.SEEKER);
+		} else {
+			updateBlocksLeft();
 		}
 	}
 	
@@ -476,6 +478,7 @@ public class GameEngine {
 	}
 	
 	private void updateBlocksLeft() {
+		if(!blocksLeftGiven) return;
 		if(disguises.isEmpty()) return;
 		for(Material M : blocksLeft.keySet()) {
 			blocksLeft.replace(M, 0);

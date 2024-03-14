@@ -131,7 +131,7 @@ public class StaffComands implements CommandExecutor {
 			Bukkit.broadcastMessage(Hide.header + "§c§lServer restarting!");
 			Bukkit.broadcastMessage("");
 			Bukkit.broadcastMessage("§cYou were sent to a lobby because the server you were previously on was stopped by a staff member");
-			for(Player P : Bukkit.getOnlinePlayers()) Hide.bm.sendToServer(P, "LOBBY02");
+			for(Player P : Bukkit.getOnlinePlayers()) Hide.bm.sendToServer(P, "HUB01");
 			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "stop");
 		}
 		

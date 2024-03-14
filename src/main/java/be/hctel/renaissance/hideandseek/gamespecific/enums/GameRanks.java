@@ -33,7 +33,8 @@ public enum GameRanks {
 	SILOUHETTE("§3§l", "Siloihette", 6000000, 8000000),
 	PHANTOM("§5§l", "Phantom", 8000000, 10000000),
 	VANISHED("§1§l", "Vanished", 10000000, 1000000000),
-	CODEBREAKER("§0§l", "Code Breaker", 1000000000, Integer.MAX_VALUE);
+	MOD("§a§l", "Master §e§lof §b§lDisguise", Integer.MAX_VALUE-1, Integer.MAX_VALUE),
+	CODEBREAKER("§0§l", "Code Breaker", 1000000000, Integer.MAX_VALUE-2);
 	
 	
 	private static HashMap<Integer, GameRanks> lookup1 = new HashMap<Integer, GameRanks>();
