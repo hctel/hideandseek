@@ -9,13 +9,13 @@ import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-import com.comphenix.packetwrapper.WrapperPlayServerNamedEntitySpawn;
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.ListenerPriority;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
 
+import net.minecraft.server.v1_12_R1.Block;
 import net.minecraft.server.v1_12_R1.Entity;
 import net.minecraft.server.v1_12_R1.EntityFallingBlock;
 import net.minecraft.server.v1_12_R1.PacketPlayOutEntityDestroy;
@@ -31,38 +31,30 @@ public class FallingBlockDisguise {
 	byte d;
 	boolean isCancelled = false;
 	CraftFallingBlock a;
-	EntityFallingBlock passenger;
+	//EntityFallingBlock passenger;
 	
-	@SuppressWarnings("deprecation")
 	public FallingBlockDisguise(Player player, Material m, byte d, Plugin plugin) {
 		this.plugin = plugin;	
 		this.p = player;
 		this.m = m;
-		a = ((CraftFallingBlock) p.getWorld().spawnFallingBlock(p.getLocation().add(255, 50, 255), m, d));
+		/*a = ((CraftFallingBlock) p.getWorld().spawnFallingBlock(p.getLocation().add(255, 50, 255), m, d));
 		a.setGravity(false);
 		passenger = a.getHandle();
 		//passenger.setNoGravity(true);
-		restart();
-		ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(plugin,
-											ListenerPriority.HIGH,
-											PacketType.Play.Server.NAMED_ENTITY_SPAWN) {
-					@Override
-					public void onPacketSending(PacketEvent e) {
-						if(e.getPlayer() != p && !isCancelled) {
-							WrapperPlayServerNamedEntitySpawn pk = new WrapperPlayServerNamedEntitySpawn(e.getPacket());
-							if(pk.getEntityID() == p.getEntityId()) {
-								e.setCancelled(true);
-								sendToPlayer(e.getPlayer());
-							}
-						}
-					}
+		restart();*/
+		ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(plugin, ListenerPriority.HIGH, PacketType.Play.Server.NAMED_ENTITY_SPAWN) {
+			@Override
+	        public void onPacketSending(PacketEvent ev) {
+	           if(!isCancelled) {          
+	        	   ev.setCancelled(true);
+	        	   disguise(ev.getPlayer());
+	           }
+	        }
 		});
 	}
 	 
-	
-	
 	public void remove() {
-		passenger.killEntity();
+		//passenger.killEntity();
 		PacketPlayOutEntityDestroy ed = new PacketPlayOutEntityDestroy(p.getEntityId());
 		for(Player P : Bukkit.getOnlinePlayers()) if(P != p) {
 			((CraftPlayer) P).getHandle().playerConnection.sendPacket(ed);
@@ -73,13 +65,12 @@ public class FallingBlockDisguise {
 	
 	public FallingBlockDisguise restart() {
 		remove();
-		send();
+		disguise();
 		return this;
 	}
 	
 	
-	@SuppressWarnings("deprecation")
-	private void send() {
+	/*private void send() {
 		passenger = ((CraftFallingBlock) p.getWorld().spawnFallingBlock(p.getLocation().add(255, 50, 255), m, d)).getHandle();
 		passenger.locX = p.getLocation().getX();
 		passenger.locY = p.getLocation().getY();
@@ -122,7 +113,7 @@ public class FallingBlockDisguise {
 			}
 
 		((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutSpawnEntity(passenger, 70, getDataInt()));
-	}
+	}*/
 	
 	public void cancel() {
 		isCancelled = true;
@@ -133,9 +124,53 @@ public class FallingBlockDisguise {
 		
 	}
 	
-	@SuppressWarnings("deprecation")
-	private int getDataInt() {
-		return m.getId() | ((int) d << 0xC);
+	public void disguise() {
+		EntityFallingBlock fb = new EntityFallingBlock(((CraftPlayer) p).getHandle().world, p.getLocation().getX(), p.getLocation().getY(), p.getLocation().getZ(), Block.getByCombinedId(m.getId() + (d << 12)));
+
+		fb.locX = p.getLocation().getX();
+		fb.locY = p.getLocation().getY();
+		fb.locZ = p.getLocation().getZ();
+
+		try {
+
+		    Field f = Entity.class.getDeclaredField("id");
+		    f.setAccessible(true);
+		    f.setInt(fb, ((CraftPlayer) p).getHandle().getId());
+
+		} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
+		    e.printStackTrace();
+		}
+
+		for (Player o : Bukkit.getOnlinePlayers()) {
+
+		    if (p == o) {
+		        continue;
+		    }
+
+		    ((CraftPlayer) o).getHandle().playerConnection.sendPacket(new PacketPlayOutSpawnEntity(fb, 70, 1));
+
+		}
+	}
+	
+	public void disguise(Player player) {
+		EntityFallingBlock fb = new EntityFallingBlock(((CraftPlayer) player).getHandle().world, player.getLocation().getX(), player.getLocation().getY(), player.getLocation().getZ(), Block.getByCombinedId(m.getId() + (d << 12)));
+
+		fb.locX = player.getLocation().getX();
+		fb.locY = player.getLocation().getY();
+		fb.locZ = player.getLocation().getZ();
+
+		try {
+
+		    Field f = Entity.class.getDeclaredField("id");
+		    f.setAccessible(true);
+		    f.setInt(fb, ((CraftPlayer) player).getHandle().getId());
+
+		} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
+		    e.printStackTrace();
+		}
+
+		((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutSpawnEntity(fb, 70, 1));
+
 	}
 		
 }
