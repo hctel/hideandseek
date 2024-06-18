@@ -133,10 +133,10 @@ public class Hide extends JavaPlugin {
 		try {
 			//Disable clean-up and data save
 			signer.onDisable();
-			cosmeticManager.saveAll();
-			stats.saveAll();
-			rankManager.saveAll();
 			mapLoader.deleteTempWorld();
+			cosmeticManager.saveAll();
+			rankManager.saveAll();
+			stats.saveAll();
 			plugin = null;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
