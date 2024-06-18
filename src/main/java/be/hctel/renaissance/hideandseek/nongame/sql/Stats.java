@@ -109,7 +109,7 @@ public class Stats {
 			} else {
 				json.replace("%UUID", Utils.getUUID(player));
 				json.replace("%TIME%", System.currentTimeMillis()+ "");
-				st.execute("INSERT INTO HIDE (UUID, JSON) VALUES ('" + Utils.getUUID(player) + "', '" + json.toString() + "');");
+				st.execute("INSERT INTO HIDE (UUID, JSON, unlockedJoinMessage) VALUES ('" + Utils.getUUID(player) + "', '" + json.toString() + "', '[\"HIDE\"]');");
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

@@ -114,7 +114,7 @@ public class PreGameTimer {
 									public void run() {
 									}
 								});
-								Hide.blockPicker = new BlockPicker(Hide.votesHandler.currentGameMaps.get(Hide.votesHandler.voted), Hide.stats);
+								Hide.blockPicker = new BlockPicker(Hide.votesHandler.currentGameMaps.get(Hide.votesHandler.voted), Hide.stats, plugin);
 							}
 							for(Player p : Bukkit.getOnlinePlayers()) {
 								Utils.sendActionBarMessage(p, "§aStarting in §c§l" + (timer - 16));

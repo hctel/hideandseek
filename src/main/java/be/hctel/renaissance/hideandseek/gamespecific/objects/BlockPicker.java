@@ -14,6 +14,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.plugin.Plugin;
 
 import be.hctel.renaissance.hideandseek.Hide;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.GameMap;
@@ -25,10 +26,12 @@ public class BlockPicker {
 	Stats stats;
 	HashMap<Player, ItemStack> playerBlock = new HashMap<Player, ItemStack>();
 	HashMap<Player, Inventory> playerBlockSelector = new HashMap<Player, Inventory>();
+	private Plugin plugin;
 	
-	public BlockPicker(GameMap map, Stats stats) {
+	public BlockPicker(GameMap map, Stats stats, Plugin plugin) {
 		this.map = map;
 		this.stats = stats;
+		this.plugin = plugin;
 	}
 	
 	public void buildBlockSelector(Player player) {
@@ -136,6 +139,7 @@ public class BlockPicker {
 			p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 0.99f);
 			p.sendMessage(Hide.header + "§aGood choice! §eSet your block to " + Utils.getUserItemName(picked));
 			playerBlock.put(p, picked);
+			plugin.getLogger().info(String.format("$s has picked a block! ($s)", p.getName(), picked.getType().toString()));
 			e.setCancelled(true);
 		}
 	}

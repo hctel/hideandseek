@@ -144,7 +144,12 @@ public class Utils {
 	 * @return the name of te ItemStack
 	 */
 	public static String getUserItemName(ItemStack it) {
-		Material a = it.getType();
+		Material a;
+		try {
+			a = it.getType();
+		} catch (NullPointerException e) {
+			a = Material.STONE;
+		}		
 		String aN = a.toString().toLowerCase().replace('_', ' ');
 		String aN1 = StringUtils.capitalize(aN);
 		@SuppressWarnings("deprecation")

@@ -112,6 +112,10 @@ public class GameEngine {
 		
 		for(Player p : hiders) {
 			p.teleport(hiderSpawn);
+			if(Hide.blockPicker.playerBlock.get(p) == null) {
+				plugin.getLogger().severe(String.format("Had to replace a null block for $s as stone", p.getName()));
+				Hide.blockPicker.playerBlock.put(p, new ItemStack(Material.STONE));
+			}
 			Utils.sendCenteredMessage(p, "§6§m--------------------------------");
 			Utils.sendCenteredMessage(p, "§b§lYou are a §f§lHIDER! (" + Utils.getUserItemName(Hide.blockPicker.playerBlock.get(p)) + ")");
 			Utils.sendCenteredMessage(p, "§aFind a hiding spot before the seeker's released!");

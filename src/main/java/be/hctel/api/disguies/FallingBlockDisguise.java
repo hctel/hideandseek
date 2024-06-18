@@ -95,14 +95,14 @@ public class FallingBlockDisguise {
 			}
 
 			for (Player o : Bukkit.getOnlinePlayers()) {
-			
+				
 				if (p == o) {
 		    	continue;
 		    }
-
-		    ((CraftPlayer) o).getHandle().playerConnection.sendPacket(new PacketPlayOutSpawnEntity(passenger, 70, getDataInt()));
-		    ((CraftPlayer) o).getHandle().playerConnection.sendPacket(new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.REMOVE_PLAYER, ((CraftPlayer) p).getHandle()));
-		}
+				((CraftPlayer) o).getHandle().playerConnection.sendPacket(new PacketPlayOutSpawnEntity(passenger, 70, getDataInt()));
+			    ((CraftPlayer) o).getHandle().playerConnection.sendPacket(new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.REMOVE_PLAYER, ((CraftPlayer) p).getHandle()));
+			
+		    }
 	}
 	
 	private void sendToPlayer(Player player) {

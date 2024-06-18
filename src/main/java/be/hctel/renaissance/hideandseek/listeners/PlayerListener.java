@@ -59,6 +59,10 @@ public class PlayerListener implements Listener {
 	}
 	@EventHandler
 	public void onJoin(PlayerJoinEvent e) throws SQLException {
+		if(Hide.preGameTimer.gameStarted && !e.getPlayer().hasPermission("hide.spectate")) {
+			e.getPlayer().kickPlayer("Only staff members are allowed to spectate in Hide and Seek.");
+			return;
+		}
 		Player p = e.getPlayer();
 		p.teleport(new Location(Bukkit.getWorld("HIDE_Lobby"), -79.5, 90.5, 61.5, 0.1f, 0.1f));
 		p.setGameMode(GameMode.ADVENTURE);
