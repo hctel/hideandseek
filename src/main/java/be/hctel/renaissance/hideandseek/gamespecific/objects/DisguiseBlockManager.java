@@ -81,16 +81,16 @@ public class DisguiseBlockManager {
 				makeUnsolid();
 			}
 			else if(timeInLocation == 20) {
-				player.sendTitle("", "§a»§8»»»»", 0, 25, 20);
+				player.sendTitle("", "§a»§8»»»»", 0, 25, 0);
 			}
 			else if(timeInLocation == 40) {
-				player.sendTitle("", "§a»»§8»»»", 0, 25, 20);
+				player.sendTitle("", "§a»»§8»»»", 0, 25, 0);
 			}
 			else if(timeInLocation == 60) {
-				player.sendTitle("", "§a»»»§8»»", 0, 25, 20);
+				player.sendTitle("", "§a»»»§8»»", 0, 25, 0);
 			}
 			else if(timeInLocation == 80) {
-				player.sendTitle("", "§a»»»»§8»", 0, 25, 20);
+				player.sendTitle("", "§a»»»»§8»", 0, 25, 0);
 			}
 			else if(timeInLocation == 100) {
 				makeSolid();

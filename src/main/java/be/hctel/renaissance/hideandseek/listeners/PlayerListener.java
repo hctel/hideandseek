@@ -9,6 +9,8 @@ import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -89,6 +91,7 @@ public class PlayerListener implements Listener {
 		Hide.cosmeticManager.unloadPlayer(e.getPlayer());
 		Hide.stats.savePlayer((OfflinePlayer) e.getPlayer());
 		if(Hide.preGameTimer.gameStarted) Hide.gameEngine.disconnect((OfflinePlayer) e.getPlayer());
+		if(Hide.preGameTimer.gameStarted && Bukkit.getOnlinePlayers().size()-1 < 0) Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "s");
 	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
