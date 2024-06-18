@@ -51,6 +51,7 @@ public class FallingBlockDisguise {
 						if(e.getPlayer() != p && !isCancelled) {
 							WrapperPlayServerNamedEntitySpawn pk = new WrapperPlayServerNamedEntitySpawn(e.getPacket());
 							if(pk.getEntityID() == p.getEntityId()) {
+								plugin.getLogger().info("Sending disguise to " + e.getPlayer().getName());
 								e.setCancelled(true);
 								sendToPlayer(e.getPlayer());
 							}
@@ -106,6 +107,7 @@ public class FallingBlockDisguise {
 	}
 	
 	private void sendToPlayer(Player player) {
+		if(player == p) return;
 		PacketPlayOutEntityDestroy ed = new PacketPlayOutEntityDestroy(p.getEntityId());
 		((CraftPlayer) player).getHandle().playerConnection.sendPacket(ed);
 		passenger.locX = p.getLocation().getX();
