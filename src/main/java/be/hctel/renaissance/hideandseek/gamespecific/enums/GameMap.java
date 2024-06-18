@@ -32,6 +32,11 @@ public enum GameMap {
 	LIGHTHOUSE("Lighthouse", "HIDE_Lighthouse", new SpawnLocation("HIDE_Lighthouse", 385.5, 59, 514.5, -90.1f, 0.1f), new SpawnLocation("HIDE_Lighthouse", 372.5, 115, 496.5, 0.1f, 0.1f)),
 	ARCH("Archaeology", "HIDE_Arch", new SpawnLocation("HIDE_Arch", -2.5, 4, 12.5, 90.1f, 0.1f), new SpawnLocation("HIDE_Arch", -32.5, 46, 8.5, 180.1f, 0.1f)),
 	FROZEN("Frozen", "HIDE_Frozen", new SpawnLocation("HIDE_Frozen", 50.5, 66, 6.5, -90.1f, 0.1f), new SpawnLocation("HIDE_Frozen", 52.5, 92, 57.5, 180.1f, 0.1f)),
+	SPACE("Space", "HIDE_Space", new SpawnLocation("HIDE_Space", -21.5, 60, -1.5, 0.1f, 0.1f),new SpawnLocation("HIDE_Space", -27.5, 85, 29.5, 0.1f, 0.1f)),
+	SHIPYARD("Shipyard", "HIDE_Shipyard", new SpawnLocation("HIDE_Shipyard", 104.5, 72, 77.5, 0.1f, 0.1f), new SpawnLocation("HIDE_Shipyard", 89.5, 98, 36.5, 0.1f, 0.1f)),
+	CRUISE("Cruise", "HIDE_Cruise", new SpawnLocation("HIDE_Cruise", 50.5, 81, -60.5, 180.1f, 0.1f), new SpawnLocation("HIDE_Cruise", 49.5, 69, -96.5, 180.1f, 0.1f)),
+	BEFORESPACE("Before Space", "HIDE_BeforeSpace", new SpawnLocation("HIDE_BeforeSpace", -167.5, 70, -205.5, 0.1f, 0.1f), new SpawnLocation("HIDE_BeforeSpace", -167.5, 60, -209.5, 180.1f, 0.1f)),
+	ANIMAL("Animal Village", "HIDE_Animal", new SpawnLocation("HIDE_Animal", -75.5, 87, -67.5, 180.1f, 0.1f), new SpawnLocation("HIDE_Animal", -65.5, 87, -123.5, 0.1f, 0.1f)),	
 	HOTEL("Hotel", "HIDE_Hotel", new SpawnLocation("HIDE_Hotel", -2, 64, -35, 0.1f, 0.1f), new SpawnLocation("HIDE_Hotel", -3, 61, -21, 0.1f, 0.1f));
 	
 	String mapName;
