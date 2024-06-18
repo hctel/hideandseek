@@ -113,7 +113,7 @@ public class GameEngine {
 		for(Player p : hiders) {
 			p.teleport(hiderSpawn);
 			if(Hide.blockPicker.playerBlock.get(p) == null) {
-				plugin.getLogger().severe(String.format("Had to replace a null block for $s as stone", p.getName()));
+				plugin.getLogger().severe(String.format("Had to replace a null block for %s as stone", p.getName()));
 				Hide.blockPicker.playerBlock.put(p, new ItemStack(Material.STONE));
 			}
 			Utils.sendCenteredMessage(p, "§6§m--------------------------------");

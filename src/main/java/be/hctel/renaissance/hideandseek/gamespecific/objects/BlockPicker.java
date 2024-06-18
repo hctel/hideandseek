@@ -139,7 +139,7 @@ public class BlockPicker {
 			p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 0.99f);
 			p.sendMessage(Hide.header + "§aGood choice! §eSet your block to " + Utils.getUserItemName(picked));
 			playerBlock.put(p, picked);
-			plugin.getLogger().info(String.format("$s has picked a block! ($s)", p.getName(), picked.getType().toString()));
+			plugin.getLogger().info(String.format("%s has picked a block! (%s)", p.getName(), picked.getType().toString()));
 			e.setCancelled(true);
 		}
 	}
