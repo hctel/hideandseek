@@ -24,7 +24,7 @@ public class CosmeticsManager {
 		this.plugin = plugin;
 	}
 	
-	public void loadPlayer(Player player) throws SQLException {
+	public void loadPlayer(OfflinePlayer player) throws SQLException {
 		ResultSet rs = con.createStatement().executeQuery("SELECT * FROM cosmetics WHERE UUID = '" + Utils.getUUID(player) + "';");
 		if(rs.next()) {
 			tokens.put(player, rs.getInt("TOKENS"));
@@ -74,6 +74,9 @@ public class CosmeticsManager {
 			tokens.remove(player);
 			goldMedals.remove(player);
 		}
+	}
+	public boolean isLoaded(OfflinePlayer player) {
+		return tokens.containsKey(player);
 	}
 	
 	public void saveAll() {

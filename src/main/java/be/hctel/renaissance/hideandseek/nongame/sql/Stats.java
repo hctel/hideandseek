@@ -105,7 +105,7 @@ public class Stats {
 			if(rs.next()) {
 				json = rs.getString("JSON");
 				joinMessage  = rs.getInt("usedJoinMessage");
-				unlockedjms = new JSONArray(rs.getInt("unlockedJoinMessage"));
+				unlockedjms = new JSONArray(rs.getString("unlockedJoinMessage"));
 			} else {
 				json.replace("%UUID", Utils.getUUID(player));
 				json.replace("%TIME%", System.currentTimeMillis()+ "");

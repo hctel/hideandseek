@@ -1,5 +1,7 @@
 package be.hctel.renaissance.hideandseek.commands;
 
+import java.sql.SQLException;
+
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -27,6 +29,7 @@ public class StatCommands implements CommandExecutor {
 					player.sendMessage(" §3Kills as Seeker: §b" + Hide.stats.getKilledHiders(player));
 					player.sendMessage(" §3Kills as Hider: §b" + Hide.stats.getKilledSeekers(player));
 					player.sendMessage(" §3Achievements: §b" + Hide.stats.getCompletedAchievements(player).size() + "/" + GameAchievement.values().length);
+					player.sendMessage(" §6Gold Medals: §e" + Hide.cosmeticManager.getGoldMedals(player));
 					Utils.sendCenteredMessage(player, "§6§m---------------------------");
 					
 				} else {
@@ -35,6 +38,12 @@ public class StatCommands implements CommandExecutor {
 						@SuppressWarnings("deprecation")
 						OfflinePlayer ot = Bukkit.getOfflinePlayer(args[0]);
 						if(!(Hide.stats.isLoaded(ot))) Hide.stats.load(ot);
+							try {
+								if(!(Hide.cosmeticManager.isLoaded(ot))) Hide.cosmeticManager.loadPlayer(ot);
+							} catch (SQLException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
 						Utils.sendCenteredMessage(player, "§6§m---------------- §f§r " + ot.getName() +  "'s stats §6§m-------------");
 						player.sendMessage(" §3Points: §b" + Hide.stats.getPoints(ot));
 						player.sendMessage(" §3Games played: §b" + Hide.stats.getGamesPlayed(ot));
@@ -44,6 +53,7 @@ public class StatCommands implements CommandExecutor {
 						player.sendMessage(" §3Kills as Seeker: §b" + Hide.stats.getKilledHiders(ot));
 						player.sendMessage(" §3Kills as Hider: §b" + Hide.stats.getKilledSeekers(ot));
 						player.sendMessage(" §3Achievements: §b" + Hide.stats.getCompletedAchievements(ot).size() + "/" + GameAchievement.values().length);
+						player.sendMessage(" §6Gold Medals: §e" + Hide.cosmeticManager.getGoldMedals(ot));
 						Utils.sendCenteredMessage(player, "§6§m---------------------------");
 					} else {
 						Utils.sendCenteredMessage(player, "§6§m---------------- §f§r " + t.getName() +  "'s stats §6§m-------------");
@@ -55,6 +65,7 @@ public class StatCommands implements CommandExecutor {
 						player.sendMessage(" §3Kills as Seeker: §b" + Hide.stats.getKilledHiders(t));
 						player.sendMessage(" §3Kills as Hider: §b" + Hide.stats.getKilledSeekers(t));
 						player.sendMessage(" §3Achievements: §b" + Hide.stats.getCompletedAchievements(t).size() + "/" + GameAchievement.values().length);
+						player.sendMessage(" §6Gold Medals: §e" + Hide.cosmeticManager.getGoldMedals(player));
 						Utils.sendCenteredMessage(player, "§6§m---------------------------");
 					}
 				}
