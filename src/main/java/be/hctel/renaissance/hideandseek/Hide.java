@@ -115,7 +115,8 @@ public class Hide extends JavaPlugin {
 		registerListeners();
 		loadCommands();
 		shopPlayer = new FakePlayer(((CraftWorld) Bukkit.getWorld("HIDE_Lobby")).getHandle(), new GameProfile(UUID.fromString("fef039ef-e6cd-4987-9c84-26a3e6134277"), "§eShop"), new Location(Bukkit.getWorld("HIDE_Lobby"), -82.5, 90.01, 65.5, -135.0f, 0.0f), plugin);
-		shopPlayer.setSkin(UUID.fromString("5a7e8a16-e191-4fb8-8c92-869434202089"));
+		//shopPlayer.setSkin(UUID.fromString("5a7e8a16-e191-4fb8-8c92-869434202089"));
+		shopPlayer.setSkin("https://namemc.com/texture/212dd1d9cafbb877.png");
 		shopPlayer.setOnRightClickTask(new ArgumentRunnable() {
 			@Override
 			public void run(Object o) {

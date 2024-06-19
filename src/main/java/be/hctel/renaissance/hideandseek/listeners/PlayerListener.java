@@ -90,8 +90,8 @@ public class PlayerListener implements Listener {
 		Hide.rankManager.unLoad(e.getPlayer());
 		Hide.cosmeticManager.unloadPlayer(e.getPlayer());
 		Hide.stats.savePlayer((OfflinePlayer) e.getPlayer());
-		if(Hide.preGameTimer.gameStarted) Hide.gameEngine.disconnect((OfflinePlayer) e.getPlayer());
 		if(Hide.preGameTimer.gameStarted && Bukkit.getOnlinePlayers().size()-1 == 0) Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "s");
+		if(Hide.preGameTimer.gameStarted) Hide.gameEngine.disconnect((OfflinePlayer) e.getPlayer());
 	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
