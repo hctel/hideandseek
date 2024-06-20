@@ -309,8 +309,6 @@ public enum GameMap {
 			toAdd.add(a);
 			ItemStack b = new ItemStack(Material.LEAVES);
 			toAdd.add(b);
-			ItemStack c = new ItemStack(Material.BOOKSHELF);
-			toAdd.add(c);
 			ItemStack d = new ItemStack(Material.DARK_OAK_STAIRS);
 			toAdd.add(d);
 		}
@@ -348,6 +346,62 @@ public enum GameMap {
 			toAdd.add(b);
 			ItemStack c = new ItemStack(Material.FLOWER_POT);
 			toAdd.add(c);
+		}
+		if(this == GameMap.BEFORESPACE) {
+			ItemStack a = new ItemStack(Material.BOOKSHELF);
+			toAdd.add(a);
+			ItemStack b = new ItemStack(Material.BEACON);
+			toAdd.add(b);
+			ItemStack c = new ItemStack(Material.WORKBENCH);
+			toAdd.add(c);
+			ItemStack d = new ItemStack(Material.STONE);
+			toAdd.add(d);
+		}
+		if(this == GameMap.SPACE) {
+			ItemStack a = new ItemStack(Material.BEACON);
+			toAdd.add(a);
+			ItemStack b = new ItemStack(Material.WORKBENCH);
+			toAdd.add(b);
+			ItemStack c = new ItemStack(Material.FURNACE);
+			toAdd.add(c);
+			ItemStack d = new ItemStack(Material.JUKEBOX);
+			toAdd.add(d);
+			ItemStack e = new ItemStack(Material.LOG);
+			toAdd.add(e);
+		}
+		if(this == GameMap.SHIPYARD) {
+			ItemStack a = new ItemStack(Material.BEACON);
+			toAdd.add(a);
+			ItemStack b = new ItemStack(Material.LOG);
+			toAdd.add(b);
+			ItemStack c = new ItemStack(Material.ANVIL);
+			toAdd.add(c);
+			ItemStack d = new ItemStack(Material.MELON_BLOCK);
+			toAdd.add(d);
+			ItemStack e = new ItemStack(Material.WORKBENCH);
+			toAdd.add(e);
+		}
+		if(this == GameMap.CRUISE) {
+			ItemStack a = new ItemStack(Material.BEACON);
+			toAdd.add(a);
+			ItemStack b = new ItemStack(Material.FLOWER_POT_ITEM);
+			toAdd.add(b);
+			ItemStack c = new ItemStack(Material.BOOKSHELF);
+			toAdd.add(c);
+			ItemStack d = new ItemStack(Material.FURNACE);
+			toAdd.add(d);
+			ItemStack e = new ItemStack(Material.WORKBENCH);
+			toAdd.add(e);
+		}
+		if(this == GameMap.ANIMAL) {
+			ItemStack a = new ItemStack(Material.HAY_BLOCK);
+			toAdd.add(a);
+			ItemStack b = new ItemStack(Material.ANVIL);
+			toAdd.add(b);
+			ItemStack c = new ItemStack(Material.WORKBENCH);
+			toAdd.add(c);
+			ItemStack d = new ItemStack(Material.LOG);
+			toAdd.add(d);
 		}
 		return toAdd;
 		

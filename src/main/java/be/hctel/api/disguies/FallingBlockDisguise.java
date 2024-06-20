@@ -2,6 +2,7 @@ package be.hctel.api.disguies;
 
 import java.lang.reflect.Field;
 
+import org.apache.logging.log4j.Level;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_12_R1.entity.CraftFallingBlock;
@@ -48,6 +49,7 @@ public class FallingBlockDisguise {
 											PacketType.Play.Server.NAMED_ENTITY_SPAWN) {
 					@Override
 					public void onPacketSending(PacketEvent e) {
+						plugin.getLogger().info("onPacketSending!" + e);
 						if(e.getPlayer() != p && !isCancelled) {
 							WrapperPlayServerNamedEntitySpawn pk = new WrapperPlayServerNamedEntitySpawn(e.getPacket());
 							if(pk.getEntityID() == p.getEntityId()) {
@@ -96,11 +98,12 @@ public class FallingBlockDisguise {
 			}
 
 			for (Player o : Bukkit.getOnlinePlayers()) {
-				
+				PacketPlayOutSpawnEntity pck = new PacketPlayOutSpawnEntity(passenger, 70, getDataInt());
 				if (p == o) {
-		    	continue;
-		    }
-				((CraftPlayer) o).getHandle().playerConnection.sendPacket(new PacketPlayOutSpawnEntity(passenger, 70, getDataInt()));
+					continue;
+				}
+				plugin.getLogger().info(String.format("Sending %s to %s", pck.toString(), o.getName()));
+				((CraftPlayer) o).getHandle().playerConnection.sendPacket(pck);
 			    ((CraftPlayer) o).getHandle().playerConnection.sendPacket(new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.REMOVE_PLAYER, ((CraftPlayer) p).getHandle()));
 			
 		    }
