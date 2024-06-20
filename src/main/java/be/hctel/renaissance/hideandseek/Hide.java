@@ -190,7 +190,7 @@ public class Hide extends JavaPlugin {
 			}
 	        try {
 				con = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=false&autoReconnect=true", user, password);
-				System.out.println("jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=false&autoReconnect=true ," + user + ", " + password);
+				getLogger().info("jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=false&autoReconnect=true ," + user + ", " + password);
 				try {
 					@SuppressWarnings("unused")
 					Statement st = con.createStatement();

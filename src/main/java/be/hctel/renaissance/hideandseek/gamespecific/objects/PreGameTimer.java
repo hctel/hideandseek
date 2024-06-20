@@ -62,7 +62,7 @@ public class PreGameTimer {
 									p.sendMessage("");
 									Utils.sendCenteredMessage(p, "§e§m-----------------------------");
 								} else {
-									p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BASS, 1.0f, 0.75f);
+									p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BASS, 1.0f, 0.8f);
 									seekerQueue.remove(p);
 									Utils.sendCenteredMessage(p, "§e§m-----------------------------");
 									p.sendMessage("");

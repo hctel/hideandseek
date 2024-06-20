@@ -179,7 +179,6 @@ public class Stats {
 		return jsonList.get(Utils.getUUID(player)).getInt("deaths");
 	}
 	public int getDeaths(OfflinePlayer player) {
-		System.out.println(player);
 		return jsonList.get(Utils.getUUID(player)).getInt("deaths");
 	}
 	public ArrayList<GameAchievement> getAchievements(Player player) {
@@ -342,9 +341,7 @@ public class Stats {
 				if(f != "") {
 					try {
 					out.add(Utils.getItemStackFromNumericalID(Utils.convertToInt(f)).getType());
-					} catch (NumberFormatException e) {
-						System.out.println("bad number detected. Ignored.");
-					}
+					} catch (NumberFormatException e) {}
 				}
 			}
 			return out;

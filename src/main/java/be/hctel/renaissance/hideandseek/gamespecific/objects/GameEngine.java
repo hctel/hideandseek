@@ -389,7 +389,6 @@ public class GameEngine {
 			seekers.remove(offlinePlayer);
 			if(seekers.size() == 0) {
 				Player o = getNewSeeker();
-				System.out.println("Picked seeker: " + o.getName());
 				o.sendMessage(Hide.header + "§7you have been picked to be a seeker as all the previous seekers left");
 				addKill(null, o, true);
 			}
