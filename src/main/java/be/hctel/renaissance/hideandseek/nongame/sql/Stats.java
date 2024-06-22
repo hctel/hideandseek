@@ -5,7 +5,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -15,9 +14,11 @@ import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import be.hctel.renaissance.hideandseek.Hide;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.GameAchievement;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.JoinMessages;
 import be.hctel.renaissance.hideandseek.nongame.utils.AdvancedMath;
@@ -39,9 +40,11 @@ public class Stats {
 	private HashMap<OfflinePlayer, JSONArray> unlockedJMS = new HashMap<OfflinePlayer, JSONArray>();
 	private HashMap<OfflinePlayer, Integer> jms = new HashMap<OfflinePlayer, Integer>();
 	String topPlayerUUID = "";
+	private Plugin plugin;
 	
 	
-	public Stats(Connection con) {
+	public Stats(Connection con, Plugin plugin) {
+		this.plugin = plugin;
 		this.con = con;
 		try {
 			ResultSet rs = con.createStatement().executeQuery("SELECT * FROM HIDE ORDER BY points DESC LIMIT 1;");
@@ -79,7 +82,7 @@ public class Stats {
 			jsonList.put(Utils.getUUID(player), j);
 			unlockedJMS.put(player, unlockedjms);
 			jms.put(player, joinMessage);
-			Bukkit.getServer().getLogger().log(Level.INFO, "Loaded stats! UUID : " + uuid + ", points " + j.getInt("total_points") + ", joinMessages " + joinMessage +  "," + unlockedjms);
+			this.plugin.getLogger().info("Loaded stats! UUID : " + uuid + ", points " + j.getInt("total_points") + ", joinMessages " + joinMessage +  "," + unlockedjms);
 			if(j.getInt("total_points") != rs.getInt("points")) {
 				st.execute(String.format("UPDATE HIDE SET points = %d WHERE UUID = '%s'", j.getInt("total_points"), uuid));
 			}
@@ -119,7 +122,7 @@ public class Stats {
 		jsonList.put(Utils.getUUID(player), j);
 		unlockedJMS.put(player, unlockedjms);
 		jms.put(player, joinMessage);
-		Bukkit.getServer().getLogger().log(Level.INFO, "Loaded stats! UUID : " + uuid + ", points " + j.getInt("total_points") + ", joinMessages " + joinMessage +  "," + unlockedjms);
+		this.plugin.getLogger().info("Loaded stats! UUID : " + uuid + ", points " + j.getInt("total_points") + ", joinMessages " + joinMessage +  "," + unlockedjms);
 	}
 	
 	/**

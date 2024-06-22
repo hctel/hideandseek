@@ -99,13 +99,13 @@ public class Hide extends JavaPlugin {
 		openConnection();
 		
 		//Creating every helpers
-		stats = new Stats(con);
+		stats = new Stats(con, this);
 		rankManager = new RankManager(con, this);
 		cosmeticManager = new CosmeticsManager(con, this);
-		mapLoader = new MapLoader(plugin);
+		mapLoader = new MapLoader(this);
 		mapLoader.loadMaps();
 		preGameTimer = new PreGameTimer(this);
-		votesHandler = new VotesHandler(plugin);
+		votesHandler = new VotesHandler(this);
 		bm = new BungeeCordMessenger(this);
 		blockShop = new BlockShop(this);
 		joinMessageMenu = new JoinMessageHandler(this);

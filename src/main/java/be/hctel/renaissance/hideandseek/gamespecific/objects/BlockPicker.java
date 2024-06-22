@@ -126,7 +126,6 @@ public class BlockPicker {
 	}
 	
 	public void listener(InventoryClickEvent e) {
-		System.out.println("InventoryClickEvent in BlockPicker class!");
 		if(e.getInventory().getName().equalsIgnoreCase("Choose your block!")) {
 			Player p = (Player) e.getWhoClicked();
 			ItemStack picked = e.getCurrentItem();

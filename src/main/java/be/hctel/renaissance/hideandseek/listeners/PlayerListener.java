@@ -127,6 +127,7 @@ public class PlayerListener implements Listener {
 		Player p = e.getPlayer();
 		Block b = e.getBlock();
 		if(Hide.gameEngine.getTeam(p) == GameTeam.SEEKER) {
+			if(b == null) return;
 			for(Player i : Hide.gameEngine.disguises.keySet()) {
 				if(Hide.gameEngine.disguises.get(i).getBlock().equals(b)) {
 					Hide.gameEngine.disguises.get(i).makeUnsolid();

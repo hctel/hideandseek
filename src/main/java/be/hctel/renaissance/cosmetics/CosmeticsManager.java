@@ -56,13 +56,13 @@ public class CosmeticsManager {
 		return setTokens(player, getTokens(player) + amount);
 	}
 	public boolean setGoldMedals(Player player, int amount) {
-		if(tokens.containsKey(player)) {
-			tokens.replace(player, amount);
+		if(goldMedals.containsKey(player)) {
+			goldMedals.replace(player, amount);
 			return true;
 		} else return false;
 	}
 	public boolean addGoldMedals(Player player, int amount) {
-		return setGoldMedals(player, amount + getTokens(player));
+		return setGoldMedals(player, amount + getGoldMedals(player));
 	}
 	public boolean addGoldMedal(Player player) {
 		return addGoldMedals(player, 1);

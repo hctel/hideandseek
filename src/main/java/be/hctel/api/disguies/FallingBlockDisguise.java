@@ -1,8 +1,6 @@
 package be.hctel.api.disguies;
 
 import java.lang.reflect.Field;
-
-import org.apache.logging.log4j.Level;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_12_R1.entity.CraftFallingBlock;
@@ -11,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import com.comphenix.packetwrapper.WrapperPlayServerNamedEntitySpawn;
+import com.comphenix.packetwrapper.WrapperPlayServerUpdateAttributes;
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.ListenerPriority;
@@ -49,17 +48,30 @@ public class FallingBlockDisguise {
 											PacketType.Play.Server.NAMED_ENTITY_SPAWN) {
 					@Override
 					public void onPacketSending(PacketEvent e) {
-						plugin.getLogger().info("onPacketSending!" + e);
 						if(e.getPlayer() != p && !isCancelled) {
 							WrapperPlayServerNamedEntitySpawn pk = new WrapperPlayServerNamedEntitySpawn(e.getPacket());
 							if(pk.getEntityID() == p.getEntityId()) {
-								plugin.getLogger().info("Sending disguise to " + e.getPlayer().getName());
 								e.setCancelled(true);
 								sendToPlayer(e.getPlayer());
 							}
 						}
 					}
 		});
+		ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(plugin,
+				ListenerPriority.HIGHEST,
+				PacketType.Play.Server.UPDATE_ATTRIBUTES) {
+			@Override
+			public void onPacketSending(PacketEvent e) {
+				if(e.getPlayer() != p && !isCancelled) {
+					WrapperPlayServerUpdateAttributes pk = new WrapperPlayServerUpdateAttributes(e.getPacket());
+					String[] details = {pk.getEntityID() + "", p.getEntityId() + ""};
+						if(pk.getEntityID() == p.getEntityId()) {
+							e.setCancelled(true);
+						}
+				}
+			}
+		});
+
 	}
 	 
 	
@@ -102,17 +114,16 @@ public class FallingBlockDisguise {
 				if (p == o) {
 					continue;
 				}
-				plugin.getLogger().info(String.format("Sending %s to %s", pck.toString(), o.getName()));
 				((CraftPlayer) o).getHandle().playerConnection.sendPacket(pck);
 			    ((CraftPlayer) o).getHandle().playerConnection.sendPacket(new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.REMOVE_PLAYER, ((CraftPlayer) p).getHandle()));
 			
 		    }
 	}
 	
+	@SuppressWarnings("deprecation")
 	private void sendToPlayer(Player player) {
 		if(player == p) return;
-		PacketPlayOutEntityDestroy ed = new PacketPlayOutEntityDestroy(p.getEntityId());
-		((CraftPlayer) player).getHandle().playerConnection.sendPacket(ed);
+		passenger = ((CraftFallingBlock) p.getWorld().spawnFallingBlock(p.getLocation().add(255, 50, 255), m, d)).getHandle();
 		passenger.locX = p.getLocation().getX();
 		passenger.locY = p.getLocation().getY();
 		passenger.locZ = p.getLocation().getZ();
@@ -125,8 +136,9 @@ public class FallingBlockDisguise {
 			} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
 				e.printStackTrace();
 			}
-
-		((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutSpawnEntity(passenger, 70, getDataInt()));
+		PacketPlayOutSpawnEntity pck = new PacketPlayOutSpawnEntity(passenger, 70, getDataInt());
+		((CraftPlayer) player).getHandle().playerConnection.sendPacket(pck);
+		((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.REMOVE_PLAYER, ((CraftPlayer) p).getHandle()));
 	}
 	
 	public void cancel() {

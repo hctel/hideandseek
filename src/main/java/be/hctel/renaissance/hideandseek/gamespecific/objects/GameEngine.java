@@ -297,31 +297,35 @@ public class GameEngine {
 			}
 		} else {
 			if(seekerKill) {
-				switch(disguises.get(killed).getBlock().getType()) {
-				case FURNACE:
-					unlockAch(player, GameAchievement.FURNACE);
-					break;
-				case ICE:
-					unlockAch(player, GameAchievement.ICE);
-					break;
-				case FLOWER_POT:
-					unlockAch(player, GameAchievement.PLANT);
-					break;
-				case LEAVES:
-					unlockAch(player, GameAchievement.LEAF);
-					break;
-				case ANVIL:
-					unlockAch(player, GameAchievement.ANVIL);
-					break;
-				case BEACON:
-					unlockAch(player, GameAchievement.BEACON);
-					break;
-				case SNOW:
-					unlockAch(player, GameAchievement.SNOW);
-					break;
-				default:
-					break;
-				
+				try {
+					switch(disguises.get(killed).getBlock().getType()) {
+					case FURNACE:
+						unlockAch(player, GameAchievement.FURNACE);
+						break;
+					case ICE:
+						unlockAch(player, GameAchievement.ICE);
+						break;
+					case FLOWER_POT:
+						unlockAch(player, GameAchievement.PLANT);
+						break;
+					case LEAVES:
+						unlockAch(player, GameAchievement.LEAF);
+						break;
+					case ANVIL:
+						unlockAch(player, GameAchievement.ANVIL);
+						break;
+					case BEACON:
+						unlockAch(player, GameAchievement.BEACON);
+						break;
+					case SNOW:
+						unlockAch(player, GameAchievement.SNOW);
+						break;
+					default:
+						break;
+					
+					}
+				} catch (NullPointerException e) {
+					plugin.getLogger().warning("Error in switch: getBlock().getType() == null!!");
 				}
 				if(seekers.size() == 1) unlockAch(killed, GameAchievement.PEEKABOO);
 				heartbeat.remove(killed);
