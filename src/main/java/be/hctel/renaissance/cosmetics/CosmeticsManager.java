@@ -68,7 +68,7 @@ public class CosmeticsManager {
 		return addGoldMedals(player, 1);
 	}
 	
-	public void unloadPlayer(Player player) throws SQLException {
+	public void unloadPlayer(OfflinePlayer player) throws SQLException {
 		if(tokens.containsKey(player)) {
 			con.createStatement().execute("UPDATE cosmetics SET TOKENS = " + tokens.get(player) + ", MEDALS = "+ goldMedals.get(player) + " WHERE UUID = '" + Utils.getUUID(player) + "';");
 			tokens.remove(player);
@@ -82,11 +82,15 @@ public class CosmeticsManager {
 	public void saveAll() {
 		for(OfflinePlayer p : tokens.keySet()) {
 			try {
-				con.createStatement().execute("UPDATE cosmetics SET TOKENS = " + tokens.get(p) + " WHERE UUID = '" + Utils.getUUID(p) + "';");
+				unloadPlayer(p);
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
+		tokens.clear();
+		tokens = null;
+		goldMedals.clear();
+		goldMedals = null;
 	}
 }

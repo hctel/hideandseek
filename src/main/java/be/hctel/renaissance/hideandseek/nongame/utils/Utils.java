@@ -344,14 +344,11 @@ public class Utils {
 	 * @param location the location where the firewxork should be spawned
 	 */
 	public static void spawnFireworks(Location location){
-        Firework fw = (Firework) location.getWorld().spawnEntity(location, EntityType.FIREWORK);
+        Firework fw = location.getWorld().spawn(location, Firework.class);
         FireworkMeta fwm = fw.getFireworkMeta();
-       
         fwm.setPower(1);
-        fwm.addEffect(FireworkEffect.builder().withColor(Color.RED).withFade(Color.ORANGE).flicker(true).build());
-       
+        fwm.addEffects(FireworkEffect.builder().withColor(Color.RED).withFade(Color.ORANGE).flicker(true).build());
         fw.setFireworkMeta(fwm);
-        fw.detonate();	
         }
 	/**
 	 * Maps a value into a new range
@@ -605,7 +602,7 @@ public class Utils {
 		WrapperPlayServerSpawnEntity fbs = new WrapperPlayServerSpawnEntity();
 			int entityID = new Random().nextInt();
 	        fbs.setEntityID(entityID);
-	        fbs.setObjectData(blockID | (data << 0x10));
+	        fbs.setObjectData(blockID | (data << 0x10));	
 	        Location l = player.getLocation();
 	        fbs.setX(l.getX());
 	        fbs.setY(l.getY());

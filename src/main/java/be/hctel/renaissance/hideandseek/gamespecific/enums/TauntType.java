@@ -98,7 +98,7 @@ public enum TauntType {
 		lore.add("");
 		lore.add("§d" + points + " Points/Experience");
 		lore.add("");
-		lore.add("§b -> Click to perfor " + name);
+		lore.add("§b -> Click to perform " + name);
 		b.setLore(lore);
 		a.setItemMeta(b);
 		return a;

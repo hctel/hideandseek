@@ -20,6 +20,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
 import be.hctel.api.scoreboard.DynamicScoreboard;
 import be.hctel.renaissance.hideandseek.Hide;
@@ -55,6 +56,7 @@ public class GameEngine {
 	private HashMap<Player, Integer> hiderKills = new HashMap<Player, Integer>();
 	private HashMap<Player, Integer> seekerKills = new HashMap<Player, Integer>();
 	private HashMap<Player, Integer> deaths = new HashMap<Player, Integer>();
+	private HashMap<Player, Integer> points = new HashMap<Player, Integer>();
 	
 	private HashMap<Player, DynamicScoreboard> sidebars = new HashMap<Player, DynamicScoreboard>();
 	public HashMap<Player, DisguiseBlockManager> disguises = new HashMap<Player, DisguiseBlockManager>();
@@ -63,6 +65,8 @@ public class GameEngine {
 	public HashMap<Material, ItemStack> blocksLeftItem = new HashMap<Material, ItemStack>();
 	public HashMap<Player, Integer> durability = new HashMap<Player, Integer>();
 	private PotionEffect hbeft = new PotionEffect(PotionEffectType.SPEED, 5, 1, false, false);
+	
+	BukkitTask everySecondTask;
 	
 	public GameEngine(Plugin plugin, GameMap map) {
 		this.plugin = plugin;
@@ -77,6 +81,10 @@ public class GameEngine {
 		isPlaying = true;
 		this.tauntManager = new TauntManager(plugin);
 		for(Player p : Bukkit.getOnlinePlayers()) {
+			seekerKills.put(p, 0);
+			hiderKills.put(p, 0);
+			points.put(p,0);
+			deaths.put(p, 0);
 			sidebars.put(p, new DynamicScoreboard(Utils.randomString(16), "§b§lHide§a§lAnd§e§lSeek", Bukkit.getScoreboardManager()));
 			sidebars.get(p).setLine(14, "§e§lTime left");
 			sidebars.get(p).setLine(13, "§8Waiting...");
@@ -97,9 +105,6 @@ public class GameEngine {
 			Hide.stats.addGame(p);
 			hiders.add(p);
 			p.setGameMode(GameMode.ADVENTURE);
-			deaths.put(p, 0);
-			seekerKills.put(p, 0);
-			hiderKills.put(p, 0);
 			p.getInventory().clear();
 			p.setBedSpawnLocation(hiderSpawn, true);
 			for(Material M : map.getAllBlocksAvailable()) {
@@ -143,7 +148,7 @@ public class GameEngine {
 		}
 		
 		//Task running every second (timer decrease, give items, ...)
-		new BukkitRunnable() {
+		everySecondTask = new BukkitRunnable() {
 			@Override
 			public void run() {
 				if(isPlaying) {
@@ -197,12 +202,16 @@ public class GameEngine {
 								sidebars.get(p).setLine(13, Utils.formatSeconds(timer-300));
 								sidebars.get(p).setLine(10, hiders.size() + " ");
 								sidebars.get(p).setLine(7, seekers.size() + "");
+								sidebars.get(p).setLine(5, "§7Points: §f" + points.get(p));
+								sidebars.get(p).setLine(4, "§7Kills: §f" + (seekerKills.get(p) + hiderKills.get(p)));
 							}
 						} else {
 							for(Player p : sidebars.keySet()) {
 								sidebars.get(p).setLine(13, Utils.formatSeconds(timer));
 								sidebars.get(p).setLine(10, hiders.size() + " ");
 								sidebars.get(p).setLine(7, seekers.size() + "");
+								sidebars.get(p).setLine(5, "§7Points: §f" + points.get(p));
+								sidebars.get(p).setLine(4, "§7Kills: §f" + (seekerKills.get(p) + hiderKills.get(p)));
 							}
 						}
 						for(Player P : durability.keySet()) {
@@ -296,6 +305,7 @@ public class GameEngine {
 				killed.teleport(hiderSpawn);
 			}
 		} else {
+			addPoints(player, 30);
 			if(seekerKill) {
 				try {
 					switch(disguises.get(killed).getBlock().getType()) {
@@ -416,6 +426,7 @@ public class GameEngine {
 	private void endGame(GameTeam winners) {
 		isGameFinished = true;
 		blocksLeftGiven = false;
+		everySecondTask.cancel();
 		if(winners == GameTeam.HIDER) {
 			new BukkitRunnable() {
 				@Override
@@ -540,5 +551,9 @@ public class GameEngine {
 		player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
 		Hide.stats.completeAchievement(player, achievement);
 		return true;
+	}
+	
+	public void addPoints(Player player, int points) {
+		this.points.put(player, this.points.get(player) + points);
 	}
 }
