@@ -42,7 +42,7 @@ public class PlayerListener implements Listener {
 	private static TextComponent reportBug = new TextComponent (" §eIf there's any error, click ");
 	static {
 		TextComponent url = new TextComponent("§9§nthis link");
-		url.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://github.com/hctel/hideandseek/issues"));
+		url.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://forms.gle/rcj97SFdc4pBQbeT7"));
 		TextComponent end = new TextComponent(" §e to report an issue.");
 		reportBug.addExtra(url);
 		reportBug.addExtra(end);

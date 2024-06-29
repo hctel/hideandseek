@@ -42,8 +42,8 @@ public class VotesHandler {
 			}
 			//To replace first map with specific map
 			if(i == 0) {
-				a.add(GameMap.DEPARTURE);
-				votes.put(GameMap.DEPARTURE, 0);
+				a.add(GameMap.OFFICE);
+				votes.put(GameMap.OFFICE, 0);
 				continue;
 			}
 			a.add(b);
