@@ -37,6 +37,7 @@ public enum GameMap {
 	CRUISE("Cruise", "HIDE_Cruise", new SpawnLocation("HIDE_Cruise", 50.5, 81, -60.5, 180.1f, 0.1f), new SpawnLocation("HIDE_Cruise", 49.5, 69, -96.5, 180.1f, 0.1f)),
 	BEFORESPACE("Before Space", "HIDE_BeforeSpace", new SpawnLocation("HIDE_BeforeSpace", -167.5, 70, -205.5, 0.1f, 0.1f), new SpawnLocation("HIDE_BeforeSpace", -167.5, 60, -209.5, 180.1f, 0.1f)),
 	ANIMAL("Animal Village", "HIDE_Animal", new SpawnLocation("HIDE_Animal", -75.5, 87, -67.5, 180.1f, 0.1f), new SpawnLocation("HIDE_Animal", -65.5, 87, -123.5, 0.1f, 0.1f)),	
+	PIRATE("Pirate Ship", "HIDE_Pirate", new SpawnLocation("HIDE_Pirate", -87.5, 66, -91.5, -45.1f, 0.1f), new SpawnLocation("HIDE_Pirate", -181.5, 59, -96, -90.1f, 0.1f)),	
 	HOTEL("Hotel", "HIDE_Hotel", new SpawnLocation("HIDE_Hotel", -2, 64, -35, 0.1f, 0.1f), new SpawnLocation("HIDE_Hotel", -3, 61, -21, 0.1f, 0.1f));
 	
 	String mapName;
@@ -100,18 +101,6 @@ public enum GameMap {
 			ItemStack e = new ItemStack(Material.BOOKSHELF);
 			toAdd.add(e);
 			}
-		if(this == GameMap.LOTUS) {
-			ItemStack a = new ItemStack(Material.WORKBENCH);
-			toAdd.add(a);
-			ItemStack b = new ItemStack(Material.BEACON);
-			toAdd.add(b);
-			ItemStack c = new ItemStack(Material.BOOKSHELF);
-			toAdd.add(c);
-			ItemStack d = new ItemStack(Material.ANVIL);
-			toAdd.add(d);
-			ItemStack e = new ItemStack(Material.FURNACE);
-			toAdd.add(e);
-		}
 		if(this == GameMap.NEXUS_CITY) {
 			ItemStack a = new ItemStack(Material.QUARTZ_STAIRS);
 			toAdd.add(a);
@@ -131,7 +120,8 @@ public enum GameMap {
 			toAdd.add(a);
 			ItemStack b = new ItemStack(Material.FLOWER_POT);
 			toAdd.add(b);
-			ItemStack c = new ItemStack(Material.PISTON_BASE);
+			@SuppressWarnings("deprecation")
+			ItemStack c = new ItemStack(Material.PISTON_BASE, 1, (short) 0, (byte) 1);
 			toAdd.add(c);
 			ItemStack d = new ItemStack(Material.WORKBENCH);
 			toAdd.add(d);
@@ -402,6 +392,22 @@ public enum GameMap {
 			toAdd.add(c);
 			ItemStack d = new ItemStack(Material.LOG);
 			toAdd.add(d);
+		}
+		if(this == GameMap.PIRATE) {
+			ItemStack a = new ItemStack(Material.LOG);
+			toAdd.add(a);
+			@SuppressWarnings("deprecation")
+			ItemStack b = new ItemStack(Material.WOOD, 1, (short) 1, (byte) 5);
+			toAdd.add(b);
+			@SuppressWarnings("deprecation")
+			ItemStack c = new ItemStack(Material.PISTON_BASE, 1, (short) 0, (byte) 0);
+			toAdd.add(c);
+			ItemStack d = new ItemStack(Material.WORKBENCH);
+			toAdd.add(d);
+			ItemStack e = new ItemStack(Material.BOOKSHELF);
+			toAdd.add(e);
+			ItemStack f = new ItemStack(Material.LEAVES);
+			toAdd.add(f);
 		}
 		return toAdd;
 		
