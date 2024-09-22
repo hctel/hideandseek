@@ -51,7 +51,7 @@ public class GameEngine {
 	private ArrayList<Player> hiders = new ArrayList<Player>();
 	private ArrayList<Player> seekers = new ArrayList<Player>();
 	private ArrayList<Player> spectators = new ArrayList<Player>();
-	private ArrayList<Player> heartbeat = new ArrayList<Player>();
+	//private ArrayList<Player> heartbeat = new ArrayList<Player>();
 	private ArrayList<Player> queuedSeekers;
 	
 	private HashMap<Player, Integer> hiderKills = new HashMap<Player, Integer>();
@@ -160,13 +160,13 @@ public class GameEngine {
 				if(isPlaying) {
 					if(timer > 0) {
 						for(Player P : hiders) {
-							if(Utils.doubleContains(P.getNearbyEntities(5.0, 5.0, 5.0), seekers)) {
+							/*if(Utils.doubleContains(P.getNearbyEntities(5.0, 5.0, 5.0), seekers)) {
 								heartbeat.add(P);
 								Utils.sendRedVignette(P);
 							} else {
 								heartbeat.remove(P);
 								Utils.normalVignette(P);
-							}
+							}*/
 						}
 						if(timer < 304 && timer > 300) {
 							Bukkit.broadcastMessage(Hide.header + "§eStarting in §f" + (timer-300));
@@ -242,7 +242,7 @@ public class GameEngine {
 					for(Player p : hiders) {
 						disguises.get(p).tick();
 					}
-					for(Player P : heartbeat) {
+					/*for(Player P : heartbeat) {
 						if(every2second-tick > 40) {
 							P.addPotionEffect(hbeft);
 							P.playSound(P.getLocation(), Sound.BLOCK_NOTE_BASEDRUM, 2.0f, 0.8f);
@@ -253,7 +253,7 @@ public class GameEngine {
 							P.playSound(P.getLocation(), Sound.BLOCK_NOTE_BASEDRUM, 2.0f, 0.8f);
 							every2secondplus05 = 0;
 						}
-					}
+					}*/
 				}
 			}
 			
@@ -272,7 +272,7 @@ public class GameEngine {
 		killed.spigot().respawn();
 		if(player == null) {
 			if(seekerKill) {
-				heartbeat.remove(killed);
+				//heartbeat.remove(killed);
 				Utils.normalVignette(killed);
 				deaths.replace(killed, deaths.get(killed)+1);
 				Hide.stats.addDeath(killed);
@@ -344,7 +344,7 @@ public class GameEngine {
 					plugin.getLogger().warning("Error in switch: getBlock().getType() == null!!");
 				}
 				if(seekers.size() == 1) unlockAch(killed, GameAchievement.PEEKABOO);
-				heartbeat.remove(killed);
+				//heartbeat.remove(killed);
 				Utils.normalVignette(killed);
 				seekerKills.replace(player, seekerKills.get(player)+1);
 				Hide.stats.addKilledHider(player);
