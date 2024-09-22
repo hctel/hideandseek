@@ -67,7 +67,7 @@ public class PlayerListener implements Listener {
 			e.getPlayer().setGameMode(GameMode.SPECTATOR);
 		}
 		Player p = e.getPlayer();
-		p.sendTitle("§c§lDEV MODE", "§eIf you're not involved in testing, please disconnect!", 10, 120, 20);
+		//p.sendTitle("§c§lDEV MODE", "§eIf you're not involved in testing, please disconnect!", 10, 120, 20);
 		if(!Hide.preGameTimer.gameStarted) {
 			p.teleport(new Location(Bukkit.getWorld("HIDE_Lobby"), -79.5, 90.5, 61.5, 0.1f, 0.1f));
 			p.setGameMode(GameMode.ADVENTURE);
