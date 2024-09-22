@@ -64,6 +64,7 @@ public class PlayerListener implements Listener {
 		if(Hide.preGameTimer.gameStarted) {
 			Hide.gameEngine.addSpectator(e.getPlayer());
 			e.getPlayer().sendMessage(Hide.header + "§eYou are a spectator.");
+			e.getPlayer().setGameMode(GameMode.SPECTATOR);
 		}
 		Player p = e.getPlayer();
 		if(!Hide.preGameTimer.gameStarted) {

@@ -61,10 +61,13 @@ public class GameEngine {
 	
 	private HashMap<Player, DynamicScoreboard> sidebars = new HashMap<Player, DynamicScoreboard>();
 	public HashMap<Player, DisguiseBlockManager> disguises = new HashMap<Player, DisguiseBlockManager>();
+	
 	public HashMap<Material, Integer> blocksLeft = new HashMap<Material, Integer>();
 	int prevBlockLeftKey = -1;
 	public HashMap<Material, ItemStack> blocksLeftItem = new HashMap<Material, ItemStack>();
+	
 	public HashMap<Player, Integer> durability = new HashMap<Player, Integer>();
+	
 	private PotionEffect hbeft = new PotionEffect(PotionEffectType.SPEED, 5, 1, false, false);
 	
 	BukkitTask everySecondTask;
