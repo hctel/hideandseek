@@ -52,3 +52,7 @@ commands:
     usage: /signer <operation>
     permission: hide.admin
     description: Signer system
+  dev:
+    usage: /dev <subcommand>
+    permission: hide.hctel
+    description: Versatile command to test miscellaneous things

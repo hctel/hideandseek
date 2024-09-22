@@ -24,6 +24,7 @@ import be.hctel.api.fakeentities.FakePlayer;
 import be.hctel.api.runnables.ArgumentRunnable;
 import be.hctel.api.signs.Signer;
 import be.hctel.renaissance.cosmetics.CosmeticsManager;
+import be.hctel.renaissance.hideandseek.commands.DevCommands;
 import be.hctel.renaissance.hideandseek.commands.RankCommands;
 import be.hctel.renaissance.hideandseek.commands.SignCommands;
 import be.hctel.renaissance.hideandseek.commands.StaffComands;
@@ -161,6 +162,7 @@ public class Hide extends JavaPlugin {
 		getCommand("katest").setExecutor(new StaffComands());
 		getCommand("ping").setExecutor(new UtilsCommands());
 		getCommand("signer").setExecutor(new SignCommands());
+		getCommand("dev").setExecutor(new DevCommands());
 	}
 	
 	private void openConnection() {

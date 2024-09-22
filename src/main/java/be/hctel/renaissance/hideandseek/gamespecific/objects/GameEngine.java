@@ -260,7 +260,7 @@ public class GameEngine {
 		}.runTaskTimer(plugin, 0L, 1L);		
 	}
 	public boolean areSameTeam(Player a, Player b) {
-		return (hiders.contains(a) && hiders.contains(b)) || (seekers.contains(a) && seekers.contains(b));
+		return getTeam(a) == getTeam(b);
 	}
 	public boolean isSeeker(Player player) {
 		return seekers.contains(player);
