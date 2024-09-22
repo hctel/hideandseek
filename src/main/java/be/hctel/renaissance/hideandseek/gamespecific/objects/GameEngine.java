@@ -50,6 +50,7 @@ public class GameEngine {
 	
 	private ArrayList<Player> hiders = new ArrayList<Player>();
 	private ArrayList<Player> seekers = new ArrayList<Player>();
+	private ArrayList<Player> spectators = new ArrayList<Player>();
 	private ArrayList<Player> heartbeat = new ArrayList<Player>();
 	private ArrayList<Player> queuedSeekers;
 	
@@ -79,6 +80,7 @@ public class GameEngine {
 		this.hiderSpawn = new Location(Bukkit.getWorld("TEMPWORLD" + index), map.getHiderStart().getX(), map.getHiderStart().getY(), map.getHiderStart().getZ(), map.getHiderStart().getYaw(), map.getHiderStart().getPitch());
 		this.seekerSpawn = new Location(Bukkit.getWorld("TEMPWORLD" + index), map.getSeekerStart().getX(), map.getSeekerStart().getY(), map.getSeekerStart().getZ(), map.getSeekerStart().getYaw(), map.getSeekerStart().getPitch());
 		isPlaying = true;
+		blocksLeft.put(Material.STONE, 0);
 		this.tauntManager = new TauntManager(plugin);
 		for(Player p : Bukkit.getOnlinePlayers()) {
 			seekerKills.put(p, 0);
@@ -107,16 +109,16 @@ public class GameEngine {
 			p.setGameMode(GameMode.ADVENTURE);
 			p.getInventory().clear();
 			p.setBedSpawnLocation(hiderSpawn, true);
-			for(Material M : map.getAllBlocksAvailable()) {
-				blocksLeft.put(M, 0);
-			}
+			
 		}
 		Player firstSeeker = getNewSeeker();
 		hiders.remove(firstSeeker);
 		seekers.add(firstSeeker);
 		
 		unlockAch(firstSeeker, GameAchievement.THECHOSENONE);
-
+		for(Material M : map.getAllBlocksAvailable()) {
+			blocksLeft.put(M, 0);
+		}
 		
 		for(Player p : hiders) {
 			p.teleport(hiderSpawn);
@@ -130,6 +132,7 @@ public class GameEngine {
 			Utils.sendCenteredMessage(p, "§cThe seeker will be released in §l30 seconds!");
 			Utils.sendCenteredMessage(p, "§6§m--------------------------------");
 			disguises.put(p, new DisguiseBlockManager(p, Hide.blockPicker.playerBlock.get(p), plugin));
+			blocksLeft.put(Hide.blockPicker.playerItem.get(p), blocksLeft.get(Hide.blockPicker.playerItem.get(p))+1);
 		}
 		for(Player p : seekers) {
 			p.teleport(seekerSpawn);
@@ -185,7 +188,7 @@ public class GameEngine {
 								p.getInventory().setItem(0, ItemsManager.hidersSword());
 							}
 						}
-						if(timer == 0) {
+						if(timer == 300) {
 							blocksLeftGiven = true;
 						}
 						if(timer == 30) {
@@ -251,8 +254,7 @@ public class GameEngine {
 				}
 			}
 			
-		}.runTaskTimer(plugin, 0L, 1L);
-		
+		}.runTaskTimer(plugin, 0L, 1L);		
 	}
 	public boolean areSameTeam(Player a, Player b) {
 		return (hiders.contains(a) && hiders.contains(b)) || (seekers.contains(a) && seekers.contains(b));
@@ -297,6 +299,7 @@ public class GameEngine {
 					}
 					
 				}.runTaskLater(plugin, 30*20L);
+				blocksLeft.put(Hide.blockPicker.playerItem.get(p), blocksLeft.get(Hide.blockPicker.playerItem.get(p))-1);
 				checkForHidersRemaining();
 			} else {
 				Hide.stats.addDeath(killed);
@@ -377,6 +380,7 @@ public class GameEngine {
 					}
 					
 				}.runTaskLater(plugin, 10*20L);
+				blocksLeft.put(Hide.blockPicker.playerItem.get(p), blocksLeft.get(Hide.blockPicker.playerItem.get(p))-1);
 				checkForHidersRemaining();
 			} else {
 				Hide.stats.addKilledSeeker(player);
@@ -420,7 +424,14 @@ public class GameEngine {
 	public GameTeam getTeam(Player player) {
 		if(hiders.contains(player)) return GameTeam.HIDER;
 		else if(seekers.contains(player)) return GameTeam.SEEKER;
+		else if(spectators.contains(player)) return GameTeam.SPECTATOR;
 		else return GameTeam.SPECTATOR;
+	}
+	
+	public void addSpectator(Player player) {
+		spectators.add(player);
+		player.setGameMode(GameMode.SPECTATOR);
+		player.teleport(map.getHiderStart());	
 	}
 	
 	private void endGame(GameTeam winners) {
@@ -507,27 +518,15 @@ public class GameEngine {
 		if(!blocksLeftGiven) return;
 		if(disguises.isEmpty()) return;
 		for(Material M : blocksLeft.keySet()) {
-			blocksLeft.replace(M, 0);
-		}
-		for(Player P : disguises.keySet()) {
-			blocksLeft.replace(disguises.get(P).getBlock().getType(), blocksLeft.get(disguises.get(P).getBlock().getType())+1);
-		}
-		for(Material M : blocksLeft.keySet()) {
-			if(blocksLeft.get(M) == 0) {
-				blocksLeft.remove(M);
-				blocksLeftItem.remove(M);
-			}
-			if(blocksLeftItem.isEmpty()) {
-				blocksLeftItem.put(M, new ItemStack(M, blocksLeft.get(M)));
-			} else {
-				blocksLeftItem.get(M).setAmount(blocksLeft.get(M));
-			}
-			
+			if(blocksLeft.get(M) > 0) {
+				blocksLeftItem.put(M, new ItemStack(M, blocksLeft.get(M)));		
+			}					
 		}
 	}
 	private void updateBlocksLeftItem() {
-		if(blocksLeftGiven) {
-			if(prevBlockLeftKey == blocksLeftItem.size()) prevBlockLeftKey = -1;
+		updateBlocksLeft();
+		if(blocksLeftGiven && blocksLeftItem.size() != 0) {
+			if(prevBlockLeftKey == blocksLeftItem.size()-1) prevBlockLeftKey = -1;
 			prevBlockLeftKey++;
 			for(Player P : seekers) {
 				P.getInventory().setItem(8, blocksLeftItem.get(blocksLeftItem.keySet().toArray()[prevBlockLeftKey]));

@@ -26,6 +26,7 @@ public class BlockPicker {
 	Stats stats;
 	HashMap<Player, ItemStack> playerBlock = new HashMap<Player, ItemStack>();
 	HashMap<Player, Inventory> playerBlockSelector = new HashMap<Player, Inventory>();
+	HashMap<Player, Material> playerItem = new HashMap<Player, Material>();
 	private Plugin plugin;
 	
 	public BlockPicker(GameMap map, Stats stats, Plugin plugin) {
@@ -66,6 +67,10 @@ public class BlockPicker {
 			if(a.getType().equals(Material.FLOWER_POT)) {
 				aA = new ItemStack(Material.FLOWER_POT);
 				a = new ItemStack(Material.FLOWER_POT_ITEM);
+			}
+			if (a.getType().equals(Material.CAKE)) {
+				aA = new ItemStack(Material.CAKE_BLOCK);
+				a = new ItemStack(Material.CAKE);
 			}
 			ItemMeta b = a.getItemMeta();
 			b.setDisplayName("§e§l" + Utils.getUserItemName(aA));
@@ -113,8 +118,10 @@ public class BlockPicker {
 		int picked = r.nextInt(all.size());
 		if(all.get(picked).getType().equals(Material.FLOWER_POT_ITEM)) {
 			playerBlock.put(player, new ItemStack(Material.FLOWER_POT));
+			playerItem.put(player, Material.FLOWER_POT_ITEM);
 		} else {
 			playerBlock.put(player, all.get(picked));
+			playerItem.put(player, all.get(picked).getType());
 		}
 		player.openInventory(inv);
 	}
@@ -133,7 +140,9 @@ public class BlockPicker {
 				e.setCancelled(true);
 				return;
 			}
+			playerItem.put(p,picked.getType());
 			if(picked.getType() == Material.FLOWER_POT_ITEM) picked = new ItemStack(Material.FLOWER_POT);
+			if(picked.getType() == Material.CAKE) picked = new ItemStack(Material.CAKE_BLOCK);
 			p.closeInventory();
 			p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 0.99f);
 			p.sendMessage(Hide.header + "§aGood choice! §eSet your block to " + Utils.getUserItemName(picked));
