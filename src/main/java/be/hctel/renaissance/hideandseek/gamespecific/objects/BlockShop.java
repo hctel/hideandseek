@@ -100,17 +100,17 @@ public class BlockShop {
 	private int getItemPrice(Material material) {
 		switch(material) {
 		case ENDER_PORTAL:
-			return 5000;
+			return 4000;
 		case ENCHANTMENT_TABLE:
-			return 5000;
-		case DIAMOND_BLOCK:
-			return 15000;
+			return 4000;
+		case IRON_BLOCK:
+			return 4000;
 		case EMERALD_BLOCK:
-			return 20000;
-		case REDSTONE_BLOCK:
-			return 3500;
+			return 6000;
+		case DIAMOND_BLOCK:
+			return 6000;
 		case TNT:
-			return 50000;
+			return 8000;
 		default: 
 			return 2000;		
 		}

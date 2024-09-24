@@ -127,6 +127,7 @@ public class Hide extends JavaPlugin {
 				}
 			}
 		});
+		isServerStarting = false;
 	}
 	
 	

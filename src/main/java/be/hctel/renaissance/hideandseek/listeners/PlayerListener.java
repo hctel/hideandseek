@@ -9,25 +9,24 @@ import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDamageEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.event.player.PlayerLoginEvent.Result;
 import org.bukkit.event.player.PlayerQuitEvent;
+
 import be.hctel.renaissance.hideandseek.Hide;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.GameRanks;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.GameTeam;
@@ -50,17 +49,26 @@ public class PlayerListener implements Listener {
 	
 	
 	
-	
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onLogin(PlayerLoginEvent a) {
+		if(Hide.preGameTimer.choosingBlock && !Hide.preGameTimer.gameStarted) {
+			a.disallow(Result.KICK_OTHER, "§ePlease do not rejoin games when block picking is active.");
+			return;
+		}
 		if(Hide.isServerStarting) {
-			a.getPlayer().kickPlayer("Server not started yet.");
+			a.disallow(Result.KICK_OTHER, "Server not started yet.");
+			return;
 		}
-		else if(Hide.preGameTimer.gameStarted) {
+		/*else if(Hide.preGameTimer.gameStarted) {
 			if(!(a.getPlayer().hasPermission("hide.spectate"))) a.getPlayer().kickPlayer("Only staff members are allowed to spectate in Hide and Seek.");
-		}
+		}*/
 	}
 	@EventHandler
 	public void onJoin(PlayerJoinEvent e) throws SQLException {
+		if(Hide.preGameTimer.choosingBlock && !Hide.preGameTimer.gameStarted) {
+			e.getPlayer().kickPlayer("§ePlease do not rejoin games when block picking is active.");
+			return;
+		}
 		if(Hide.preGameTimer.gameStarted) {
 			Hide.gameEngine.addSpectator(e.getPlayer());
 			e.getPlayer().sendMessage(Hide.header + "§eYou are a spectator.");
@@ -149,6 +157,12 @@ public class PlayerListener implements Listener {
 		if(e.getPlayer().getGameMode() != GameMode.CREATIVE) e.setCancelled(true);
 	}
 	
+	@EventHandler
+	public void onBlockPlace(BlockPlaceEvent e) {
+		if(e.getPlayer().getGameMode() != GameMode.CREATIVE) {
+			e.setCancelled(true);
+		}
+	}
 
 	@EventHandler
 	public void onDeath(PlayerDeathEvent e) {

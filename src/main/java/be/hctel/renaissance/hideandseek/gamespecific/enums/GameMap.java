@@ -34,11 +34,15 @@ public enum GameMap {
 	FROZEN("Frozen", "HIDE_Frozen", new SpawnLocation("HIDE_Frozen", 50.5, 66, 6.5, -90.1f, 0.1f), new SpawnLocation("HIDE_Frozen", 52.5, 92, 57.5, 180.1f, 0.1f)),
 	SPACE("Space", "HIDE_Space", new SpawnLocation("HIDE_Space", -21.5, 60, -1.5, 0.1f, 0.1f),new SpawnLocation("HIDE_Space", -27.5, 85, 29.5, 0.1f, 0.1f)),
 	SHIPYARD("Shipyard", "HIDE_Shipyard", new SpawnLocation("HIDE_Shipyard", 104.5, 72, 77.5, 0.1f, 0.1f), new SpawnLocation("HIDE_Shipyard", 89.5, 98, 36.5, 0.1f, 0.1f)),
-	CRUISE("Cruise", "HIDE_Cruise", new SpawnLocation("HIDE_Cruise", 50.5, 81, -60.5, 180.1f, 0.1f), new SpawnLocation("HIDE_Cruise", 49.5, 69, -96.5, 180.1f, 0.1f)),
+	CRUISE("Cruise", "HIDE_Cruise", new SpawnLocation("HIDE_Cruise", 50.5, 81, 60.5, 180.1f, 0.1f), new SpawnLocation("HIDE_Cruise", 49.5, 90, 96.5, 180.1f, 0.1f)),
 	BEFORESPACE("Before Space", "HIDE_BeforeSpace", new SpawnLocation("HIDE_BeforeSpace", -167.5, 70, -205.5, 0.1f, 0.1f), new SpawnLocation("HIDE_BeforeSpace", -167.5, 60, -209.5, 180.1f, 0.1f)),
 	ANIMAL("Animal Village", "HIDE_Animal", new SpawnLocation("HIDE_Animal", -75.5, 87, -67.5, 180.1f, 0.1f), new SpawnLocation("HIDE_Animal", -65.5, 87, -123.5, 0.1f, 0.1f)),	
-	PIRATE("Pirate Ship", "HIDE_Pirate", new SpawnLocation("HIDE_Pirate", -87.5, 66, -91.5, -45.1f, 0.1f), new SpawnLocation("HIDE_Pirate", -181.5, 59, -96, -90.1f, 0.1f)),	
-	HOTEL("Hotel", "HIDE_Hotel", new SpawnLocation("HIDE_Hotel", -2, 64, -35, 0.1f, 0.1f), new SpawnLocation("HIDE_Hotel", -3, 61, -21, 0.1f, 0.1f));
+	PIRATE("Pirate Ship", "HIDE_Pirate", new SpawnLocation("HIDE_Pirate", -87.5, 66, -91.5, -45.1f, 0.1f), new SpawnLocation("HIDE_Pirate", -181.5, 59, -96, -90.1f, 0.1f)),
+	PARIS("Paris", "HIDE_Paris", new SpawnLocation("HIDE_Paris", 64.5, 21, -125.5, 0.1f, 0.1f), new SpawnLocation("HIDE_Paris", 15, 23, -102.5, -90.1f, 0.1f)),
+	OASIS("Oasis", "HIDE_Oasis", new SpawnLocation("HIDE_Oasis", -73.5,8, 3, 0.1f, 0.1f), new SpawnLocation("HIDE_Oasis", -66,15,18,0.1f, 0.1f)),
+	HOSPITAL("Hospital", "HIDE_Hospital", new SpawnLocation("HIDE_Hospital", 25.5,6,26.5, 0.1f, 0.1f), new SpawnLocation("HIDE_Hospital", -24.5,8,-11.5,-90.1f, 0.1f)),
+	BORA("Bora Bora", "HIDE_Bora", new SpawnLocation("HIDE_Bora", 0.5,117, -31.5, 0.1f, 0.1f), new SpawnLocation("HIDE_Bora", -32.5,117,-48.5,-90.1f, 0.1f)),
+	HOTEL("§9Hotel", "HIDE_Hotel", new SpawnLocation("HIDE_Hotel", -2, 64, -35, 0.1f, 0.1f), new SpawnLocation("HIDE_Hotel", -3, 61, -21, 0.1f, 0.1f));
 	
 	String mapName;
 	String systemName;
@@ -64,6 +68,7 @@ public enum GameMap {
 	public String getSystemName() {
 		return systemName;
 	}
+	
 	public ArrayList<ItemStack> getDefaultBlocks() {
 		ArrayList<ItemStack> toAdd = new ArrayList<ItemStack>();
 		if(this == GameMap.HOTEL) {
@@ -407,6 +412,67 @@ public enum GameMap {
 			ItemStack e = new ItemStack(Material.BOOKSHELF);
 			toAdd.add(e);
 			ItemStack f = new ItemStack(Material.LEAVES);
+			toAdd.add(f);
+		}
+		if(this == GameMap.PARIS) {
+			ItemStack a = new ItemStack(Material.FLOWER_POT_ITEM);
+			toAdd.add(a);
+			ItemStack b = new ItemStack(Material.JACK_O_LANTERN);
+			toAdd.add(b);
+			ItemStack c = new ItemStack(Material.DISPENSER);
+			toAdd.add(c);
+			ItemStack d = new ItemStack(Material.FURNACE);
+			toAdd.add(d);
+			ItemStack e = new ItemStack(Material.ANVIL);
+			toAdd.add(e);
+			ItemStack f = new ItemStack(Material.BEACON);
+			toAdd.add(f);
+			ItemStack g = new ItemStack(Material.JUKEBOX);
+			toAdd.add(g);
+		}
+		if(this == GameMap.OASIS) {
+			ItemStack a = new ItemStack(Material.ANVIL);
+			toAdd.add(a);
+			ItemStack b = new ItemStack(Material.FLOWER_POT_ITEM);
+			toAdd.add(b);
+			ItemStack c = new ItemStack(Material.BOOKSHELF);
+			toAdd.add(c);
+			ItemStack d = new ItemStack(Material.FURNACE);
+			toAdd.add(d);
+			ItemStack e = new ItemStack(Material.HAY_BLOCK);
+			toAdd.add(e);
+			ItemStack f = new ItemStack(Material.WORKBENCH);
+			toAdd.add(f);
+		}
+		if(this == GameMap.HOSPITAL) {
+			@SuppressWarnings("deprecation")
+			ItemStack a = new ItemStack(Material.STONE, 1, (short) 0, (byte) 6);
+			toAdd.add(a);
+			@SuppressWarnings("deprecation")
+			ItemStack b = new ItemStack(Material.STONE, 1, (short) 0, (byte) 2);
+			toAdd.add(b);
+			ItemStack c = new ItemStack(Material.QUARTZ_BLOCK);
+			toAdd.add(c);
+			ItemStack d = new ItemStack(Material.LEAVES);
+			toAdd.add(d);
+			ItemStack e = new ItemStack(Material.WORKBENCH);
+			toAdd.add(e);
+			@SuppressWarnings("deprecation")
+			ItemStack f = new ItemStack(Material.WOOD, 1, (short) 0, (byte) 2);
+			toAdd.add(f);
+		}
+		if(this == GameMap.BORA) {
+			ItemStack a = new ItemStack(Material.BEACON);
+			toAdd.add(a);
+			ItemStack b = new ItemStack(Material.WORKBENCH);
+			toAdd.add(b);
+			ItemStack c = new ItemStack(Material.BOOKSHELF);
+			toAdd.add(c);
+			ItemStack d = new ItemStack(Material.MELON);
+			toAdd.add(d);
+			ItemStack e = new ItemStack(Material.REDSTONE_LAMP_OFF);
+			toAdd.add(e);
+			ItemStack f = new ItemStack(Material.FURNACE);
 			toAdd.add(f);
 		}
 		return toAdd;

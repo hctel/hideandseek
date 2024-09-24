@@ -51,7 +51,7 @@ public class GameEngine {
 	private ArrayList<Player> hiders = new ArrayList<Player>();
 	private ArrayList<Player> seekers = new ArrayList<Player>();
 	private ArrayList<Player> spectators = new ArrayList<Player>();
-	//private ArrayList<Player> heartbeat = new ArrayList<Player>();
+	private ArrayList<Player> heartbeat = new ArrayList<Player>();
 	private ArrayList<Player> queuedSeekers;
 	
 	private HashMap<Player, Integer> hiderKills = new HashMap<Player, Integer>();
@@ -160,13 +160,13 @@ public class GameEngine {
 				if(isPlaying) {
 					if(timer > 0) {
 						for(Player P : hiders) {
-							/*if(Utils.doubleContains(P.getNearbyEntities(5.0, 5.0, 5.0), seekers)) {
+							if(Utils.doubleContains(P.getNearbyEntities(5.0, 5.0, 5.0), seekers)) {
 								heartbeat.add(P);
-								Utils.sendRedVignette(P);
+								//Utils.sendRedVignette(P);
 							} else {
 								heartbeat.remove(P);
-								Utils.normalVignette(P);
-							}*/
+								//Utils.normalVignette(P);
+							}
 						}
 						if(timer < 304 && timer > 300) {
 							Bukkit.broadcastMessage(Hide.header + "§eStarting in §f" + (timer-300));
@@ -242,18 +242,17 @@ public class GameEngine {
 					for(Player p : hiders) {
 						disguises.get(p).tick();
 					}
-					/*for(Player P : heartbeat) {
+					for(Player P : heartbeat) {
 						if(every2second-tick > 40) {
 							P.addPotionEffect(hbeft);
 							P.playSound(P.getLocation(), Sound.BLOCK_NOTE_BASEDRUM, 2.0f, 0.8f);
-							every2second = 0;
 						}
-						if(every2secondplus05-tick > 45) {
+						if(every2second-tick > 45) {
 							P.removePotionEffect(PotionEffectType.SPEED);
 							P.playSound(P.getLocation(), Sound.BLOCK_NOTE_BASEDRUM, 2.0f, 0.8f);
-							every2secondplus05 = 0;
+							every2second = tick-5;
 						}
-					}*/
+					}
 				}
 			}
 			
@@ -302,7 +301,7 @@ public class GameEngine {
 					}
 					
 				}.runTaskLater(plugin, 30*20L);
-				blocksLeft.put(Hide.blockPicker.playerItem.get(p), blocksLeft.get(Hide.blockPicker.playerItem.get(p))-1);
+				blocksLeft.put(Hide.blockPicker.playerItem.get(killed), blocksLeft.get(Hide.blockPicker.playerItem.get(killed))-1);
 				checkForHidersRemaining();
 			} else {
 				Hide.stats.addDeath(killed);
@@ -383,7 +382,7 @@ public class GameEngine {
 					}
 					
 				}.runTaskLater(plugin, 10*20L);
-				blocksLeft.put(Hide.blockPicker.playerItem.get(p), blocksLeft.get(Hide.blockPicker.playerItem.get(p))-1);
+				blocksLeft.put(Hide.blockPicker.playerItem.get(killed), blocksLeft.get(Hide.blockPicker.playerItem.get(killed))-1);
 				checkForHidersRemaining();
 			} else {
 				Hide.stats.addKilledSeeker(player);

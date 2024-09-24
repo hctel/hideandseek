@@ -723,8 +723,8 @@ public class Utils {
 		cp.getHandle().playerConnection.sendPacket((PacketPlayOutWorldBorder) p.getHandle().getHandle());
 	}
 	public static boolean doubleContains(List<Entity> list, ArrayList<Player> seekers) {
-		for(Entity elem : list) {
-			if(elem instanceof Player && seekers.contains(elem)) return true;
+		for(Player P : seekers) {
+			if(list.contains(P)) return true;
 			else continue;
 		}
 		return false;
