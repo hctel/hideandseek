@@ -163,6 +163,7 @@ public class GameEngine {
 				if(isPlaying) {
 					if(timer > 0) {
 						for(Player P : hiders) {
+							Utils.sendActionBarMessage(P, Hide.stats.getBigLevelProgressBar(P, Hide.blockPicker.playerBlock.get(P)));
 							if(Utils.doubleContains(P.getNearbyEntities(5.0, 5.0, 5.0), seekers)) {
 								heartbeat.add(P);
 								//Utils.sendRedVignette(P);
@@ -230,9 +231,6 @@ public class GameEngine {
 								sidebars.get(p).setLine(7, seekers.size() + "");
 								sidebars.get(p).setLine(5, "§7Points: §f" + points.get(p));
 								sidebars.get(p).setLine(4, "§7Kills: §f" + (seekerKills.get(p) + hiderKills.get(p)));
-							}
-							for(Player P : hiders) {
-								Utils.sendActionBarMessage(P, Hide.stats.getBigLevelProgressBar(P, Hide.blockPicker.playerBlock.get(P)));
 							}
 						}
 						for(Player P : durability.keySet()) {
@@ -368,7 +366,7 @@ public class GameEngine {
 				Hide.cosmeticManager.addTokens(player, 15);
 				player.sendMessage(Hide.header + "§6You gained §b30 points §6and §a15 Tokens §6for killing " + Hide.rankManager.getRankColor(killed) + killed.getName() + "§6.");
 				deaths.replace(killed, deaths.get(killed)+1);
-				Bukkit.broadcastMessage(Hide.header + Hide.stats.getBlockLevelString(player, Hide.blockPicker.playerBlock.get(killed)) + "§6 " + Utils.getUserItemName(disguises.get(killed).block.getType()) + " " + Hide.rankManager.getRankColor(killed) + killed.getName() + " §6was killed by " + Hide.rankManager.getRankColor(player) + player.getName());
+				Bukkit.broadcastMessage(Hide.header + Hide.stats.getBlockLevelString(killed, Hide.blockPicker.playerBlock.get(killed)) + "§6 " + Utils.getUserItemName(disguises.get(killed).block.getType()) + " " + Hide.rankManager.getRankColor(killed) + killed.getName() + " §6was killed by " + Hide.rankManager.getRankColor(player) + player.getName());
 				hiders.remove(killed);
 				seekers.add(killed);
 				disguises.get(killed).kill();

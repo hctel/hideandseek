@@ -83,7 +83,7 @@ public class BlockPicker {
 			lore.add("§7Will this " + Utils.getUserItemName(aA) + " block");
 			lore.add("§7be a good choice?");
 			lore.add("");
-			lore.add(this.stats.getBlockLevelString(player, aA) + " " + Hide.stats.getSmallLevelProgressBar(player, aA) +" §f" + this.stats.getCurrentLevelExperience(player, aA) + "/" + this.stats.getCurrentLevelGoal(player, aA));
+			lore.add(Hide.stats.getSmallLevelProgressBar(player, a));
 			lore.add("");
 			b.setLore(lore);
 			a.setItemMeta(b);
@@ -108,7 +108,7 @@ public class BlockPicker {
 			lore.add("§7Will this " + Utils.getUserItemName(a) + " block");
 			lore.add("§7be a good choice?");
 			lore.add("");
-			lore.add(this.stats.getBlockLevelString(player, a) + " §f" + this.stats.getCurrentLevelExperience(player, a) + "/" + this.stats.getCurrentLevelGoal(player, a));
+			lore.add(Hide.stats.getSmallLevelProgressBar(player, a));
 			lore.add("");
 			b.setLore(lore);
 			a.setItemMeta(b);

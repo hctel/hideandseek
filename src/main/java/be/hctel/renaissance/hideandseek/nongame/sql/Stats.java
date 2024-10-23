@@ -7,20 +7,19 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
-import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.Sound;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import be.hctel.renaissance.hideandseek.Hide;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.GameAchievement;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.JoinMessages;
-import be.hctel.renaissance.hideandseek.nongame.utils.AdvancedMath;
 import be.hctel.renaissance.hideandseek.nongame.utils.Utils;
 
 
@@ -275,6 +274,12 @@ public class Stats {
 		return lvl;
 	}
 	
+	private int getSaveBlockLevel(OfflinePlayer player, ItemStack block) {
+		JSONObject json = jsonList.get(Utils.getUUID(player)).getJSONObject("blockExperience");
+		if(json.has(Utils.getFormattedName(block))) return json.getInt(Utils.getFormattedName(block));
+		else return 0;
+	}
+	
 	public int getCurrentLevelExperience(OfflinePlayer player, ItemStack block) {
 		int level = getBlockLevel(player, block);
 		int exp = getRawBlockExperience(player, block);
@@ -333,29 +338,26 @@ public class Stats {
 		int level = getBlockLevel(player, block);
 		int endLevelRequirements = getMaxLevelExp(level);
 		int currentLevelXP = getCurrentLevelProgress(getRawBlockExperience(player, block), level);
-		double progress = currentLevelXP/endLevelRequirements;
-		int bars = (int) Math.floor(currentLevelXP*progress);
-		int emptyBars = (int) Math.ceil((1-currentLevelXP)*progress);
+		double progress = ((double) currentLevelXP)/((double) endLevelRequirements);
+		int bars = (int) Math.floor(size*progress);
+		int emptyBars = (int) Math.ceil(size*(1-progress));
+		if(level >= 50) return "§6MAX LEVEL!";
+		
 		String out = "";
 		for(int i = 0; i < bars; i++) {
-			out += "§a§l|";
+			out = out + "§a▍";
 		}
 		for(int i = 0; i < emptyBars; i++) {
-			out += "§8§l|";
+			out = out + "§7▍";
 		}
-		return out;
+		return getBlockLevelString(player, block) + out  + String.format("§f %d/%d", currentLevelXP, endLevelRequirements, bars, emptyBars, progress);
 	}
-	
 	public String getSmallLevelProgressBar(OfflinePlayer player, ItemStack block) {
 		return getProgressBar(player, block, 10);
 	}
 	public String getBigLevelProgressBar(OfflinePlayer player, ItemStack block) {
 		return getProgressBar(player, block, 40);
-	}
-	
-	
-
-	
+	}	
 	//Saving
 	
 	public void addPoints(OfflinePlayer player, int toAdd) {
@@ -447,13 +449,20 @@ public class Stats {
 			rawBlockExperience.put(Utils.getFormattedName(block), toSet);
 			blockExperience.put(Utils.getFormattedName(block), 1);
 		} else {
-			int level = 1;
-			while(AdvancedMath.arithmeticSum(50, 50, level)+50 >= toSet) {
-				level++;
-			}
 			rawBlockExperience.put(Utils.getFormattedName(block), toSet);
-			if(level > blockExperience.getInt(Utils.getFormattedName(block))) {
-				blockExperience.put(Utils.getFormattedName(block), level);
+			int lvl = getBlockLevel(player, block);
+			if(getSaveBlockLevel(player, block) != lvl) {
+				blockExperience.put(Utils.getFormattedName(block), lvl);
+				if(player instanceof Player) {
+					Player p = (Player) player;
+					Utils.sendCenteredMessage(p, "§e§m------------------------------------");
+					Utils.sendCenteredMessage(p,"§6LEVEL UP!");
+					p.sendMessage("");
+					Utils.sendCenteredMessage(p, String.format("§6Your %s is now level %d", Utils.getUserItemName(block), lvl));
+					p.sendMessage("");
+					Utils.sendCenteredMessage(p, "§e§m------------------------------------");
+					p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
+				}
 			}
 		}
 	}
