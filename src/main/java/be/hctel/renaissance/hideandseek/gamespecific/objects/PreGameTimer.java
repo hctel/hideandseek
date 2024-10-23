@@ -143,8 +143,8 @@ public class PreGameTimer {
 							}
 						} else if(timer == 0) {
 							for(Player p : sidebars.keySet()) sidebars.get(p).removeReceiver(p);
-							Hide.gameEngine.start();
 							gameStarted = true;
+							Hide.gameEngine.start();
 						}
 						if(timer > -1) {
 							timer--;

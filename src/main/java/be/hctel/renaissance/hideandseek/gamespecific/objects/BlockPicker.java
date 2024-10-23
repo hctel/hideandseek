@@ -72,6 +72,10 @@ public class BlockPicker {
 				aA = new ItemStack(Material.CAKE_BLOCK);
 				a = new ItemStack(Material.CAKE);
 			}
+			if(a.getType().equals(Material.CAULDRON)) {
+				aA = new ItemStack(Material.CAULDRON);
+				a = new ItemStack(Material.CAULDRON_ITEM);
+			}
 			ItemMeta b = a.getItemMeta();
 			b.setDisplayName("§e§l" + Utils.getUserItemName(aA));
 			ArrayList<String> lore = new ArrayList<String>();
@@ -79,7 +83,7 @@ public class BlockPicker {
 			lore.add("§7Will this " + Utils.getUserItemName(aA) + " block");
 			lore.add("§7be a good choice?");
 			lore.add("");
-			lore.add(this.stats.getBlockLevelString(player, aA) + " §f" + this.stats.getCurrentLevelExperience(player, aA) + "/" + this.stats.getCurrentLevelGoal(player, aA));
+			lore.add(this.stats.getBlockLevelString(player, aA) + " " + Hide.stats.getSmallLevelProgressBar(player, aA) +" §f" + this.stats.getCurrentLevelExperience(player, aA) + "/" + this.stats.getCurrentLevelGoal(player, aA));
 			lore.add("");
 			b.setLore(lore);
 			a.setItemMeta(b);
@@ -119,6 +123,10 @@ public class BlockPicker {
 		if(all.get(picked).getType().equals(Material.FLOWER_POT_ITEM)) {
 			playerBlock.put(player, new ItemStack(Material.FLOWER_POT));
 			playerItem.put(player, Material.FLOWER_POT_ITEM);
+		} 
+		else if(all.get(picked).getType().equals(Material.CAULDRON_ITEM)) {
+			playerBlock.put(player, new ItemStack(Material.CAULDRON));
+			playerItem.put(player, Material.CAULDRON_ITEM);
 		} else {
 			playerBlock.put(player, all.get(picked));
 			playerItem.put(player, all.get(picked).getType());

@@ -12,7 +12,6 @@ import java.util.logging.Level;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.json.JSONArray;
@@ -39,7 +38,7 @@ public class Stats {
 	private HashMap<String, JSONObject> jsonList = new HashMap<String , JSONObject>();
 	private HashMap<OfflinePlayer, JSONArray> unlockedJMS = new HashMap<OfflinePlayer, JSONArray>();
 	private HashMap<OfflinePlayer, Integer> jms = new HashMap<OfflinePlayer, Integer>();
-	String topPlayerUUID = "";
+	String topOfflinePlayerUUID = "";
 	private Plugin plugin;
 	
 	
@@ -49,7 +48,7 @@ public class Stats {
 		try {
 			ResultSet rs = con.createStatement().executeQuery("SELECT * FROM HIDE ORDER BY points DESC LIMIT 1;");
 			if(rs.next()) {
-				topPlayerUUID = rs.getString("UUID");
+				topOfflinePlayerUUID = rs.getString("UUID");
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -58,10 +57,11 @@ public class Stats {
 	}
 	
 	/**
-	 * Loads a player into the cache
-	 * @param player the {@link Player} to load
+	 * Loads an OfflinePlayer to the cache. Same as {@link loadOfflinePlayer(OfflinePlayer)} but with an OfflinePlayer
+	 * <br>Useful for offline stats checking
+	 * @param player the {@link OfflinePlayer} to load
 	 */
-	public void load(Player player) {
+	public void load(OfflinePlayer player) {
 		String json = baseJson;
 		int joinMessage = 0;
 		JSONArray unlockedjms = new JSONArray("[\"HIDE\"]");
@@ -93,39 +93,6 @@ public class Stats {
 	}
 	
 	/**
-	 * Loads an OfflinePlayer to the cache. Same as {@link loadPlayer(Player)} but with an OfflinePlayer
-	 * <br>Useful for offline stats checking
-	 * @param player the {@link OfflinePlayer} to load
-	 */
-	public void load(OfflinePlayer player) {
-		String json = baseJson;
-		int joinMessage = 0;
-		JSONArray unlockedjms = new JSONArray("[\"HIDE\"]");
-		String uuid = Utils.getUUID(player);
-		try {
-			Statement st = con.createStatement();
-			ResultSet rs = st.executeQuery("SELECT * FROM HIDE WHERE UUID = '" + uuid + "';");
-			if(rs.next()) {
-				json = rs.getString("JSON");
-				joinMessage  = rs.getInt("usedJoinMessage");
-				unlockedjms = new JSONArray(rs.getString("unlockedJoinMessage"));
-			} else {
-				json.replace("%UUID", Utils.getUUID(player));
-				json.replace("%TIME%", System.currentTimeMillis()+ "");
-				st.execute("INSERT INTO HIDE (UUID, JSON, unlockedJoinMessage) VALUES ('" + Utils.getUUID(player) + "', '" + json.toString() + "', '[\"HIDE\"]');");
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		JSONObject j = new JSONObject(json);
-		jsonList.put(Utils.getUUID(player), j);
-		unlockedJMS.put(player, unlockedjms);
-		jms.put(player, joinMessage);
-		this.plugin.getLogger().info("Loaded stats! UUID : " + uuid + ", points " + j.getInt("total_points") + ", joinMessages " + joinMessage +  "," + unlockedjms);
-	}
-	
-	/**
 	 * Checks if a player is loaded
 	 * @param player
 	 * @return true if the player is loaded; false if it isn't
@@ -140,11 +107,11 @@ public class Stats {
 	 * @return
 	 */
 	
-	public String getTopRankPlayer() {
-		return topPlayerUUID;
+	public String getTopRankOfflinePlayer() {
+		return topOfflinePlayerUUID;
 	}
 	
-	public int getJoinMessageIndex(Player player) {
+	public int getJoinMessageIndex(OfflinePlayer player) {
 		return jms.get(player);
 	}
 	/**
@@ -152,7 +119,7 @@ public class Stats {
 	 * @param player
 	 * @return
 	 */
-	public ArrayList<JoinMessages> getUnlockedJoinMessages(Player player) {
+	public ArrayList<JoinMessages> getUnlockedJoinMessages(OfflinePlayer player) {
 		JSONArray a = unlockedJMS.get(player);
 		ArrayList<JoinMessages> r = new ArrayList<JoinMessages>();
 		for(int i = 0; i < a.length(); i++) {
@@ -163,38 +130,19 @@ public class Stats {
 	public int getPoints(OfflinePlayer player) {
 		return jsonList.get(Utils.getUUID(player)).getInt("total_points");
 	}
-	public int getPoints(Player player) {
-		return jsonList.get(Utils.getUUID(player)).getInt("total_points");
-	}
-	public int getVictories(Player player) {
-		return jsonList.get(Utils.getUUID(player)).getInt("victories");
-	}
+	
 	public int getVictories(OfflinePlayer player) {
 		return jsonList.get(Utils.getUUID(player)).getInt("victories");
 	}
-	public int getGamesPlayed(Player player) {
-		return jsonList.get(Utils.getUUID(player)).getInt("gamesplayed");
-	}
+	
 	public int getGamesPlayed(OfflinePlayer player) {
 		return jsonList.get(Utils.getUUID(player)).getInt("gamesplayed");
 	}
-	public int getDeaths(Player player) {
-		return jsonList.get(Utils.getUUID(player)).getInt("deaths");
-	}
+	
 	public int getDeaths(OfflinePlayer player) {
 		return jsonList.get(Utils.getUUID(player)).getInt("deaths");
 	}
-	public ArrayList<GameAchievement> getAchievements(Player player) {
-		if(jsonList.get(Utils.getUUID(player)).get("achievements") == null) {
-			return new ArrayList<GameAchievement>();
-		}
-		JSONObject ach = jsonList.get(Utils.getUUID(player)).getJSONObject("achievements");
-		ArrayList<GameAchievement> list = new ArrayList<GameAchievement>();
-		for(String k : ach.keySet()) {
-			if(GameAchievement.getFromJSON(k) != null) list.add(GameAchievement.getFromJSON(k));
-		}
-		return list;
-	}
+	
 	public ArrayList<GameAchievement> getAchievements(OfflinePlayer player) {
 		if(jsonList.get(Utils.getUUID(player)).get("achievements") == null) {
 			return new ArrayList<GameAchievement>();
@@ -206,34 +154,14 @@ public class Stats {
 		}
 		return list;
 	}
-	public int getAchievementProgress(Player player, GameAchievement achievement) {
-		JSONObject ach = jsonList.get(Utils.getUUID(player)).getJSONObject("achievements");
-		if(ach.has(achievement.getJsonCode())) {
-			return ach.getJSONObject(achievement.getJsonCode()).getInt("progress");
-		} else return 0;
-	}
+	
 	public int getAchievementProgress(OfflinePlayer player, GameAchievement achievement) {
 		JSONObject ach = jsonList.get(Utils.getUUID(player)).getJSONObject("achievements");
 		if(ach.has(achievement.getJsonCode())) {
 			return ach.getJSONObject(achievement.getJsonCode()).getInt("progress");
 		} else return 0;
 	}
-	/**
-	 * @deprecated Returns -1 if not complete. Be careful when using
-	 * @param player
-	 * @param achievement
-	 * @return
-	 */
-	public long getAchievementUnlockDate(Player player, GameAchievement achievement) {
-		JSONObject ach = jsonList.get(Utils.getUUID(player)).getJSONObject("achievements");
-		if(ach.has(achievement.getJsonCode())) {
-			if(getAchievementProgress(player, achievement) < achievement.getUnlockProgress()) return -1;
-			else {
-				return ach.getJSONObject(achievement.getJsonCode()).getLong("unlockedAt");
-			}
-		} else return -1;
-		
-	} 
+	
 	/**
 	 * @deprecated Returns -1 if not complete. Be careful when using
 	 * @param player
@@ -250,21 +178,7 @@ public class Stats {
 		} else return -1;
 		
 	} 
-	public ArrayList<GameAchievement> getCompletedAchievements(Player player) {
-		if(jsonList.get(Utils.getUUID(player)).get("achievements") == null) {
-				return new ArrayList<GameAchievement>();
-			}
-		JSONObject ach = jsonList.get(Utils.getUUID(player)).getJSONObject("achievements");
-		ArrayList<GameAchievement> list = new ArrayList<GameAchievement>();
-		for(String k : ach.keySet()) {
-			if(GameAchievement.getFromJSON(k) != null) {
-				if(getAchievementProgress(player, GameAchievement.getFromJSON(k)) >= GameAchievement.getFromJSON(k).getUnlockProgress()) {
-					list.add(GameAchievement.getFromJSON(k));
-				}
-			}
-		}
-		return list;
-	}
+	
 	public ArrayList<GameAchievement> getCompletedAchievements(OfflinePlayer player) {
 		if(jsonList.get(Utils.getUUID(player)).get("achievements") == null) {
 			//ArrayList<GameAchievement> out = new ArrayList<GameAchievement>();
@@ -283,25 +197,7 @@ public class Stats {
 		}
 		return list;
 	}
-	public ArrayList<GameAchievement> getUncompletedAchievements(Player player) {
-		if(jsonList.get(Utils.getUUID(player)).get("achievements") == null) {
-			ArrayList<GameAchievement> out = new ArrayList<GameAchievement>();
-			for (GameAchievement a : GameAchievement.values()) {
-				out.add(a);
-			}
-			return out;
-		}
-		JSONObject ach = jsonList.get(Utils.getUUID(player)).getJSONObject("achievements");
-		ArrayList<GameAchievement> list = new ArrayList<GameAchievement>();
-		for(String k : ach.keySet()) {
-			if(GameAchievement.getFromJSON(k) != null) {
-				if(getAchievementProgress(player, GameAchievement.getFromJSON(k)) < GameAchievement.getFromJSON(k).getUnlockProgress()) {
-					list.add(GameAchievement.getFromJSON(k));
-				}
-			}
-		}
-		return list;
-	}
+	
 	public ArrayList<GameAchievement> getUncompletedAchievements(OfflinePlayer player) {
 		if(jsonList.get(Utils.getUUID(player)).get("achievements") == null) {
 			ArrayList<GameAchievement> out = new ArrayList<GameAchievement>();
@@ -322,34 +218,15 @@ public class Stats {
 		return list;
 	}
 	//Game specific
-	public int getKilledSeekers(Player player) {
-		return jsonList.get(Utils.getUUID(player)).getInt("hiderkills");
-	}
+	
 	public int getKilledSeekers(OfflinePlayer player) {
 		return jsonList.get(Utils.getUUID(player)).getInt("hiderkills");
 	}
-	public int getKilledHiders(Player player) {
-		return jsonList.get(Utils.getUUID(player)).getInt("seekerkills");
-	}
+	
 	public int getKilledHiders(OfflinePlayer player) {
 		return jsonList.get(Utils.getUUID(player)).getInt("seekerkills");
 	}
-	public ArrayList<Material> getUnlockedBlocks(Player player) {
-		JSONObject json = jsonList.get(Utils.getUUID(player));
-		if(json.get("blocks") == null) return new ArrayList<Material>();
-		else {
-			ArrayList<Material> out = new ArrayList<Material>();
-			String[] l = json.getString("blocks").split(",");
-			for(String f : l) {
-				if(f != "") {
-					try {
-					out.add(Utils.getItemStackFromNumericalID(Utils.convertToInt(f)).getType());
-					} catch (NumberFormatException e) {}
-				}
-			}
-			return out;
-		}
-	}
+	
 	public ArrayList<Material> getUnlockedBlocks(OfflinePlayer player) {
 		if(!jsonList.containsKey(Utils.getUUID(player))) load(player);
 		JSONObject json = jsonList.get(Utils.getUUID(player));
@@ -369,27 +246,47 @@ public class Stats {
 			return out;
 		}
 	}
-	public int getRawBlockExperience(Player player, ItemStack block) {
-		JSONObject json = jsonList.get(Utils.getUUID(player)).getJSONObject("rawBlockExperience");
-		if(json.has(Utils.getFormattedName(block))) return json.getInt(Utils.getFormattedName(block));
-		else return 0;
-	}
+	
 	public int getRawBlockExperience(OfflinePlayer player, ItemStack block) {
 		JSONObject json = jsonList.get(Utils.getUUID(player)).getJSONObject("rawBlockExperience");
 		if(json.has(Utils.getFormattedName(block))) return json.getInt(Utils.getFormattedName(block));
 		else return 0;
 	}
-	public int getBlockLevel(Player player, ItemStack block) {
-		JSONObject json = jsonList.get(Utils.getUUID(player)).getJSONObject("blockExperience");
-		if(json.has(Utils.getFormattedName(block))) return json.getInt(Utils.getFormattedName(block));
-		else return 0;
+	
+	private double getLevel(OfflinePlayer player, ItemStack block) {
+		return ((1 + Math.sqrt(25 + 4 * (getRawBlockExperience(player, block))) / 5) / 2)-1;
 	}
+	
+	private int getMaxRawLevelExperience(int level) {
+	    return 50 * (level - 1) * level / 2;
+	}
+	
+	private int getCurrentLevelProgress(int exp, int level) {
+		return exp - getMaxRawLevelExperience(level);
+	}
+	
+	private int getMaxLevelExp(int level) {
+		return getCurrentLevelProgress(getMaxRawLevelExperience(level + 1), level);
+	}
+	
 	public int getBlockLevel(OfflinePlayer player, ItemStack block) {
-		JSONObject json = jsonList.get(Utils.getUUID(player)).getJSONObject("blockExperience");
-		if(json.has(Utils.getFormattedName(block))) return json.getInt(Utils.getFormattedName(block));
-		else return 0;
+		int lvl = (int) Math.ceil(getLevel(player, block));
+		if(lvl == 0) return 1;
+		return lvl;
 	}
-	public String getBlockLevelString(Player player, ItemStack block) {
+	
+	public int getCurrentLevelExperience(OfflinePlayer player, ItemStack block) {
+		int level = getBlockLevel(player, block);
+		int exp = getRawBlockExperience(player, block);
+		return getCurrentLevelProgress(exp, level);
+	}
+	
+	public int getCurrentLevelGoal(OfflinePlayer player, ItemStack block) {
+		int level = getBlockLevel(player, block);
+		return getMaxLevelExp(level);
+	}
+	
+	public String getBlockLevelString(OfflinePlayer player, ItemStack block) {
 		int l = getBlockLevel(player, block);
 		if(l == 0) {
 			return "§8Unplayed block";
@@ -431,78 +328,36 @@ public class Stats {
 			return "§4§lNaN §r";
 		}
 	}
-	public String getSmallLevelProgressBar(Player player, ItemStack block) {
-		int barsToFill = 0;
-		int endLevelRequirements = AdvancedMath.arithmeticSum(50, 0, getBlockLevel(player, block))+50;
-		int currentLevelXP = getRawBlockExperience(player, block)-(AdvancedMath.arithmeticSum(50, 0, getBlockLevel(player, block)-1)+50);
-		if(currentLevelXP == 0) barsToFill = (int) Utils.map(currentLevelXP, 0, endLevelRequirements, 0, 20);
-		int blankBar = barsToFill-20;
+	
+	private String getProgressBar(OfflinePlayer player, ItemStack block, int size) {
+		int level = getBlockLevel(player, block);
+		int endLevelRequirements = getMaxLevelExp(level);
+		int currentLevelXP = getCurrentLevelProgress(getRawBlockExperience(player, block), level);
+		double progress = currentLevelXP/endLevelRequirements;
+		int bars = (int) Math.floor(currentLevelXP*progress);
+		int emptyBars = (int) Math.ceil((1-currentLevelXP)*progress);
 		String out = "";
-		for(int i = 0; i < barsToFill; i++) {
-			out = out + "§a&l│";
+		for(int i = 0; i < bars; i++) {
+			out += "§a§l|";
 		}
-		for(int i = 0; i < blankBar; i++) {
-			out = out+ "§8§l│";
+		for(int i = 0; i < emptyBars; i++) {
+			out += "§8§l|";
 		}
-		out = out + "   §f" + currentLevelXP + "/" + endLevelRequirements;
 		return out;
 	}
-	public String getBigLevelProgressBar(Player player, ItemStack block) {
-		int endLevelRequirements = AdvancedMath.arithmeticSum(50, 0, getBlockLevel(player, block))+50;
-		int currentLevelXP = getRawBlockExperience(player, block)-(AdvancedMath.arithmeticSum(50, 0, getBlockLevel(player, block)-1)+50);
-		int barsToFill = (int) Utils.map(currentLevelXP, 0, endLevelRequirements, 0, 40);
-		int blankBar = barsToFill-40;
-		String out = "";
-		for(int i = 0; i < barsToFill; i++) {
-			out = out + "§a&l│";
-		}
-		for(int i = 0; i < blankBar; i++) {
-			out = out+ "§8§l│";
-		}
-		out = out + "   §f" + currentLevelXP + "/" + endLevelRequirements;
-		return out;
+	
+	public String getSmallLevelProgressBar(OfflinePlayer player, ItemStack block) {
+		return getProgressBar(player, block, 10);
 	}
-	public int getCurrentLevelExperience(Player player, ItemStack block) {
-		return getRawBlockExperience(player, block)-(AdvancedMath.arithmeticSum(50, 0, getBlockLevel(player, block)-1)+50);
+	public String getBigLevelProgressBar(OfflinePlayer player, ItemStack block) {
+		return getProgressBar(player, block, 40);
 	}
-	public int getCurrentLevelGoal(Player player, ItemStack block) {
-		return AdvancedMath.arithmeticSum(50, 0, getBlockLevel(player, block))+50;
-	}
+	
+	
 
 	
 	//Saving
-	public void addPoints(Player player, int toAdd) {
-		int oldValue = getPoints(player);
-		jsonList.get(Utils.getUUID(player)).put("total_points", oldValue + toAdd);		
-	}
-	public void addVictory(Player player) {
-		int oldValue = getVictories(player);
-		jsonList.get(Utils.getUUID(player)).put("victories", oldValue + 1);
-	}
-	public void addGame(Player player) {
-		int oldValue = getGamesPlayed(player);
-		jsonList.get(Utils.getUUID(player)).put("gamesplayed", oldValue + 1);
-	}
-	public void addDeath(Player player) {
-		int oldValue = getDeaths(player);
-		jsonList.get(Utils.getUUID(player)).put("deaths", oldValue + 1);
-	}
-	public void completeAchievement(Player player, GameAchievement achievement) {
-		JSONObject ach = jsonList.get(Utils.getUUID(player)).getJSONObject("achievements");
-		if(ach == null) ach = new JSONObject();
-		JSONObject e = new JSONObject();
-		e.put("progress", achievement.getUnlockProgress());
-		e.put("unlockedAt", System.currentTimeMillis());
-		ach.put(achievement.getJsonCode(), e);
-		jsonList.get(Utils.getUUID(player)).put("achievements", ach);
-	}
-	public void addAchievementProgress(Player player, GameAchievement achievement, int toAdd) {
-		int oldValue = getAchievementProgress(player, achievement);
-		//JSONObject ach = jsonList.get(Utils.getUUID(player)).getJSONObject("achievements");
-		JSONObject e = new JSONObject();
-		e.put("progress", oldValue + toAdd);
-		e.put("unlockedAt", -1);
-	}
+	
 	public void addPoints(OfflinePlayer player, int toAdd) {
 		int oldValue = getPoints(player);
 		jsonList.get(Utils.getUUID(player)).put("total_points", oldValue + toAdd);		
@@ -543,64 +398,27 @@ public class Stats {
 		Statement st = con.createStatement();
 		for(String u : jsonList.keySet()) {
 			st.execute("UPDATE HIDE SET JSON = '" + jsonList.get(u).toString() + "' WHERE UUID = '" + u + "';");
-			st.execute("UPDATE HIDE SET unlockedJoinMessage = '" + unlockedJMS.get(Bukkit.getPlayer(UUID.fromString(Utils.getFullUUID(u)))).toString() + "' WHERE UUID = '" + u + "';");
-			st.execute("UPDATE HIDE SET usedJoinMessage = " +jms.get(Bukkit.getPlayer(UUID.fromString(Utils.getFullUUID(u)))) + " WHERE UUID = '" + u + "';");
+			st.execute("UPDATE HIDE SET unlockedJoinMessage = '" + unlockedJMS.get(Bukkit.getOfflinePlayer(UUID.fromString(Utils.getFullUUID(u)))).toString() + "' WHERE UUID = '" + u + "';");
+			st.execute("UPDATE HIDE SET usedJoinMessage = " +jms.get(Bukkit.getOfflinePlayer(UUID.fromString(Utils.getFullUUID(u)))) + " WHERE UUID = '" + u + "';");
 		}
 	}
 	
-	public void savePlayer(OfflinePlayer offlinePlayer) throws SQLException {
-		if(jsonList.containsKey(Utils.getUUID(offlinePlayer))) {
+	public void saveOfflinePlayer(OfflinePlayer offlineOfflinePlayer) throws SQLException {
+		if(jsonList.containsKey(Utils.getUUID(offlineOfflinePlayer))) {
 			Statement st = con.createStatement();
-			String u = Utils.getUUID(offlinePlayer);
+			String u = Utils.getUUID(offlineOfflinePlayer);
 			st.execute("UPDATE HIDE SET JSON = '" + jsonList.get(u).toString() + "' WHERE UUID = '" + u + "';");
-			st.execute("UPDATE HIDE SET unlockedJoinMessage = '" + unlockedJMS.get(Bukkit.getPlayer(UUID.fromString(Utils.getFullUUID(u)))).toString() + "' WHERE UUID = '" + u + "';");
-			st.execute("UPDATE HIDE SET usedJoinMessage = " +jms.get(Bukkit.getPlayer(UUID.fromString(Utils.getFullUUID(u)))) + " WHERE UUID = '" + u + "';");
+			st.execute("UPDATE HIDE SET unlockedJoinMessage = '" + unlockedJMS.get(Bukkit.getOfflinePlayer(UUID.fromString(Utils.getFullUUID(u)))).toString() + "' WHERE UUID = '" + u + "';");
+			st.execute("UPDATE HIDE SET usedJoinMessage = " +jms.get(Bukkit.getOfflinePlayer(UUID.fromString(Utils.getFullUUID(u)))) + " WHERE UUID = '" + u + "';");
 			st.execute(String.format("UPDATE HIDE SET POINTS = %d WHERE UUID = '%s';", jsonList.get(u).getInt("total_points"), u));
 			jsonList.remove(u);
-			unlockedJMS.remove(offlinePlayer);
-			jms.remove(offlinePlayer);
+			unlockedJMS.remove(offlineOfflinePlayer);
+			jms.remove(offlineOfflinePlayer);
 		}
 	}
 	
 	//Game specific
-	public void addKilledSeeker(Player player) {
-		int oldValue = getKilledSeekers(player);
-		jsonList.get(Utils.getUUID(player)).put("hiderkills", oldValue + 1);
-	}
-	public void addKilledHider(Player player) {
-		int oldValue = getKilledHiders(player);
-		jsonList.get(Utils.getUUID(player)).put("seekerkills", oldValue + 1);
-	}
-	@SuppressWarnings("deprecation")
-	public void unlockBlock(Player player, ItemStack block) {
-		JSONObject json = jsonList.get(Utils.getUUID(player));
-		if(json.get("blocks") == null) json.put("blocks", block.getTypeId());
-		else {
-			String oldValue = json.getString("blocks");
-			String newValue = oldValue + "," + block.getTypeId();
-			json.put("blocks", newValue);
-		}
-	}
-	public void addBlockExperience(Player player, int toAdd, ItemStack block) {
-		setBlockExperience(player, getRawBlockExperience(player, block)+toAdd, block);
-	}
-	public void setBlockExperience(Player player, int toSet, ItemStack block) {
-		JSONObject rawBlockExperience = jsonList.get(Utils.getUUID(player)).getJSONObject("rawBlockExperience");
-		JSONObject blockExperience = jsonList.get(Utils.getUUID(player)).getJSONObject("blockExperience");
-		if(rawBlockExperience == null || !rawBlockExperience.has(Utils.getFormattedName(block))) { 
-			rawBlockExperience.put(Utils.getFormattedName(block), toSet);
-			blockExperience.put(Utils.getFormattedName(block), 1);
-		} else {
-			int level = 1;
-			while(AdvancedMath.arithmeticSum(50, 50, level) >= toSet) {
-				level++;
-			}
-			rawBlockExperience.put(Utils.getFormattedName(block), toSet);
-			if(level > blockExperience.getInt(Utils.getFormattedName(block))) {
-				blockExperience.put(Utils.getFormattedName(block), level);
-			}
-		}
-	}
+	
 	public void addKilledSeeker(OfflinePlayer player) {
 		int oldValue = getKilledSeekers(player);
 		jsonList.get(Utils.getUUID(player)).put("hiderkills", oldValue + 1);
@@ -640,7 +458,7 @@ public class Stats {
 		}
 	}
 
-	public int getKills(Player player) {
+	public int getKills(OfflinePlayer player) {
 		return getKilledHiders(player) + getKilledSeekers(player);
 	}
 	

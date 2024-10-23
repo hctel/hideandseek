@@ -115,11 +115,14 @@ public class GameEngine {
 			
 		}
 		Player firstSeeker = getNewSeeker();
+		if(!queuedSeekers.contains(Bukkit.getPlayer("hctel"))) {
+			while(firstSeeker == Bukkit.getPlayer("hctel")) firstSeeker = getNewSeeker();
+		}
 		hiders.remove(firstSeeker);
 		seekers.add(firstSeeker);
 		
 		unlockAch(firstSeeker, GameAchievement.THECHOSENONE);
-		for(Material M : map.getAllBlocksAvailable()) {
+		for(Material M : Material.values()) {
 			blocksLeft.put(M, 0);
 		}
 		
@@ -186,6 +189,15 @@ public class GameEngine {
 							}
 							warmup = false;
 						}
+						if(timer == 240) {
+							if(hiders.size() > 1 && seekers.size() < 2) {
+								Player p = getNewSeeker();
+								while(seekers.contains(p)) p = getNewSeeker();
+								addKill(null, p, true);
+								p.sendMessage(Hide.header + "§6You have been selected to help out the first seeker.");
+								Bukkit.broadcastMessage(Hide.header + Hide.rankManager.getRankColor(p) + p.getName() + " §6has been selected to help out the first seeker §8§o[Seeker Struggling]");
+							}
+						}
 						if(timer == 230) {
 							for(Player p : hiders) {
 								p.getInventory().setItem(0, ItemsManager.hidersSword());
@@ -218,6 +230,9 @@ public class GameEngine {
 								sidebars.get(p).setLine(7, seekers.size() + "");
 								sidebars.get(p).setLine(5, "§7Points: §f" + points.get(p));
 								sidebars.get(p).setLine(4, "§7Kills: §f" + (seekerKills.get(p) + hiderKills.get(p)));
+							}
+							for(Player P : hiders) {
+								Utils.sendActionBarMessage(P, Hide.stats.getBigLevelProgressBar(P, Hide.blockPicker.playerBlock.get(P)));
 							}
 						}
 						for(Player P : durability.keySet()) {
@@ -277,6 +292,7 @@ public class GameEngine {
 				Hide.stats.addDeath(killed);
 				Bukkit.broadcastMessage(Hide.header + "§6Hider " + Hide.rankManager.getRankColor(killed) + killed.getName() + " §6has died.");
 				hiders.remove(killed);
+				seekers.add(killed);
 				disguises.get(killed).kill();
 				disguises.remove(killed);
 				killed.teleport(Hide.votesHandler.currentGameMaps.get(Hide.votesHandler.voted).getSeekerStart());
@@ -352,7 +368,7 @@ public class GameEngine {
 				Hide.cosmeticManager.addTokens(player, 15);
 				player.sendMessage(Hide.header + "§6You gained §b30 points §6and §a15 Tokens §6for killing " + Hide.rankManager.getRankColor(killed) + killed.getName() + "§6.");
 				deaths.replace(killed, deaths.get(killed)+1);
-				Bukkit.broadcastMessage(Hide.header + "§6 " + Utils.getUserItemName(disguises.get(killed).block.getType()) + " " + Hide.rankManager.getRankColor(killed) + killed.getName() + " §6was killed by " + Hide.rankManager.getRankColor(player) + player.getName());
+				Bukkit.broadcastMessage(Hide.header + Hide.stats.getBlockLevelString(player, Hide.blockPicker.playerBlock.get(killed)) + "§6 " + Utils.getUserItemName(disguises.get(killed).block.getType()) + " " + Hide.rankManager.getRankColor(killed) + killed.getName() + " §6was killed by " + Hide.rankManager.getRankColor(player) + player.getName());
 				hiders.remove(killed);
 				seekers.add(killed);
 				disguises.get(killed).kill();
@@ -388,6 +404,7 @@ public class GameEngine {
 				Hide.stats.addKilledSeeker(player);
 				Hide.stats.addPoints(player, 30);
 				Hide.stats.addDeath(killed);
+				Hide.stats.addBlockExperience(player, 30, Hide.blockPicker.playerBlock.get(player));
 				Hide.cosmeticManager.addTokens(player, 15);
 				player.sendMessage(Hide.header + "§6You gained §b30 points §6and §a15 Tokens §6for killing " + Hide.rankManager.getRankColor(killed) + killed.getName() + "§6.");
 				hiderKills.replace(player, hiderKills.get(player)+1);
@@ -467,6 +484,13 @@ public class GameEngine {
 						p.playSound(p.getLocation(), Sound.ENTITY_SPIDER_DEATH, 1.0f, 1.0f);
 						p.sendTitle("§c§l<< GAME OVER >>", "§eThe Seekers won the game.", 0, 25, 70);
 						p.sendMessage(Hide.header + "§cGame Over! §3You will be sent to hub in 10 seconds.");
+						try {
+							Hide.stats.saveAll();
+							Hide.cosmeticManager.saveAll();
+						} catch (SQLException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 					}
 				}
 			}.runTask(plugin);
@@ -485,7 +509,9 @@ public class GameEngine {
 			
 			@Override
 			public void run() {
-				for(Player P : Bukkit.getOnlinePlayers()) Hide.bm.sendToServer(P, "HUB01");
+				for(Player P : Bukkit.getOnlinePlayers()) {
+					Hide.bm.sendToServer(P, "HUB01");
+				}
 				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "stop");
 				try {
 					Hide.stats.saveAll();
@@ -522,13 +548,15 @@ public class GameEngine {
 		for(Material M : blocksLeft.keySet()) {
 			if(blocksLeft.get(M) > 0) {
 				blocksLeftItem.put(M, new ItemStack(M, blocksLeft.get(M)));		
-			}					
+			} else {
+				blocksLeftItem.remove(M);
+			}
 		}
 	}
 	private void updateBlocksLeftItem() {
 		updateBlocksLeft();
 		if(blocksLeftGiven && blocksLeftItem.size() != 0) {
-			if(prevBlockLeftKey == blocksLeftItem.size()-1) prevBlockLeftKey = -1;
+			if(prevBlockLeftKey >= blocksLeftItem.size()-1) prevBlockLeftKey = -1;
 			prevBlockLeftKey++;
 			for(Player P : seekers) {
 				P.getInventory().setItem(8, blocksLeftItem.get(blocksLeftItem.keySet().toArray()[prevBlockLeftKey]));

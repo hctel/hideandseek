@@ -31,6 +31,7 @@ public class JoinMessageHandler {
 		Inventory inv = Bukkit.createInventory(null, 9, "Join messages menu");
 		ArrayList<String> lore = new ArrayList<String>();
 		for(JoinMessages M : JoinMessages.values()) {
+			if(M == JoinMessages.RONAN) continue;
 			lore.clear();
 			lore.add("");
 			lore.add(Hide.rankManager.getRankColor(player) + player.getName() + M.getMessage());
@@ -77,7 +78,7 @@ public class JoinMessageHandler {
 			} else if(item.getType() == Material.EMERALD) {
 				Hide.stats.setJoinMessage(p, m);
 				p.sendMessage(Hide.header + "§aSet your join message to " + Hide.rankManager.getRankColor(p) + p.getName() + m.getMessage() + "§a!");
-				p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 0.975f);
+				p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0f, 0.975f);
 				e.setCancelled(true);
 				p.closeInventory();
 				return;

@@ -3,6 +3,7 @@ package be.hctel.renaissance.hideandseek.gamespecific.enums;
 import be.hctel.renaissance.hideandseek.nongame.utils.Utils;
 
 public enum JoinMessages {
+	RONAN(-1, " §6wants to be a §aR§cu§bb§ei§fk§b'§es §cC§au§bb§ee", 999999999),
 	HIDE(0, " §7wants to hide!", 0),
 	BLEND_IN(1, " §ewants to blend in!", 2000),
 	DISAPPEAR(2, " §6is ready to disappear.", 2000),
@@ -38,6 +39,7 @@ public enum JoinMessages {
 	
 	public static JoinMessages getFromStorageCode(int storageCode) {
 		switch(storageCode) {
+		case -1: return RONAN;
 		case 0: return HIDE;
 		case 1: return BLEND_IN;
 		case 2: return DISAPPEAR;

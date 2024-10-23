@@ -115,7 +115,7 @@ public class Utils {
 	 */
 	@SuppressWarnings("deprecation")
 	public static String getFormattedName(ItemStack item) {
-		if (item.getData().getData() != 0) return item.getType().toString();
+		if (item.getData().getData() == 0) return item.getType().toString();
 		else return item.getType().toString() + ":" + item.getData().getData();
 	}
 	/**

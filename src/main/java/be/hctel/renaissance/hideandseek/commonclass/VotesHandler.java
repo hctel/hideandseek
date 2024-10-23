@@ -42,8 +42,8 @@ public class VotesHandler {
 			}
 			//To replace first map with specific map
 			if(i == 0) {
-				a.add(GameMap.PIRATE);
-				votes.put(GameMap.PIRATE, 0);
+				a.add(GameMap.BORA);
+				votes.put(GameMap.BORA, 0);
 				continue;
 			}
 			a.add(b);

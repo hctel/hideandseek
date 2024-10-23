@@ -57,7 +57,7 @@ public class FallingBlockDisguise {
 						if(e.getPlayer() != p && !isCancelled) {
 							WrapperPlayServerNamedEntitySpawn pk = new WrapperPlayServerNamedEntitySpawn(e.getPacket());
 							if(pk.getEntityID() == p.getEntityId()) {
-								plugin.getLogger().info("	Sending disguise to " + e.getPlayer().getName());
+								//plugin.getLogger().info("	Sending disguise to " + e.getPlayer().getName());
 								e.setCancelled(true);
 								sendToPlayer(e.getPlayer());
 							}
@@ -89,7 +89,7 @@ public class FallingBlockDisguise {
 					//plugin.getLogger().info("Details: " + pk.getEntityID() + " - " + p.getEntityId() + "");
 						if(pk.getEntityID() == p.getEntityId()) {
 							e.setCancelled(true);
-							plugin.getLogger().info("	Cancelled Update Attributes packet");
+							//plugin.getLogger().info("	Cancelled Update Attributes packet");
 						}
 				}
 			}
@@ -138,7 +138,7 @@ public class FallingBlockDisguise {
 				if (p == o) {
 					continue;
 				}
-				plugin.getLogger().info(String.format("		Sending %s to %s", pck.toString(), o.getName()));
+				//plugin.getLogger().info(String.format("		Sending %s to %s", pck.toString(), o.getName()));
 				((CraftPlayer) o).getHandle().playerConnection.sendPacket(pck);
 			    ((CraftPlayer) o).getHandle().playerConnection.sendPacket(new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.REMOVE_PLAYER, ((CraftPlayer) p).getHandle()));
 			
@@ -163,7 +163,7 @@ public class FallingBlockDisguise {
 				e.printStackTrace();
 			}
 		PacketPlayOutSpawnEntity pck = new PacketPlayOutSpawnEntity(passenger, 70, getDataInt());
-		plugin.getLogger().info(String.format("		Sending %s to %s as an individual send", pck.toString(), player.getName()));
+		//plugin.getLogger().info(String.format("		Sending %s to %s as an individual send", pck.toString(), player.getName()));
 		((CraftPlayer) player).getHandle().playerConnection.sendPacket(pck);
 		((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.REMOVE_PLAYER, ((CraftPlayer) p).getHandle()));
 	}

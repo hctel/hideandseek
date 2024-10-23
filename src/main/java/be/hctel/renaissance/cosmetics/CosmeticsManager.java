@@ -73,6 +73,7 @@ public class CosmeticsManager {
 			con.createStatement().execute("UPDATE cosmetics SET TOKENS = " + tokens.get(player) + ", MEDALS = "+ goldMedals.get(player) + " WHERE UUID = '" + Utils.getUUID(player) + "';");
 			tokens.remove(player);
 			goldMedals.remove(player);
+			plugin.getLogger().info(String.format("Saved %s's cosmetics (%s tokens, %s gold medals)", player.getName(), tokens.get(player), goldMedals.get(player)));
 		}
 	}
 	public boolean isLoaded(OfflinePlayer player) {
@@ -82,15 +83,12 @@ public class CosmeticsManager {
 	public void saveAll() {
 		for(OfflinePlayer p : tokens.keySet()) {
 			try {
-				unloadPlayer(p);
+				con.createStatement().execute("UPDATE cosmetics SET TOKENS = " + tokens.get(p) + ", MEDALS = "+ goldMedals.get(p) + " WHERE UUID = '" + Utils.getUUID(p) + "';");
+				plugin.getLogger().info(String.format("Saved %s's cosmetics (%s tokens, %s gold medals)", p.getName(), tokens.get(p), goldMedals.get(p)));
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
-		tokens.clear();
-		tokens = null;
-		goldMedals.clear();
-		goldMedals = null;
 	}
 }

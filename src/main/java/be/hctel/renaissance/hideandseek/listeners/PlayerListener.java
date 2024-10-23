@@ -55,9 +55,14 @@ public class PlayerListener implements Listener {
 			a.disallow(Result.KICK_OTHER, "§ePlease do not rejoin games when block picking is active.");
 			return;
 		}
-		if(Hide.isServerStarting) {
+		else if(Hide.isServerStarting) {
 			a.disallow(Result.KICK_OTHER, "Server not started yet.");
 			return;
+		}
+		if(!Hide.preGameTimer.gameStarted) {
+			if(Bukkit.getOnlinePlayers().size() > 23) {
+				a.disallow(Result.KICK_FULL, "§This server is full.");
+			}
 		}
 		/*else if(Hide.preGameTimer.gameStarted) {
 			if(!(a.getPlayer().hasPermission("hide.spectate"))) a.getPlayer().kickPlayer("Only staff members are allowed to spectate in Hide and Seek.");
@@ -102,7 +107,7 @@ public class PlayerListener implements Listener {
 	public void onDisconnect(PlayerQuitEvent e) throws SQLException {
 		Hide.rankManager.unLoad(e.getPlayer());
 		Hide.cosmeticManager.unloadPlayer(e.getPlayer());
-		Hide.stats.savePlayer((OfflinePlayer) e.getPlayer());
+		Hide.stats.saveOfflinePlayer((OfflinePlayer) e.getPlayer());
 		if(Hide.preGameTimer.gameStarted && Bukkit.getOnlinePlayers().size()-1 == 0) Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "s");
 		if(Hide.preGameTimer.gameStarted) Hide.gameEngine.disconnect((OfflinePlayer) e.getPlayer());
 	}
@@ -142,6 +147,8 @@ public class PlayerListener implements Listener {
 		if(Hide.gameEngine.getTeam(p) == GameTeam.SEEKER) {
 			if(b == null) return;
 			for(Player i : Hide.gameEngine.disguises.keySet()) {
+				if(Hide.gameEngine.disguises.get(i) == null) return;
+				if(Hide.gameEngine.disguises.get(i).getBlock() == null) return;
 				if(Hide.gameEngine.disguises.get(i).getBlock().equals(b)) {
 					Hide.gameEngine.disguises.get(i).makeUnsolid();
 					onDamageByEntity(new EntityDamageByEntityEvent(p, i, DamageCause.ENTITY_ATTACK, 0));
@@ -175,7 +182,7 @@ public class PlayerListener implements Listener {
  	
 	@EventHandler
 	public void onChat(AsyncPlayerChatEvent e) {
-		if(Utils.getUUID(e.getPlayer()).equals(Hide.stats.getTopRankPlayer())) {
+		if(Utils.getUUID(e.getPlayer()).equals(Hide.stats.getTopRankOfflinePlayer())) {
 			if(Hide.preGameTimer.gameStarted) {
 				if(Hide.gameEngine.getTeam(e.getPlayer()).equals(GameTeam.SPECTATOR)) {
 					String msg = e.getMessage();

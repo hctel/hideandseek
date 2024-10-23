@@ -92,7 +92,7 @@ public class DisguiseBlockManager {
 			else if(timeInLocation == 80) {
 				player.sendTitle("", "§a»»»»§8»", 0, 25, 0);
 			}
-			else if(timeInLocation == 100) {
+			else if(timeInLocation >= 100 && !isSolid) {
 				makeSolid();
 			}
 			lastLocation = player.getLocation();
