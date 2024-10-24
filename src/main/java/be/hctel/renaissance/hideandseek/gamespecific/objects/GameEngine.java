@@ -381,6 +381,26 @@ public class GameEngine {
 				p.getInventory().setChestplate(new ItemStack(Material.IRON_CHESTPLATE));
 				p.getInventory().setLeggings(new ItemStack(Material.IRON_LEGGINGS));
 				p.getInventory().setBoots(new ItemStack(Material.IRON_BOOTS));
+				
+				if(seekerKills.get(player) == 10) unlockAch(player, GameAchievement.DAREALMVP);
+				switch(Hide.stats.getKilledHiders(player)) {
+				case 1:
+					unlockAch(player, GameAchievement.HIDER1);
+					break;
+				case 50:
+					unlockAch(player, GameAchievement.HIDER50);
+					break;
+				case 250:
+					unlockAch(player, GameAchievement.HIDER250);
+					break;
+				case 500:
+					unlockAch(player, GameAchievement.HIDER500);
+					break;
+				case 1000:
+					unlockAch(player, GameAchievement.HIDER1000);
+					break;
+				}
+				
 				Utils.sendCenteredMessage(p, "§c§m---------------------------------------------------");
 				Utils.sendCenteredMessage(p, "§6§lYou are a §c§lSEEKER!");
 				Utils.sendCenteredMessage(p, "§eIt's your job to find hidden block and KILL THEM!");
@@ -410,6 +430,14 @@ public class GameEngine {
 				Bukkit.broadcastMessage(Hide.header + "§6Seeker " + Hide.rankManager.getRankColor(killed) + killed.getName() + " §6was killed by " + Hide.rankManager.getRankColor(player) + player.getName());
 				killed.teleport(hiderSpawn);
 				sidebars.get(player).setLine(4, "§7Kills: §f" + hiderKills.get(player));
+				switch(Hide.stats.getKilledSeekers(player)) {
+				case 1:
+					unlockAch(player, GameAchievement.SEEKER1);
+					break;
+				case 25:
+					unlockAch(player, GameAchievement.SEEKER25);
+					break;
+				}
 			}
 		}
 		
@@ -473,6 +501,11 @@ public class GameEngine {
 				p.sendMessage(Hide.header + "§e✯ §6Won as hider! §eGold Medal Awarded! §8[" + Hide.cosmeticManager.getGoldMedals(p) + " Total]");
 				Hide.stats.addPoints(p, 50);
 				Hide.cosmeticManager.addTokens(p, 30);
+			}
+			if(hiders.size() == 1) {
+				for(Player S : seekers) {
+					unlockAch(S, GameAchievement.SOCLOSEYETSOFAR);
+				}
 			}
 		} else if(winners == GameTeam.SEEKER) {
 			new BukkitRunnable() {
@@ -568,12 +601,15 @@ public class GameEngine {
 	 * @param achievement
 	 * @return true if the achievement was added, false if the player already unlocked the achievement
 	 */
-	private boolean unlockAch(Player player, GameAchievement achievement) {
+	public boolean unlockAch(Player player, GameAchievement achievement) {
 		if(Hide.stats.getAchievements(player).contains(achievement)) return false;
 		Utils.sendCenteredMessage(player, "§e§m---------------------------------------------------");
+		player.sendMessage("");
 		Utils.sendCenteredMessage(player, "§lAchievement Unlocked!");
+		player.sendMessage("");
 		Utils.sendCenteredMessage(player, "§6§l" + achievement.getName());
 		Utils.sendCenteredMessage(player, "§7" + achievement.getDescription());
+		player.sendMessage("");
 		Utils.sendCenteredMessage(player, "§e§m---------------------------------------------------");
 		player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
 		Hide.stats.completeAchievement(player, achievement);

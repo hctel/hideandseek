@@ -18,6 +18,7 @@ import org.bukkit.plugin.Plugin;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import be.hctel.renaissance.hideandseek.Hide;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.GameAchievement;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.JoinMessages;
 import be.hctel.renaissance.hideandseek.nongame.utils.Utils;
@@ -456,12 +457,19 @@ public class Stats {
 				if(player instanceof Player) {
 					Player p = (Player) player;
 					Utils.sendCenteredMessage(p, "§e§m------------------------------------");
+					p.sendMessage("");
 					Utils.sendCenteredMessage(p,"§6LEVEL UP!");
 					p.sendMessage("");
 					Utils.sendCenteredMessage(p, String.format("§6Your %s is now level %d", Utils.getUserItemName(block), lvl));
 					p.sendMessage("");
 					Utils.sendCenteredMessage(p, "§e§m------------------------------------");
 					p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
+					if(lvl == 25) {
+						Hide.gameEngine.unlockAch(p, GameAchievement.LEVELHALF);
+					}
+					if(lvl == 50) {
+						Hide.gameEngine.unlockAch(p, GameAchievement.LEVELTOP);
+					}
 				}
 			}
 		}

@@ -4,29 +4,29 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum GameAchievement {
-	PEEKABOO("Peek a Boo", "Be the first hider to be found", "PEEKABOO",1),
-	THECHOSENONE("The Chosen One!", "Be the first seeker", "THECHOSENONE",1),
-	SETINPLACE("Set in place", "As a hider, find a spot and never move to win the game", "SETINPLACE",1),
+	PEEKABOO("Peek a Boo", "Be the first hider to be found", "PEEKABOO",1), //done
+	THECHOSENONE("The Chosen One!", "Be the first seeker", "THECHOSENONE",1), //done
+	SETINPLACE("Set in place", "As a hider, find a spot and never move to win the game", "SETINPLACE",1),//done
 	SECONDCHANCE("Second Chance", "Get hurt by a seeker and still manage to win whilist as a hider", "SECONDCHANCE",1),
-	FURNACE("Things Are Heating Up!", "Kill a furnace", "FURNACE",1),
-	ICE("ICEY What You Did There", "Kill an ice block", "ICE",1),
-	PLANT("The Root Of The Issue", "Kill a plant pot", "PLANT",1),
-	LEAF("LEAF Me Alone", "Kill a leaf block", "LEAF",1),
-	ANVIL("A Heavy Issue", "Kill an anvil", "ANVIL",1),
-	BEACON("Powered by Beacons", "Kill a beacon block", "BEACON",1),
-	SNOW("SNOW Way!", "Kill a snow block", "SNOW", 1),
-	DAREALMVP("Da Real MVP", "Kill 10 hiders in the same game", "DAREALMVP",1),
-	SOCLOSEYETSOFAR("So Close Yet So Far", "Lose a gamse as a seeker with only 1 hider left", "SOCLOSEYETSOFAR",1),
-	HIDER1("Found You!", "Kill your first hider", "HIDER1", 1),
-	HIDER50("Bloodshed", "Kill 50 hiders", "HIDER50", 50),
-	HIDER250("The Assasinator", "Kill 250 hiders", "HIDER250", 250),
-	HIDER500("Slaughter Fest", "Kill 500 hiders", "HIDER500", 500),
-	HIDER1000("Extermination", "Kill 1000 hiders", "HIDER1000", 1000),
-	LEVELHALF("Ohhh... I'm half way there!", "Level a block half way to Max Level(50)", "LEVELHALF", 1),
-	LEVELTOP("I'm on the of the world", "Level a block to Max Level(50)", "LEVELTOP", 1),
+	FURNACE("Things Are Heating Up!", "Kill a furnace", "FURNACE",1), //done
+	ICE("ICEY What You Did There", "Kill an ice block", "ICE",1), //Done
+	PLANT("The Root Of The Issue", "Kill a plant pot", "PLANT",1), //done
+	LEAF("LEAF Me Alone", "Kill a leaf block", "LEAF",1),//done
+	ANVIL("A Heavy Issue", "Kill an anvil", "ANVIL",1),//done
+	BEACON("Powered by Beacons", "Kill a beacon block", "BEACON",1),//done
+	SNOW("SNOW Way!", "Kill a snow block", "SNOW", 1),//done
+	DAREALMVP("Da Real MVP", "Kill 10 hiders in the same game", "DAREALMVP",1), //done
+	SOCLOSEYETSOFAR("So Close Yet So Far", "Lose a gamse as a seeker with only 1 hider left", "SOCLOSEYETSOFAR",1),//done
+	HIDER1("Found You!", "Kill your first hider", "HIDER1", 1),//done
+	HIDER50("Bloodshed", "Kill 50 hiders", "HIDER50", 50),//done
+	HIDER250("The Assasinator", "Kill 250 hiders", "HIDER250", 250),//done
+	HIDER500("Slaughter Fest", "Kill 500 hiders", "HIDER500", 500),//done
+	HIDER1000("Extermination", "Kill 1000 hiders", "HIDER1000", 1000),//done
+	LEVELHALF("Ohhh... I'm half way there!", "Level a block half way to Max Level(50)", "LEVELHALF", 1),//done
+	LEVELTOP("I'm on the of the world", "Level a block to Max Level(50)", "LEVELTOP", 1),//done
 	TAUNTER("Catch me if you can!", "Use a taunt", "TAUNTER", 1),
-	SEEKER1("Turning the Tables", "Kill your first seeker", "SEEKER1", 1),
-	SEEKER25("Chaos Calamity", "Kill 25 Seekers", "SEEKER25", 25),
+	SEEKER1("Turning the Tables", "Kill your first seeker", "SEEKER1", 1),//done
+	SEEKER25("Chaos Calamity", "Kill 25 Seekers", "SEEKER25", 25),//done
 	SUNSET_TERRACE("The Sun goes Down", "Win as a hider OR get the most kills as a seeker on Sunset Terrace.", "HIDE_SunsetTerrace", 1),
 	OASIS("A relaxing victory", "Win as a hider OR get the most kills as a seeker on Oasis.", "HIDE_Oasis", 1),
 	VILLA("Living the Life", "Win as a hider OR get the most kills as a seeker on Villa.", "HIDE_Villa", 1),

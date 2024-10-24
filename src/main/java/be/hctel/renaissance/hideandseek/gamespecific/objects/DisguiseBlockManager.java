@@ -20,6 +20,7 @@ import com.comphenix.protocol.events.PacketEvent;
 
 import be.hctel.api.disguies.FallingBlockDisguise;
 import be.hctel.renaissance.hideandseek.Hide;
+import be.hctel.renaissance.hideandseek.gamespecific.enums.GameAchievement;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.ItemsManager;
 import be.hctel.renaissance.hideandseek.nongame.utils.Utils;
 import net.minecraft.server.v1_12_R1.EntityFallingBlock;
@@ -33,9 +34,11 @@ public class DisguiseBlockManager {
 	Location lastLocation;
 	Location solidLocation;
 	int timeInLocation = 0;
+	int timesWentSolid = 0;
 	public boolean isSolid = false;
 	FallingBlockDisguise disguise;
 	public boolean isAlive = true;
+	private boolean sentMessage = false;
 	int fakeEntityId = 0;
 	BukkitRunnable run;
 	EntityFallingBlock solidPlayerBlock;
@@ -114,7 +117,10 @@ public class DisguiseBlockManager {
 			PacketPlayOutEntityDestroy ed = new PacketPlayOutEntityDestroy(player.getEntityId());
 			for(Player P : Bukkit.getOnlinePlayers()) if(P != player) ((CraftPlayer) P).getHandle().playerConnection.sendPacket(ed);
 			solidPlayerBlock = Utils.spawnFakeBlockEntity(player, solidLocation.add(0.5, 0, 0.5), block.getType(), block.getData().getData());
-		} else {
+			sentMessage = false;
+			timesWentSolid++;
+		} else if(!sentMessage) {
+			sentMessage = true;
 			player.sendMessage(Hide.header + "§cYou can't go solid here!");
 			player.sendTitle("§c§l✖", "§6You can't go solid here", 0, 20, 70);
 		}
@@ -155,6 +161,12 @@ public class DisguiseBlockManager {
 	
 	public boolean isAllowedBlock() {
 		return lastLocation.getBlock().getType() == Material.AIR || lastLocation.getBlock().getType() == Material.STATIONARY_WATER || lastLocation.getBlock().getType() == Material.WATER || lastLocation.getBlock().getType() == Material.LAVA || lastLocation.getBlock().getType() == Material.STATIONARY_LAVA || lastLocation.getBlock().getType() == Material.FENCE || lastLocation.getBlock().getType() == Material.ACACIA_FENCE || lastLocation.getBlock().getType() == Material.BIRCH_FENCE || lastLocation.getBlock().getType() == Material.DARK_OAK_FENCE || lastLocation.getBlock().getType() == Material.JUNGLE_FENCE || lastLocation.getBlock().getType() == Material.NETHER_FENCE || lastLocation.getBlock().getType() == Material.SPRUCE_FENCE;
+	}
+	
+	public void endGameChecks() {
+		if(timesWentSolid == 1) {
+			Hide.gameEngine.unlockAch(player, GameAchievement.SETINPLACE);
+		}
 	}
 	
 }
