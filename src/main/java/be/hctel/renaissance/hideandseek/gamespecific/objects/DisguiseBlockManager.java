@@ -146,6 +146,12 @@ public class DisguiseBlockManager {
 	private void stopDisguise() {
 		disguise.cancel();
 	}
+
+	public void resendDisguise(Player player) {
+		if(!isSolid) {
+			disguise.sendToPlayer(player);
+		}
+	}
 	
 	public void kill() {
 		isAlive = false;

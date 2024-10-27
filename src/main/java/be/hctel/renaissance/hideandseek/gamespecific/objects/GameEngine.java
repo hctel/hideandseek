@@ -266,6 +266,10 @@ public class GameEngine {
 							every2second = tick-5;
 						}
 					}
+					if(seekers.size() < 1) {
+						Player picked = getNewSeeker();
+						addKill(null,picked,true);
+					}
 				}
 			}
 			
@@ -282,6 +286,9 @@ public class GameEngine {
 	}
 	public void addKill(Player player, Player killed, boolean seekerKill) {
 		killed.spigot().respawn();
+		for(DisguiseBlockManager D : disguises.values()) {
+			D.resendDisguise(killed);
+		}
 		if(player == null) {
 			if(seekerKill) {
 				//heartbeat.remove(killed);
@@ -602,7 +609,11 @@ public class GameEngine {
 	 * @return true if the achievement was added, false if the player already unlocked the achievement
 	 */
 	public boolean unlockAch(Player player, GameAchievement achievement) {
-		if(Hide.stats.getAchievements(player).contains(achievement)) return false;
+		if(Hide.stats.getAchievements(player).contains(achievement)) {
+			if(Hide.stats.getAchievementProgress(player, achievement) == achievement.getUnlockProgress()) {
+				return false;
+			}			
+		}
 		Utils.sendCenteredMessage(player, "§e§m---------------------------------------------------");
 		player.sendMessage("");
 		Utils.sendCenteredMessage(player, "§lAchievement Unlocked!");

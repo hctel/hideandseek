@@ -34,7 +34,7 @@ import be.hctel.renaissance.hideandseek.nongame.utils.Utils;
  */
 public class Stats {
 	private Connection con;
-	private String baseJson = "{\"UUID\":\"%UUID\",\"total_points\":0,\"victories\":0,\"hiderkills\":0,\"seekerkills\":0,\"deaths\":0,\"gamesplayed\":0,\"blocks\":\"\",\"bookupgrade\":null,\"timealive\":0,\"rawBlockExperience\":{},\"blockExperience\":{},\"achievements\":{\"SEEKER25\":{\"progress\":0,\"unlockedAt\":0},\"SEEKER1\":{\"progress\":0,\"unlockedAt\":0},\"SETINPLACE\":{\"progress\":0,\"unlockedAt\":0},\"HIDER500\":{\"progress\":0,\"unlockedAt\":0},\"HIDER250\":{\"progress\":0,\"unlockedAt\":0},\"HIDER50\":{\"progress\":0,\"unlockedAt\":0},\"HIDER1000\":{\"progress\":0,\"unlockedAt\":0},\"HIDER1\":{\"progress\":0,\"unlockedAt\":0},},\"lastlogin\":%TIME%,\"firstlogin\":%TIME%,\"title\":\"Blind\"}";
+	private String baseJson = "{\"UUID\":\"%s\",\"total_points\":0,\"victories\":0,\"hiderkills\":0,\"seekerkills\":0,\"deaths\":0,\"gamesplayed\":0,\"blocks\":\"\",\"bookupgrade\":null,\"timealive\":0,\"rawBlockExperience\":{},\"blockExperience\":{},\"achievements\":{\"SEEKER25\":{\"progress\":0,\"unlockedAt\":0},\"SEEKER1\":{\"progress\":0,\"unlockedAt\":0},\"SETINPLACE\":{\"progress\":0,\"unlockedAt\":0},\"HIDER500\":{\"progress\":0,\"unlockedAt\":0},\"HIDER250\":{\"progress\":0,\"unlockedAt\":0},\"HIDER50\":{\"progress\":0,\"unlockedAt\":0},\"HIDER1000\":{\"progress\":0,\"unlockedAt\":0},\"HIDER1\":{\"progress\":0,\"unlockedAt\":0},},\"lastlogin\":%TIME%,\"firstlogin\":%d,\"title\":\"Blind\"}";
 	private HashMap<String, JSONObject> jsonList = new HashMap<String , JSONObject>();
 	private HashMap<OfflinePlayer, JSONArray> unlockedJMS = new HashMap<OfflinePlayer, JSONArray>();
 	private HashMap<OfflinePlayer, Integer> jms = new HashMap<OfflinePlayer, Integer>();
@@ -62,7 +62,7 @@ public class Stats {
 	 * @param player the {@link OfflinePlayer} to load
 	 */
 	public void load(OfflinePlayer player) {
-		String json = baseJson;
+		String json;
 		int joinMessage = 0;
 		JSONArray unlockedjms = new JSONArray("[\"HIDE\"]");
 		String uuid = Utils.getUUID(player);
@@ -73,18 +73,22 @@ public class Stats {
 				json = rs.getString("JSON");
 				joinMessage  = rs.getInt("usedJoinMessage");
 				unlockedjms = new JSONArray(rs.getString("unlockedJoinMessage"));
+				JSONObject j = new JSONObject(json);
+				jsonList.put(Utils.getUUID(player), j);
+				unlockedJMS.put(player, unlockedjms);
+				jms.put(player, joinMessage);
+				this.plugin.getLogger().info("Loaded stats! UUID : " + uuid + ", points " + j.getInt("total_points") + ", joinMessages " + joinMessage +  "," + unlockedjms);
+				if(j.getInt("total_points") != rs.getInt("points")) {
+					st.execute(String.format("UPDATE HIDE SET points = %d WHERE UUID = '%s'", j.getInt("total_points"), uuid));
+				}
 			} else {
-				json.replace("%UUID", Utils.getUUID(player));
-				json.replace("%TIME%", System.currentTimeMillis()+ "");
+				json = baseJson;
 				st.execute("INSERT INTO HIDE (UUID, JSON, unlockedJoinMessage) VALUES ('" + Utils.getUUID(player) + "', '" + json.toString() + "', '[\"HIDE\"]');");
-			}
-			JSONObject j = new JSONObject(json);
-			jsonList.put(Utils.getUUID(player), j);
-			unlockedJMS.put(player, unlockedjms);
-			jms.put(player, joinMessage);
-			this.plugin.getLogger().info("Loaded stats! UUID : " + uuid + ", points " + j.getInt("total_points") + ", joinMessages " + joinMessage +  "," + unlockedjms);
-			if(j.getInt("total_points") != rs.getInt("points")) {
-				st.execute(String.format("UPDATE HIDE SET points = %d WHERE UUID = '%s'", j.getInt("total_points"), uuid));
+				JSONObject j = new JSONObject(json);
+				jsonList.put(Utils.getUUID(player), j);
+				unlockedJMS.put(player, unlockedjms);
+				jms.put(player, joinMessage);
+				this.plugin.getLogger().info("Loaded stats! UUID : " + uuid + ", points " + j.getInt("total_points") + ", joinMessages " + joinMessage +  "," + unlockedjms);
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -378,15 +382,16 @@ public class Stats {
 		jsonList.get(Utils.getUUID(player)).put("deaths", oldValue + 1);
 	}
 	public void completeAchievement(OfflinePlayer player, GameAchievement achievement) {
-		//JSONObject ach = jsonList.get(Utils.getUUID(player)).getJSONObject("achievements");
+		JSONObject ach = jsonList.get(Utils.getUUID(player)).getJSONObject("achievements");
 		JSONObject e = new JSONObject();
 		e.put("progress", achievement.getUnlockProgress());
 		e.put("unlockedAt", System.currentTimeMillis());
+		ach.put(achievement.getJsonCode(), e);
 	}
 	public void addAchievementProgress(OfflinePlayer player, GameAchievement achievement, int toAdd) {
 		int oldValue = getAchievementProgress(player, achievement);
-		//JSONObject ach = jsonList.get(Utils.getUUID(player)).getJSONObject("achievements");
-		JSONObject e = new JSONObject();
+		JSONObject ach = jsonList.get(Utils.getUUID(player)).getJSONObject("achievements");
+		JSONObject e = ach.getJSONObject(achievement.getJsonCode());
 		e.put("progress", oldValue + toAdd);
 		e.put("unlockedAt", -1);
 	}

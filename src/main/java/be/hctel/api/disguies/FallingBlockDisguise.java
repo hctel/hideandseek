@@ -146,7 +146,7 @@ public class FallingBlockDisguise {
 	}
 	
 	@SuppressWarnings("deprecation")
-	private void sendToPlayer(Player player) {
+	public void sendToPlayer(Player player) {
 		if(player == p) return;
 		passenger = ((CraftFallingBlock) p.getWorld().spawnFallingBlock(p.getLocation().add(255, 50, 255), m, d)).getHandle();
 		passenger.setNoGravity(true);
