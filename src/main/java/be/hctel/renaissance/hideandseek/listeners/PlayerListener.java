@@ -128,9 +128,8 @@ public class PlayerListener implements Listener {
 			if(Hide.preGameTimer.gameStarted) {
 				if (Hide.gameEngine.areSameTeam((Player) e.getEntity(), (Player) e.getDamager())) {
 					e.setCancelled(true);
-					for(Player P : Bukkit.getOnlinePlayers()) PackettedUtils.sendSound(P, e.getEntity().getLocation(), "entity.player.death", 1.0f, 0.5f);
 				}
-				else if(Hide.gameEngine.getTeam((Player) e.getDamager()) == GameTeam.SEEKER) {
+				else if(Hide.gameEngine.getTeam((Player) e.getDamager()) == GameTeam.SEEKER & Hide.gameEngine.isPlaying) {
 					((Player) e.getEntity()).playSound(e.getDamager().getLocation(), Sound.ENTITY_PLAYER_DEATH, 2.0f, 0.5f);
 					for(Player P : Bukkit.getOnlinePlayers()) P.playSound(e.getDamager().getLocation(), Sound.ENTITY_PLAYER_DEATH, 1.0f, 0.5f);
 					//Player damaged = (Player) e.getEntity();

@@ -44,9 +44,9 @@ public class GameEngine {
 	
 	private int timer = 330;
 	private boolean warmup = true;
-	public static boolean isPlaying = false;
-	public static boolean isGameFinished = false;
-	public static boolean blocksLeftGiven = false;
+	public boolean isPlaying = false;
+	public boolean isGameFinished = false;
+	public boolean blocksLeftGiven = false;
 	
 	private ArrayList<Player> hiders = new ArrayList<Player>();
 	private ArrayList<Player> seekers = new ArrayList<Player>();
@@ -193,7 +193,7 @@ public class GameEngine {
 						if(timer == 240) {
 							if(hiders.size() > 1 && seekers.size() < 2) {
 								Player p = getNewSeeker();
-								while(seekers.contains(p)) p = getNewSeeker();
+								while(seekers.contains(p)) p = getNewSeeker(); //INFINITE LOOP HERE
 								addKill(null, p, true);
 								p.sendMessage(Hide.header + "§6You have been selected to help out the first seeker.");
 								Bukkit.broadcastMessage(Hide.header + Hide.rankManager.getRankColor(p) + p.getName() + " §6has been selected to help out the first seeker §8§o[Seeker Struggling]");
@@ -270,6 +270,9 @@ public class GameEngine {
 						Player picked = getNewSeeker();
 						addKill(null,picked,true);
 					}
+					if(hiders.size() < 1) {
+						endGame(GameTeam.SEEKER);
+					}
 				}
 			}
 			
@@ -284,6 +287,13 @@ public class GameEngine {
 	public boolean isHider(Player player) {
 		return hiders.contains(player);
 	}
+	
+	/**
+	 * Registers a kill
+	 * @param player the killer
+	 * @param killed the {@link Player} that was killed
+	 * @param seekerKill if the kill was made by a seeker; true if {@link killed} was a hider
+	 */
 	public void addKill(Player player, Player killed, boolean seekerKill) {
 		killed.spigot().respawn();
 		for(DisguiseBlockManager D : disguises.values()) {
@@ -293,27 +303,28 @@ public class GameEngine {
 			if(seekerKill) {
 				//heartbeat.remove(killed);
 				Utils.normalVignette(killed);
-				deaths.replace(killed, deaths.get(killed)+1);
 				Hide.stats.addDeath(killed);
-				Bukkit.broadcastMessage(Hide.header + "§6Hider " + Hide.rankManager.getRankColor(killed) + killed.getName() + " §6has died.");
+				Hide.cosmeticManager.addTokens(player, 15);
+				deaths.replace(killed, deaths.get(killed)+1);
+				Bukkit.broadcastMessage(Hide.header + Hide.stats.getBlockLevelString(killed, Hide.blockPicker.playerBlock.get(killed)) + "§6 " + Utils.getUserItemName(disguises.get(killed).block.getType()) + " " + Hide.rankManager.getRankColor(killed) + killed.getName() + " §6has died");
 				hiders.remove(killed);
 				seekers.add(killed);
 				disguises.get(killed).kill();
-				disguises.remove(killed);
 				killed.teleport(Hide.votesHandler.currentGameMaps.get(Hide.votesHandler.voted).getSeekerStart());
 				Player p = killed;
+				if(timer < 300) {
+					int aliveTime = 300-timer;
+					p.sendMessage(Hide.header + String.format("§aYou gained §r%d poionts §and §b%d tokens §a for surviving §e%d seconds", (int) (aliveTime*0.6), (int) (aliveTime*0.15), aliveTime));
+					Hide.stats.addPoints(p, (int) (aliveTime*0.6));
+					Hide.cosmeticManager.addTokens(p, (int) (aliveTime*0.15));
+				}
 				p.teleport(seekerSpawn);
-				p.setGameMode(GameMode.SURVIVAL);
+				p.getInventory().clear();
 				p.getInventory().setItem(0, new ItemStack(Material.DIAMOND_SWORD));
 				p.getInventory().setHelmet(new ItemStack(Material.IRON_HELMET));
 				p.getInventory().setChestplate(new ItemStack(Material.IRON_CHESTPLATE));
 				p.getInventory().setLeggings(new ItemStack(Material.IRON_LEGGINGS));
 				p.getInventory().setBoots(new ItemStack(Material.IRON_BOOTS));
-				Utils.sendCenteredMessage(p, "§c§m---------------------------------------------------");
-				Utils.sendCenteredMessage(p, "§6§lYou are a §c§lSEEKER!");
-				Utils.sendCenteredMessage(p, "§eIt's your job to find hidden block and KILL THEM!");
-				Utils.sendCenteredMessage(p, "You will be released in §l30 seconds!");
-				Utils.sendCenteredMessage(p, "§c§m---------------------------------------------------");
 				new BukkitRunnable() {
 					@Override
 					public void run() {
@@ -323,7 +334,6 @@ public class GameEngine {
 					
 				}.runTaskLater(plugin, 30*20L);
 				blocksLeft.put(Hide.blockPicker.playerItem.get(killed), blocksLeft.get(Hide.blockPicker.playerItem.get(killed))-1);
-				checkForHidersRemaining();
 			} else {
 				Hide.stats.addDeath(killed);
 				deaths.replace(killed, deaths.get(killed)+1);
@@ -377,10 +387,16 @@ public class GameEngine {
 				hiders.remove(killed);
 				seekers.add(killed);
 				disguises.get(killed).kill();
-				disguises.remove(player);
+				disguises.remove(killed);
 				killed.teleport(Hide.votesHandler.currentGameMaps.get(Hide.votesHandler.voted).getSeekerStart());
 				sidebars.get(player).setLine(4, "§7Kills: §f" + seekerKills.get(player));
 				Player p = killed;
+				if(timer < 300) {
+					int aliveTime = 300-timer;
+					p.sendMessage(Hide.header + String.format("§aYou gained §r%d poionts §and §b%d tokens §a for surviving §e%d seconds", (int) (aliveTime*0.6), (int) (aliveTime*0.15), aliveTime));
+					Hide.stats.addPoints(p, (int) (aliveTime*0.6));
+					Hide.cosmeticManager.addTokens(p, (int) (aliveTime*0.15));
+				}
 				p.teleport(seekerSpawn);
 				p.getInventory().clear();
 				p.getInventory().setItem(0, new ItemStack(Material.DIAMOND_SWORD));
@@ -388,7 +404,6 @@ public class GameEngine {
 				p.getInventory().setChestplate(new ItemStack(Material.IRON_CHESTPLATE));
 				p.getInventory().setLeggings(new ItemStack(Material.IRON_LEGGINGS));
 				p.getInventory().setBoots(new ItemStack(Material.IRON_BOOTS));
-				
 				if(seekerKills.get(player) == 10) unlockAch(player, GameAchievement.DAREALMVP);
 				switch(Hide.stats.getKilledHiders(player)) {
 				case 1:
@@ -424,7 +439,6 @@ public class GameEngine {
 					
 				}.runTaskLater(plugin, 10*20L);
 				blocksLeft.put(Hide.blockPicker.playerItem.get(killed), blocksLeft.get(Hide.blockPicker.playerItem.get(killed))-1);
-				checkForHidersRemaining();
 			} else {
 				Hide.stats.addKilledSeeker(player);
 				Hide.stats.addPoints(player, 30);
@@ -466,7 +480,7 @@ public class GameEngine {
 		}
 	}
 	private Player getNewSeeker() {
-		if(queuedSeekers.isEmpty()) {
+		if(queuedSeekers.size() < 2) {
 			return hiders.get(r.nextInt(hiders.size()));
 		} else {
 			return queuedSeekers.get(r.nextInt(queuedSeekers.size()));
@@ -566,14 +580,6 @@ public class GameEngine {
 				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "stop");
 			}
 		}.runTaskLater(plugin, 250L);
-	}
-	
-	private void checkForHidersRemaining() {
-		if(hiders.size() < 1) {
-			endGame(GameTeam.SEEKER);
-		} else {
-			updateBlocksLeft();
-		}
 	}
 	
 	public TauntManager getTauntManager() {

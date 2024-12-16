@@ -16,6 +16,7 @@ public class ItemsManager {
 	public static ItemStack hidersSword() {
 		ItemStack a = new ItemStack(Material.WOOD_SWORD);
 		ItemMeta b = a.getItemMeta();
+		b.setUnbreakable(true);
 		b.setDisplayName("§c§lSeeker Killer");
 		b.addEnchant(Enchantment.KNOCKBACK, 1, true);
 		a.setItemMeta(b);
