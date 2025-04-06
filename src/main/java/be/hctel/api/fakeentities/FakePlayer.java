@@ -58,6 +58,7 @@ public class FakePlayer extends EntityPlayer implements Listener {
 	private int id;
 	private ProtocolManager manager = ProtocolLibrary.getProtocolManager();
 	private HashMap<HumanEntity, Long> cooldown = new HashMap<HumanEntity, Long>();
+	private ArrayList<Player> excludeList = new ArrayList<>();
 	Plugin plugin;
 	ArrayList<Player> shownTo = new ArrayList<Player>();
 

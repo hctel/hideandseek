@@ -138,6 +138,7 @@ public class PlayerListener implements Listener {
 			} else e.setCancelled(true);
 		} else e.setCancelled(true);
 	}
+	
 	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onBlockDamage(BlockDamageEvent e) {

@@ -1,6 +1,7 @@
 package be.hctel.api.disguies;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -37,6 +38,8 @@ public class FallingBlockDisguise {
 	EntityFallingBlock passenger;
 	BukkitTask resendTask;
 	
+	private ArrayList<Player> excludeList = new ArrayList<>();
+	
 	@SuppressWarnings("deprecation")
 	public FallingBlockDisguise(Player player, Material m, byte d, Plugin plugin) {
 		this.plugin = plugin;	
@@ -54,7 +57,7 @@ public class FallingBlockDisguise {
 					@Override
 					public void onPacketSending(PacketEvent e) {
 						//plugin.getLogger().info("	onPacketSending!");
-						if(e.getPlayer() != p && !isCancelled) {
+						if((e.getPlayer() != p | !excludeList.contains(e.getPlayer())) && !isCancelled) {
 							WrapperPlayServerNamedEntitySpawn pk = new WrapperPlayServerNamedEntitySpawn(e.getPacket());
 							if(pk.getEntityID() == p.getEntityId()) {
 								//plugin.getLogger().info("	Sending disguise to " + e.getPlayer().getName());
@@ -84,7 +87,7 @@ public class FallingBlockDisguise {
 			@Override
 			public void onPacketSending(PacketEvent e) {
 				//plugin.getLogger().info("onPacketSending 2");
-				if(e.getPlayer() != p && !isCancelled) {
+				if((e.getPlayer() != p | !excludeList.contains(e.getPlayer())) && !isCancelled) {
 					WrapperPlayServerUpdateAttributes pk = new WrapperPlayServerUpdateAttributes(e.getPacket());
 					//plugin.getLogger().info("Details: " + pk.getEntityID() + " - " + p.getEntityId() + "");
 						if(pk.getEntityID() == p.getEntityId()) {
@@ -135,7 +138,7 @@ public class FallingBlockDisguise {
 
 			for (Player o : Bukkit.getOnlinePlayers()) {
 				PacketPlayOutSpawnEntity pck = new PacketPlayOutSpawnEntity(passenger, 70, getDataInt());
-				if (p == o) {
+				if (p == o | excludeList.contains(o)) {
 					continue;
 				}
 				//plugin.getLogger().info(String.format("		Sending %s to %s", pck.toString(), o.getName()));
@@ -147,7 +150,7 @@ public class FallingBlockDisguise {
 	
 	@SuppressWarnings("deprecation")
 	public void sendToPlayer(Player player) {
-		if(player == p) return;
+		if(player == p | excludeList.contains(player)) return;
 		passenger = ((CraftFallingBlock) p.getWorld().spawnFallingBlock(p.getLocation().add(255, 50, 255), m, d)).getHandle();
 		passenger.setNoGravity(true);
 		passenger.locX = p.getLocation().getX();
@@ -175,6 +178,14 @@ public class FallingBlockDisguise {
 		PacketPlayOutNamedEntitySpawn ps = new PacketPlayOutNamedEntitySpawn(((CraftPlayer) p).getHandle());
 		for(Player P : Bukkit.getOnlinePlayers()) if(P != p) ((CraftPlayer) P).getHandle().playerConnection.sendPacket(ps);
 		resendTask.cancel();
+	}
+	
+	public void excludeFrom(Player player) {
+		excludeList.add(player);
+		player.showPlayer(plugin, p);
+		((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.ADD_PLAYER, ((CraftPlayer) p).getHandle()));
+		PacketPlayOutNamedEntitySpawn ps = new PacketPlayOutNamedEntitySpawn(((CraftPlayer) p).getHandle());
+		((CraftPlayer) player).getHandle().playerConnection.sendPacket(ps);
 	}
 	
 	@SuppressWarnings("deprecation")

@@ -56,3 +56,8 @@ commands:
     usage: /dev <subcommand>
     permission: hide.hctel
     description: Versatile command to test miscellaneous things
+  showhiders:
+    usage: /showhiders
+    permission: hide.admin
+    description: Display hiders
+    

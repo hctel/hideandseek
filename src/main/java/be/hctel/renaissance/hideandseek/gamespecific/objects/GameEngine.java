@@ -71,6 +71,7 @@ public class GameEngine {
 	private PotionEffect hbeft = new PotionEffect(PotionEffectType.SPEED, 5, 1, false, false);
 	
 	BukkitTask everySecondTask;
+	BukkitTask everyTickTask;
 	
 	public GameEngine(Plugin plugin, GameMap map) {
 		this.plugin = plugin;
@@ -246,7 +247,7 @@ public class GameEngine {
 				}
 			}			
 		}.runTaskTimer(plugin, 0L, 20L);
-		new BukkitRunnable() {
+		everyTickTask = new BukkitRunnable() {
 
 			@Override
 			public void run() {
@@ -393,7 +394,7 @@ public class GameEngine {
 				Player p = killed;
 				if(timer < 300) {
 					int aliveTime = 300-timer;
-					p.sendMessage(Hide.header + String.format("§aYou gained §r%d poionts §and §b%d tokens §a for surviving §e%d seconds", (int) (aliveTime*0.6), (int) (aliveTime*0.15), aliveTime));
+					p.sendMessage(Hide.header + String.format("§aYou gained §r%d points §and §b%d tokens §a for surviving §e%d seconds", (int) (aliveTime*0.6), (int) (aliveTime*0.15), aliveTime));
 					Hide.stats.addPoints(p, (int) (aliveTime*0.6));
 					Hide.cosmeticManager.addTokens(p, (int) (aliveTime*0.15));
 				}
@@ -502,8 +503,10 @@ public class GameEngine {
 	
 	private void endGame(GameTeam winners) {
 		isGameFinished = true;
+		isPlaying = false;
 		blocksLeftGiven = false;
 		everySecondTask.cancel();
+		everyTickTask.cancel();
 		if(winners == GameTeam.HIDER) {
 			new BukkitRunnable() {
 				@Override
@@ -635,5 +638,14 @@ public class GameEngine {
 	
 	public void addPoints(Player player, int points) {
 		this.points.put(player, this.points.get(player) + points);
+	}
+	
+	public void showHiders(Player player) {
+		for(Player p : hiders) {
+			if(disguises.get(p).isAlive) {
+				plugin.getLogger().info("Showing " + p.getName());
+				disguises.get(p).showTo(player);
+			}
+		}
 	}
 }

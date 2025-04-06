@@ -48,6 +48,9 @@ import be.hctel.renaissance.hideandseek.nongame.utils.MapLoader;
 import be.hctel.renaissance.ranks.RankManager;
 
 public class Hide extends JavaPlugin {
+	public static String version = "b1.25.7";
+	
+	
 	public static boolean testServer = false;
 	public static boolean isServerStarting = true;
 	
@@ -164,6 +167,7 @@ public class Hide extends JavaPlugin {
 		getCommand("ping").setExecutor(new UtilsCommands());
 		getCommand("signer").setExecutor(new SignCommands());
 		getCommand("dev").setExecutor(new DevCommands());
+		getCommand("showhiders").setExecutor(new StaffComands());
 	}
 	
 	private void openConnection() {

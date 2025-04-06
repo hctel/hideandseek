@@ -121,6 +121,11 @@ public class StaffComands implements CommandExecutor {
 							player.sendMessage("§aDetected hits: " + t.getPunchedEntities());
 						}
 					}.runTaskLater(Hide.plugin, 15L);
+				} else if(cmd.getName().equalsIgnoreCase("showhiders")) {
+					if(Hide.preGameTimer.gameStarted) {
+						Hide.gameEngine.showHiders(player);
+					}
+					return true;
 				}
 			} else {
 				player.sendMessage(Hide.header + ChatMessages.NOPERM);

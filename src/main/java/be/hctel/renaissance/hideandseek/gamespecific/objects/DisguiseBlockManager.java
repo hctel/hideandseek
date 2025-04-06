@@ -169,6 +169,11 @@ public class DisguiseBlockManager {
 		return lastLocation.getBlock().getType() == Material.AIR || lastLocation.getBlock().getType() == Material.STATIONARY_WATER || lastLocation.getBlock().getType() == Material.WATER || lastLocation.getBlock().getType() == Material.LAVA || lastLocation.getBlock().getType() == Material.STATIONARY_LAVA || lastLocation.getBlock().getType() == Material.FENCE || lastLocation.getBlock().getType() == Material.ACACIA_FENCE || lastLocation.getBlock().getType() == Material.BIRCH_FENCE || lastLocation.getBlock().getType() == Material.DARK_OAK_FENCE || lastLocation.getBlock().getType() == Material.JUNGLE_FENCE || lastLocation.getBlock().getType() == Material.NETHER_FENCE || lastLocation.getBlock().getType() == Material.SPRUCE_FENCE;
 	}
 	
+	public void showTo(Player player) {
+		disguise.excludeFrom(player);
+		player.showPlayer(plugin, this.player);
+	}
+	
 	public void endGameChecks() {
 		if(timesWentSolid == 1) {
 			Hide.gameEngine.unlockAch(player, GameAchievement.SETINPLACE);

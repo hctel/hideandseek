@@ -25,6 +25,9 @@ public class DevCommands implements CommandExecutor {
 				player.sendMessage(""+Hide.stats.getRawBlockExperience(player, new ItemStack(Material.BEACON)));
 			}
 		}
+		if(args[0].equalsIgnoreCase("ver")) {
+			sender.sendMessage(Hide.version);
+		}
 		return true;
 	}
 	
