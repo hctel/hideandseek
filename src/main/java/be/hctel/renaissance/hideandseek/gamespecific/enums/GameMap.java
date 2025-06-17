@@ -42,6 +42,7 @@ public enum GameMap {
 	OASIS("Oasis", "HIDE_Oasis", new SpawnLocation("HIDE_Oasis", -73.5,8, 3, 0.1f, 0.1f), new SpawnLocation("HIDE_Oasis", -66,15,18,0.1f, 0.1f)),
 	HOSPITAL("Hospital", "HIDE_Hospital", new SpawnLocation("HIDE_Hospital", 25.5,6,26.5, 0.1f, 0.1f), new SpawnLocation("HIDE_Hospital", -24.5,8,-11.5,-90.1f, 0.1f)),
 	BORA("Bora Bora", "HIDE_Bora", new SpawnLocation("HIDE_Bora", 0.5,117, -31.5, 0.1f, 0.1f), new SpawnLocation("HIDE_Bora", -32.5,117,-48.5,-90.1f, 0.1f)),
+	KEEP("Keep", "HIDE_Keep", new SpawnLocation("HIDE_Keep", 93.5, 73, -0.5, 180.1f, 0.1f), new SpawnLocation("HIDE_Keep", -27.5, 72, 0.5, 0.1f, 0.1f)),
 	HOTEL("§9Hotel", "HIDE_Hotel", new SpawnLocation("HIDE_Hotel", -2, 64, -35, 0.1f, 0.1f), new SpawnLocation("HIDE_Hotel", -3, 61, -21, 0.1f, 0.1f));
 	
 	String mapName;
@@ -119,6 +120,8 @@ public enum GameMap {
 			toAdd.add(d);
 			ItemStack e = new ItemStack(Material.ANVIL);
 			toAdd.add(e);
+			ItemStack f = new ItemStack(Material.CARPET);
+			toAdd.add(f);
 		}
 		if(this == GameMap.OFFICE) {
 			ItemStack a = new ItemStack(Material.LEAVES);
@@ -193,7 +196,7 @@ public enum GameMap {
 			toAdd.add(b);
 			ItemStack c = new ItemStack(Material.BOOKSHELF);
 			toAdd.add(c);
-			ItemStack e = new ItemStack(Material.MELON);
+			ItemStack e = new ItemStack(Material.MELON_BLOCK);
 			toAdd.add(e);
 			ItemStack f = new ItemStack(Material.HARD_CLAY);
 			toAdd.add(f);
@@ -468,7 +471,7 @@ public enum GameMap {
 			toAdd.add(b);
 			ItemStack c = new ItemStack(Material.BOOKSHELF);
 			toAdd.add(c);
-			ItemStack d = new ItemStack(Material.MELON);
+			ItemStack d = new ItemStack(Material.MELON_BLOCK);
 			toAdd.add(d);
 			ItemStack e = new ItemStack(Material.REDSTONE_LAMP_OFF);
 			toAdd.add(e);
@@ -476,6 +479,14 @@ public enum GameMap {
 			toAdd.add(f);
 			ItemStack g = new ItemStack(Material.WOOD_PLATE);
 			//toAdd.add(g);
+		}
+		if(this == GameMap.KEEP) {
+			ItemStack a = new ItemStack(Material.HOPPER);
+			toAdd.add(a);
+			ItemStack b = new ItemStack(Material.FLOWER_POT);
+			toAdd.add(b);
+			ItemStack c = new ItemStack(Material.JACK_O_LANTERN);
+			toAdd.add(c);
 		}
 		return toAdd;
 		

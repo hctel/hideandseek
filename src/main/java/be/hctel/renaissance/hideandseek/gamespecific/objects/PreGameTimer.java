@@ -109,6 +109,7 @@ public class PreGameTimer {
 							if(timer == 21) {
 								Hide.votesHandler.endVotes();
 								Hide.bm.send("ServerMapVoted", Hide.votesHandler.currentGameMaps.get(Hide.votesHandler.voted).getMapName());
+								Hide.bm.sendForward("MapVoted", Hide.votesHandler.currentGameMaps.get(Hide.votesHandler.voted).getMapName());
 								Bukkit.broadcastMessage(Hide.header + "§3Voting has ended. §bThe map §f" + Hide.votesHandler.currentGameMaps.get(Hide.votesHandler.voted).getMapName() + " §bhas won.");
 								Bukkit.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
 									public void run() {
@@ -122,6 +123,8 @@ public class PreGameTimer {
 							}
 						} else if(timer <= 16 && timer > 5) {
 							if(timer == 16) {
+								Hide.bm.send("ServerGameStarted");
+								Hide.bm.sendForward("GameStarted");
 								choosingBlock = true;
 								for(Player p : Bukkit.getOnlinePlayers()) {
 									p.playSound(p.getLocation(), Sound.ENTITY_ENDERDRAGON_GROWL, 1.0f, 1.0f);

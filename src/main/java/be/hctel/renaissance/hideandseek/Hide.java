@@ -86,7 +86,7 @@ public class Hide extends JavaPlugin {
 	
 	private String host, user, database, password;
 	private int port;
-	private Connection con;
+	public static Connection con;
 	
 	@Override
 	public void onEnable() {
@@ -111,6 +111,7 @@ public class Hide extends JavaPlugin {
 		preGameTimer = new PreGameTimer(this);
 		votesHandler = new VotesHandler(this);
 		bm = new BungeeCordMessenger(this);
+		bm.requestServerName();
 		blockShop = new BlockShop(this);
 		joinMessageMenu = new JoinMessageHandler(this);
 		signer = new Signer(this);
@@ -131,6 +132,12 @@ public class Hide extends JavaPlugin {
 			}
 		});
 		isServerStarting = false;
+		try {
+			con.createStatement().execute("UPDATE servers SET status = 'UP' WHERE name = '" + bm.getServerName() + "';");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	
@@ -168,6 +175,7 @@ public class Hide extends JavaPlugin {
 		getCommand("signer").setExecutor(new SignCommands());
 		getCommand("dev").setExecutor(new DevCommands());
 		getCommand("showhiders").setExecutor(new StaffComands());
+		getCommand("whereami").setExecutor(new UtilsCommands());
 	}
 	
 	private void openConnection() {

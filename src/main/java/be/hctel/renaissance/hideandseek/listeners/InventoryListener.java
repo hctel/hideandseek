@@ -48,7 +48,6 @@ public class InventoryListener implements Listener {
 			if(e.getItem().getType().equals(Material.DIAMOND) && e.getItem().getItemMeta().getDisplayName().equalsIgnoreCase("§b§lJoin messages") && !Hide.preGameTimer.gameStarted) {
 				Hide.joinMessageMenu.openInventory(e.getPlayer());
 			}
-		}
-			
+		}			
 	}
 }

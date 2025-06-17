@@ -60,4 +60,8 @@ commands:
     usage: /showhiders
     permission: hide.admin
     description: Display hiders
+  whereami:
+    usage: /whereami
+    permission: hide.default
+    decription: Tells you which server you are on
     

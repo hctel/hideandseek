@@ -41,11 +41,11 @@ public class VotesHandler {
 				b = maps.get(r.nextInt(maps.size()));
 			}
 			//To replace first map with specific map
-			if(i == 0) {
-				a.add(GameMap.BORA);
-				votes.put(GameMap.BORA, 0);
+			/*if(i == 0) {
+				a.add(GameMap.NEXUS_CITY);
+				votes.put(GameMap.NEXUS_CITY, 0);
 				continue;
-			}
+			}*/
 			a.add(b);
 			votes.put(b, 0);
 		}

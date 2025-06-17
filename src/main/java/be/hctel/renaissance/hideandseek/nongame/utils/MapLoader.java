@@ -63,6 +63,7 @@ public class MapLoader {
 			Bukkit.getWorld("TEMPWORLD" + i).setGameRuleValue("showDeathMessages", "false");
 			Bukkit.getWorld("TEMPWORLD" + i).setDifficulty(Difficulty.PEACEFUL);
 		}
+		System.out.println("ALL WORLDS LOADED");
 	}
 	
 	public void deleteTempWorld() {

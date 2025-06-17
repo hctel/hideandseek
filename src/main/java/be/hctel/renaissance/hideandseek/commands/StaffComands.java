@@ -1,5 +1,7 @@
 package be.hctel.renaissance.hideandseek.commands;
 
+import java.sql.SQLException;
+
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -15,7 +17,6 @@ import be.hctel.renaissance.hideandseek.nongame.utils.KADetector;
 import be.hctel.renaissance.hideandseek.nongame.utils.Utils;
 
 public class StaffComands implements CommandExecutor {
-
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String msg, String[] args) {
 		if(sender instanceof Player) {
@@ -138,6 +139,13 @@ public class StaffComands implements CommandExecutor {
 			Bukkit.broadcastMessage("§cYou were sent to a lobby because the server you were previously on was stopped by a staff member");
 			for(Player P : Bukkit.getOnlinePlayers()) Hide.bm.sendToServer(P, "HUB01");
 			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "stop");
+			try {
+				Hide.con.createStatement().execute("UPDATE servers SET status = 'OFF' WHERE name = '" + Hide.bm.getServerName() + "';");
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return true;
 		}
 		
 		return false;

@@ -11,8 +11,12 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
 import java.util.concurrent.RecursiveTask;
 
@@ -28,7 +32,6 @@ import org.bukkit.craftbukkit.v1_12_R1.entity.CraftFallingBlock;
 import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_12_R1.util.CraftMagicNumbers;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
@@ -115,7 +118,8 @@ public class Utils {
 	 */
 	@SuppressWarnings("deprecation")
 	public static String getFormattedName(ItemStack item) {
-		if (item.getData().getData() == 0) return item.getType().toString();
+		if(item.getType() == Material.REDSTONE_BLOCK) return "REDSTONE_BLOCK:0";
+		else if (item.getData().getData() == 0) return item.getType().toString();
 		else return item.getType().toString() + ":" + item.getData().getData();
 	}
 	/**
@@ -792,7 +796,23 @@ public class Utils {
 			       }
 			    }
 			    return null;
-			}
-		
+		  }
+		  
+		  public static <K,V extends Comparable<? super V>> 
+	          List<Entry<K, V>> entriesSortedByValues(Map<K,V> map) {
+	
+			  List<Entry<K,V>> sortedEntries = new ArrayList<Entry<K,V>>(map.entrySet());
+			
+			  Collections.sort(sortedEntries, 
+			          new Comparator<Entry<K,V>>() {
+			              @Override
+			              public int compare(Entry<K,V> e1, Entry<K,V> e2) {
+			                  return e2.getValue().compareTo(e1.getValue());
+			              }
+			          }
+			  );
+			
+			  return sortedEntries;
+		  }
  
 }

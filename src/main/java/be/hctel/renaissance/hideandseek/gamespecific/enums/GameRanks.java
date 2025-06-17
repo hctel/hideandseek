@@ -9,6 +9,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 
 
 public enum GameRanks {
+	PP_SUK("§e", "u suk <3", -999999, 0),
 	BLIND("§7", "Blind", 0, 100),
 	SHORT_SIGHTED("§3", "Short Sighted", 100, 1000),
 	SNEAKER("§b", "Sneaker", 1000, 2500),

@@ -2,10 +2,9 @@ package be.hctel.renaissance.hideandseek.gamespecific.objects;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
+import java.util.Map.Entry;
 import java.util.Random;
 
 import org.bukkit.Bukkit;
@@ -58,6 +57,7 @@ public class GameEngine {
 	private HashMap<Player, Integer> seekerKills = new HashMap<Player, Integer>();
 	private HashMap<Player, Integer> deaths = new HashMap<Player, Integer>();
 	private HashMap<Player, Integer> points = new HashMap<Player, Integer>();
+	private HashMap<Player, Integer> secondsAlive = new HashMap<Player, Integer>();
 	
 	private HashMap<Player, DynamicScoreboard> sidebars = new HashMap<Player, DynamicScoreboard>();
 	public HashMap<Player, DisguiseBlockManager> disguises = new HashMap<Player, DisguiseBlockManager>();
@@ -104,7 +104,7 @@ public class GameEngine {
 			sidebars.get(p).setLine(5, "§7Points: §f0");
 			sidebars.get(p).setLine(4, "§7Kills: §f0");
 			sidebars.get(p).setLine(3, "    ");
-			sidebars.get(p).setLine(2, "§7----------");
+			sidebars.get(p).setLine(2, "§7§m-------------------");
 			sidebars.get(p).setLine(1, "§bhctel§f.§anet         ");
 			sidebars.get(p).addReceiver(p);
 			Utils.sendActionBarMessage(p, "");
@@ -270,6 +270,7 @@ public class GameEngine {
 					if(seekers.size() < 1) {
 						Player picked = getNewSeeker();
 						addKill(null,picked,true);
+						picked.sendMessage(Hide.header + "§6You have been selected to become a seeker as all seekers have left!.");
 					}
 					if(hiders.size() < 1) {
 						endGame(GameTeam.SEEKER);
@@ -311,12 +312,15 @@ public class GameEngine {
 				hiders.remove(killed);
 				seekers.add(killed);
 				disguises.get(killed).kill();
+				disguises.remove(killed);
 				killed.teleport(Hide.votesHandler.currentGameMaps.get(Hide.votesHandler.voted).getSeekerStart());
 				Player p = killed;
+				int aliveTime = 300-timer;
+				secondsAlive.put(p, aliveTime);
 				if(timer < 300) {
-					int aliveTime = 300-timer;
-					p.sendMessage(Hide.header + String.format("§aYou gained §r%d poionts §and §b%d tokens §a for surviving §e%d seconds", (int) (aliveTime*0.6), (int) (aliveTime*0.15), aliveTime));
+					p.sendMessage(Hide.header + String.format("§aYou gained §r%d points §aand §b%d tokens §a for surviving §e%d seconds", (int) (aliveTime*0.6), (int) (aliveTime*0.15), aliveTime));
 					Hide.stats.addPoints(p, (int) (aliveTime*0.6));
+					points.replace(p, points.get(p)+(int) (aliveTime*0.6));
 					Hide.cosmeticManager.addTokens(p, (int) (aliveTime*0.15));
 				}
 				p.teleport(seekerSpawn);
@@ -326,6 +330,7 @@ public class GameEngine {
 				p.getInventory().setChestplate(new ItemStack(Material.IRON_CHESTPLATE));
 				p.getInventory().setLeggings(new ItemStack(Material.IRON_LEGGINGS));
 				p.getInventory().setBoots(new ItemStack(Material.IRON_BOOTS));
+				p.setGameMode(GameMode.SURVIVAL);
 				new BukkitRunnable() {
 					@Override
 					public void run() {
@@ -333,7 +338,7 @@ public class GameEngine {
 						p.playSound(p.getLocation(), Sound.ENTITY_ELDER_GUARDIAN_CURSE, 1.0f, 1.0f);
 					}
 					
-				}.runTaskLater(plugin, 30*20L);
+				}.runTaskLater(plugin, 10*20L);
 				blocksLeft.put(Hide.blockPicker.playerItem.get(killed), blocksLeft.get(Hide.blockPicker.playerItem.get(killed))-1);
 			} else {
 				Hide.stats.addDeath(killed);
@@ -392,9 +397,10 @@ public class GameEngine {
 				killed.teleport(Hide.votesHandler.currentGameMaps.get(Hide.votesHandler.voted).getSeekerStart());
 				sidebars.get(player).setLine(4, "§7Kills: §f" + seekerKills.get(player));
 				Player p = killed;
+				int aliveTime = 300-timer;
+				secondsAlive.put(p, aliveTime);
 				if(timer < 300) {
-					int aliveTime = 300-timer;
-					p.sendMessage(Hide.header + String.format("§aYou gained §r%d points §and §b%d tokens §a for surviving §e%d seconds", (int) (aliveTime*0.6), (int) (aliveTime*0.15), aliveTime));
+					p.sendMessage(Hide.header + String.format("§aYou gained §r%d points §aand §b%d tokens §a for surviving §e%d seconds", (int) (aliveTime*0.6), (int) (aliveTime*0.15), aliveTime));
 					Hide.stats.addPoints(p, (int) (aliveTime*0.6));
 					Hide.cosmeticManager.addTokens(p, (int) (aliveTime*0.15));
 				}
@@ -507,14 +513,43 @@ public class GameEngine {
 		blocksLeftGiven = false;
 		everySecondTask.cancel();
 		everyTickTask.cancel();
+		
+		
+		
 		if(winners == GameTeam.HIDER) {
 			new BukkitRunnable() {
 				@Override
 				public void run() {
+					List<Entry<Player, Integer>> seekersByKillsDesc = Utils.entriesSortedByValues(seekerKills);
 					for(Player p : Bukkit.getOnlinePlayers()) {
 						p.playSound(p.getLocation(), Sound.ENTITY_SPIDER_DEATH, 1.0f, 1.0f);
 						p.sendTitle("§c§l<< GAME OVER >>", "§eThe Hiders won the game.", 0, 25, 70);
-						p.sendMessage(Hide.header + "§cGame Over! §3You will be sent to hub in 10 seconds.");
+						Utils.sendCenteredMessage(p,"§a§m-------------------------------");
+						p.sendMessage("");
+						Utils.sendCenteredMessage(p, "§c§lGAME OVER! §eHiders WIN!");
+						p.sendMessage("");
+						Utils.sendCenteredMessage(p, "§lRemaining Hiders");
+						for(Player H : hiders) {
+							DisguiseBlockManager mgr = disguises.get(H);
+							ItemStack block = mgr.block;
+							Utils.sendCenteredMessage(p, String.format("%s%s §7(%s §7%s)", Hide.rankManager.getRankColor(H), H.getName(), Hide.stats.getBlockLevelString(H, block), Utils.getUserItemName(block)));
+							mgr.endGameChecks();
+							disguises.remove(H);
+						}
+						String worker = "";
+						for(int i = 0; i < seekersByKillsDesc.size(); i++) {
+							if(i == 3) break;
+							Entry<Player, Integer> entry = seekersByKillsDesc.get(i);
+							Player player = entry.getKey();
+							int amount = entry.getValue();
+							worker += Hide.rankManager.getRankColor(player) + player.getName() + String.format("§6 (%d)§7, ", amount);
+						}
+						worker = worker.substring(0, worker.length()-2);
+						Utils.sendCenteredMessage(p, "§lTop Seekers by Kills");
+						Utils.sendCenteredMessage(p, worker);
+						p.sendMessage("");
+						Utils.sendCenteredMessage(p,"§a§m-------------------------------");
+						p.sendMessage(Hide.header + "§3You will be sent to hub in 10 seconds.");
 					}
 				}
 			}.runTask(plugin);
@@ -532,13 +567,43 @@ public class GameEngine {
 				}
 			}
 		} else if(winners == GameTeam.SEEKER) {
+			List<Entry<Player, Integer>> seekersByKillsDesc = Utils.entriesSortedByValues(seekerKills);
+			List<Entry<Player, Integer>> hidersByHideTime = Utils.entriesSortedByValues(secondsAlive);
 			new BukkitRunnable() {
 				@Override
 				public void run() {
 					for(Player p : Bukkit.getOnlinePlayers()) {
 						p.playSound(p.getLocation(), Sound.ENTITY_SPIDER_DEATH, 1.0f, 1.0f);
 						p.sendTitle("§c§l<< GAME OVER >>", "§eThe Seekers won the game.", 0, 25, 70);
-						p.sendMessage(Hide.header + "§cGame Over! §3You will be sent to hub in 10 seconds.");
+						Utils.sendCenteredMessage(p,"§a§m-------------------------------");
+						p.sendMessage("");
+						Utils.sendCenteredMessage(p, "§c§lGAME OVER! §cSeekers WIN!");
+						p.sendMessage("");
+						Utils.sendCenteredMessage(p, "§lTop Seekers by Kills");
+						String worker = "";
+						for(int i = 0; i < seekersByKillsDesc.size(); i++) {
+							if(i == 3) break;
+							Entry<Player, Integer> entry = seekersByKillsDesc.get(i);
+							Player player = entry.getKey();
+							int amount = entry.getValue();
+							worker += Hide.rankManager.getRankColor(player) + player.getName() + String.format("§6 (%d)§7, ", amount);
+						}
+						worker = worker.substring(0, worker.length()-2);
+						Utils.sendCenteredMessage(p, worker);
+						Utils.sendCenteredMessage(p, "§lTop Hiders by Seconds Alive");
+						worker = "";
+						for(int i = 0; i < hidersByHideTime.size(); i++) {
+							if(i == 3) break;
+							Entry<Player, Integer> entry = hidersByHideTime.get(i);
+							Player player = entry.getKey();
+							int amount = entry.getValue();
+							worker += Hide.rankManager.getRankColor(player) + player.getName() + String.format("§6 (%d)§7, ", amount);
+						}
+						worker = worker.substring(0, worker.length()-2);
+						Utils.sendCenteredMessage(p, worker);
+						p.sendMessage("");
+						Utils.sendCenteredMessage(p,"§a§m-------------------------------");
+						p.sendMessage(Hide.header + "§3You will be sent to hub in 10 seconds.");
 						try {
 							Hide.stats.saveAll();
 							Hide.cosmeticManager.saveAll();
@@ -549,7 +614,7 @@ public class GameEngine {
 					}
 				}
 			}.runTask(plugin);
-			Player topSeeker = Collections.max(seekerKills.entrySet(), Comparator.comparingInt(Map.Entry::getValue)).getKey();
+			Player topSeeker = seekersByKillsDesc.get(0).getKey();
 			for(Player p : seekers) {
 				Hide.stats.addVictory(p);
 				if(p == topSeeker) Hide.cosmeticManager.addGoldMedal(p);
@@ -564,6 +629,8 @@ public class GameEngine {
 			
 			@Override
 			public void run() {
+				Hide.bm.send("ServerClose");
+				Hide.bm.sendForward("Close");
 				for(Player P : Bukkit.getOnlinePlayers()) {
 					Hide.bm.sendToServer(P, "HUB01");
 				}

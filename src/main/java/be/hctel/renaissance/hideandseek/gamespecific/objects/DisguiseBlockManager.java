@@ -178,6 +178,7 @@ public class DisguiseBlockManager {
 		if(timesWentSolid == 1) {
 			Hide.gameEngine.unlockAch(player, GameAchievement.SETINPLACE);
 		}
+		kill();
 	}
 	
 }

@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -22,6 +23,8 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerInteractAtEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
@@ -86,6 +89,7 @@ public class PlayerListener implements Listener {
 			p.setGameMode(GameMode.ADVENTURE);
 		}
 		p.getInventory().clear();
+		Hide.bm.sendForward("PlayerJoin", Hide.plugin.getServer().getOnlinePlayers().size()+"");
 		Hide.stats.load(p);
 		Hide.rankManager.load(p);
 		Hide.cosmeticManager.loadPlayer(p);
@@ -126,10 +130,10 @@ public class PlayerListener implements Listener {
 	public void onDamageByEntity(EntityDamageByEntityEvent e) {
 		if(e.getDamager() instanceof Player && e.getEntity() instanceof Player) {
 			if(Hide.preGameTimer.gameStarted) {
-				if (Hide.gameEngine.areSameTeam((Player) e.getEntity(), (Player) e.getDamager())) {
+				if (Hide.gameEngine.areSameTeam((Player) e.getEntity(), (Player) e.getDamager()) || Hide.gameEngine.isGameFinished) {
 					e.setCancelled(true);
 				}
-				else if(Hide.gameEngine.getTeam((Player) e.getDamager()) == GameTeam.SEEKER & Hide.gameEngine.isPlaying) {
+				else if(Hide.gameEngine.getTeam((Player) e.getDamager()) == GameTeam.SEEKER) {
 					((Player) e.getEntity()).playSound(e.getDamager().getLocation(), Sound.ENTITY_PLAYER_DEATH, 2.0f, 0.5f);
 					for(Player P : Bukkit.getOnlinePlayers()) P.playSound(e.getDamager().getLocation(), Sound.ENTITY_PLAYER_DEATH, 1.0f, 0.5f);
 					//Player damaged = (Player) e.getEntity();
@@ -158,6 +162,13 @@ public class PlayerListener implements Listener {
 			}
 		} else e.setCancelled(true);
 	}
+	
+	/*@EventHandler(priority = EventPriority.HIGHEST)
+	public void onInteract(PlayerInteractEvent e) {
+		if(e.getAction() == Action.LEFT_CLICK_BLOCK && Hide.preGameTimer.gameStarted) {
+			onBlockDamage(new BlockDamageEvent(e.getPlayer(), e.getClickedBlock(), e.getItem(), false));
+		}
+	}*/
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onBlockBreak(BlockBreakEvent e) {

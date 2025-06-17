@@ -127,7 +127,11 @@ public class BlockPicker {
 		else if(all.get(picked).getType().equals(Material.CAULDRON_ITEM)) {
 			playerBlock.put(player, new ItemStack(Material.CAULDRON));
 			playerItem.put(player, Material.CAULDRON_ITEM);
-		} else {
+		} else if(all.get(picked).getType() == Material.CAKE) {
+			playerBlock.put(player, new ItemStack(Material.CAKE_BLOCK));
+			playerItem.put(player, Material.CAKE);
+		}
+		else {
 			playerBlock.put(player, all.get(picked));
 			playerItem.put(player, all.get(picked).getType());
 		}
@@ -151,6 +155,7 @@ public class BlockPicker {
 			playerItem.put(p,picked.getType());
 			if(picked.getType() == Material.FLOWER_POT_ITEM) picked = new ItemStack(Material.FLOWER_POT);
 			if(picked.getType() == Material.CAKE) picked = new ItemStack(Material.CAKE_BLOCK);
+			if(picked.getType() == Material.CAULDRON_ITEM) picked = new ItemStack(Material.CAULDRON);
 			p.closeInventory();
 			p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 0.99f);
 			p.sendMessage(Hide.header + "§aGood choice! §eSet your block to " + Utils.getUserItemName(picked));

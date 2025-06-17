@@ -16,24 +16,29 @@ public class UtilsCommands implements CommandExecutor {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String msg, String[] args) {
 		if(sender instanceof Player) {
-			Player player = (Player) sender;
-			ArrayList<Integer> pings = new ArrayList<>();
-			player.sendMessage(Hide.header + "§aPong. Calculating your ping. Un momento per favor...");
-			new BukkitRunnable() {
-				@Override
-				public void run() {
-					pings.add(((CraftPlayer) player).getHandle().ping);
-					if(pings.size() == 4) {
-						int sum = 0;
-						for(int P : pings) {
-							sum += P;
+			if(cmd.getName().equalsIgnoreCase("ping")) {
+				Player player = (Player) sender;
+				ArrayList<Integer> pings = new ArrayList<>();
+				player.sendMessage(Hide.header + "§aPong. Calculating your ping. Un momento per favor...");
+				new BukkitRunnable() {
+					@Override
+					public void run() {
+						pings.add(((CraftPlayer) player).getHandle().ping);
+						if(pings.size() == 4) {
+							int sum = 0;
+							for(int P : pings) {
+								sum += P;
+							}
+							player.sendMessage(Hide.header + "§aYour ping is " + sum/pings.size() + " ms.");
+							this.cancel();
 						}
-						player.sendMessage(Hide.header + "§aYour ping is " + sum/pings.size() + " ms.");
-						this.cancel();
 					}
-				}
-				
-			}.runTaskTimerAsynchronously(Hide.plugin, 0L, 20L);
+					
+				}.runTaskTimerAsynchronously(Hide.plugin, 0L, 20L);
+			}
+		}
+		if(cmd.getName().equalsIgnoreCase("whereami")) {
+			sender.sendMessage(Hide.header + "§6You are currently playing on §a" + Hide.bm.getServerName());
 		}
 		return true;
 	}

@@ -19,7 +19,7 @@ public class BungeeCordMessenger implements PluginMessageListener {
 		this.plugin = plugin;
 		plugin.getServer().getMessenger().registerOutgoingPluginChannel(plugin, "BungeeCord");
 		plugin.getServer().getMessenger().registerIncomingPluginChannel(plugin, "BungeeCord", this);
-		
+		serverName = plugin.getConfig().getString("servername");		
 	}
 	
 	@Override
@@ -30,6 +30,7 @@ public class BungeeCordMessenger implements PluginMessageListener {
 		switch (subchannel) {
 		case "GetServer":
 			serverName = in.readUTF();
+			if(!(plugin.getConfig().getString("servername").equals(serverName))) plugin.getConfig().set("servername", serverName);
 			break;
 		default:
 			
@@ -63,8 +64,31 @@ public class BungeeCordMessenger implements PluginMessageListener {
 		out.writeUTF(player.getName() + ":" + queue);
 		player.sendPluginMessage(plugin, "BungeeCord", out.toByteArray());
 	}
+	public void send(String subchannel) {
+		ByteArrayDataOutput out = ByteStreams.newDataOutput();
+		out.writeUTF(subchannel);
+		out.writeUTF(serverName);
+		Iterables.getFirst(Bukkit.getOnlinePlayers(), null).sendPluginMessage(plugin, "BungeeCord", out.toByteArray());
+	}
+	public void sendForward(String subchannel) {
+		ByteArrayDataOutput out = ByteStreams.newDataOutput();
+		out.writeUTF("Forward");
+		out.writeUTF("ALL");
+		out.writeUTF(subchannel);
+		out.writeUTF(serverName);
+		Iterables.getFirst(Bukkit.getOnlinePlayers(), null).sendPluginMessage(plugin, "BungeeCord", out.toByteArray());
+	}
 	public void send(String subchannel, String content) {
 		ByteArrayDataOutput out = ByteStreams.newDataOutput();
+		out.writeUTF(subchannel);
+		out.writeUTF(serverName + ":" + content);
+		Iterables.getFirst(Bukkit.getOnlinePlayers(), null).sendPluginMessage(plugin, "BungeeCord", out.toByteArray());
+	}
+	
+	public void sendForward(String subchannel, String content) {
+		ByteArrayDataOutput out = ByteStreams.newDataOutput();
+		out.writeUTF("Forward");
+		out.writeUTF("ALL");
 		out.writeUTF(subchannel);
 		out.writeUTF(serverName + ":" + content);
 		Iterables.getFirst(Bukkit.getOnlinePlayers(), null).sendPluginMessage(plugin, "BungeeCord", out.toByteArray());
@@ -73,5 +97,11 @@ public class BungeeCordMessenger implements PluginMessageListener {
 	public void unload() {
 		plugin.getServer().getMessenger().unregisterOutgoingPluginChannel(plugin);
 		plugin.getServer().getMessenger().unregisterIncomingPluginChannel(plugin);
+	}
+	
+	public String getServerName() {
+		if(serverName != "") 
+			return serverName;
+		else return "waiting...";
 	}
 }

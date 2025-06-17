@@ -8,6 +8,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -70,7 +71,7 @@ public class Signer implements Listener {
 	 * Listener listening for a {@link PlayerInteractEvent}
 	 * @param e The PlayerInteractEvent
 	 */
-	@EventHandler
+	@EventHandler(priority = EventPriority.NORMAL)
 	public void listenersEvent(PlayerInteractEvent e) {
 		loadSigns();
 		if(e.getClickedBlock() == null) return;

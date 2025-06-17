@@ -252,6 +252,7 @@ public class Stats {
 	}
 	
 	public int getRawBlockExperience(OfflinePlayer player, ItemStack block) {
+		if(block.getType() == Material.FLOWER_POT_ITEM) block = new ItemStack(Material.FLOWER_POT);
 		JSONObject json = jsonList.get(Utils.getUUID(player)).getJSONObject("rawBlockExperience");
 		if(json.has(Utils.getFormattedName(block))) return json.getInt(Utils.getFormattedName(block));
 		else return 0;
@@ -280,6 +281,9 @@ public class Stats {
 	}
 	
 	private int getSaveBlockLevel(OfflinePlayer player, ItemStack block) {
+		if(block.getType() == Material.FLOWER_POT_ITEM) block = new ItemStack(Material.FLOWER_POT);
+		else if(block.getType() == Material.CAULDRON_ITEM) block = new ItemStack(Material.CAULDRON);
+		else if(block.getType() == Material.CAKE) block = new ItemStack(Material.CAKE_BLOCK);
 		JSONObject json = jsonList.get(Utils.getUUID(player)).getJSONObject("blockExperience");
 		if(json.has(Utils.getFormattedName(block))) return json.getInt(Utils.getFormattedName(block));
 		else return 0;

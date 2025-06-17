@@ -1,4 +1,5 @@
 testServer: false
+servername: "HIDE1"
 SQL:
   user: "lineal"
   password: "N89RuUAM"
