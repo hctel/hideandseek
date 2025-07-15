@@ -163,12 +163,12 @@ public class PlayerListener implements Listener {
 		} else e.setCancelled(true);
 	}
 	
-	/*@EventHandler(priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onInteract(PlayerInteractEvent e) {
 		if(e.getAction() == Action.LEFT_CLICK_BLOCK && Hide.preGameTimer.gameStarted) {
 			onBlockDamage(new BlockDamageEvent(e.getPlayer(), e.getClickedBlock(), e.getItem(), false));
 		}
-	}*/
+	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onBlockBreak(BlockBreakEvent e) {

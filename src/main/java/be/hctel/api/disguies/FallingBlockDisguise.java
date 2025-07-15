@@ -36,7 +36,6 @@ public class FallingBlockDisguise {
 	boolean isCancelled = false;
 	CraftFallingBlock a;
 	EntityFallingBlock passenger;
-	BukkitTask resendTask;
 	
 	private ArrayList<Player> excludeList = new ArrayList<>();
 	
@@ -56,31 +55,11 @@ public class FallingBlockDisguise {
 											PacketType.Play.Server.NAMED_ENTITY_SPAWN) {
 					@Override
 					public void onPacketSending(PacketEvent e) {
-						//plugin.getLogger().info("	onPacketSending!");
-						if((e.getPlayer() != p | !excludeList.contains(e.getPlayer())) && !isCancelled) {
-							WrapperPlayServerNamedEntitySpawn pk = new WrapperPlayServerNamedEntitySpawn(e.getPacket());
-							if(pk.getEntityID() == p.getEntityId()) {
-								//plugin.getLogger().info("	Sending disguise to " + e.getPlayer().getName());
-								e.setCancelled(true);
-								sendToPlayer(e.getPlayer());
-							}
+						if(e.getPlayer() != p) {
+							restart(e.getPlayer());
 						}
 					}
 		});
-		resendTask = new BukkitRunnable() {
-
-			@Override
-			public void run() {
-				if(!isCancelled) {
-					for(org.bukkit.entity.Entity E : p.getNearbyEntities(10, 10, 10)) {
-						if(E instanceof Player) {
-							sendToPlayer((Player) E);
-						}
-					}
-				}
-			}
-			
-		}.runTaskTimer(plugin, 0L, 5*20L);
 		ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(plugin,
 				ListenerPriority.HIGHEST,
 				PacketType.Play.Server.UPDATE_ATTRIBUTES) {
@@ -116,6 +95,25 @@ public class FallingBlockDisguise {
 		remove();
 		send();
 		return this;
+	}
+	
+	private void restart(Player player) {
+		CraftPlayer p = (CraftPlayer) player;
+		p.getHandle().playerConnection.sendPacket(new PacketPlayOutEntityDestroy(p.getEntityId()));
+		p.getHandle().playerConnection.sendPacket(new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.ADD_PLAYER, ((CraftPlayer) this.p).getHandle()));
+		//p.getHandle().playerConnection.sendPacket(new PacketPlayOutNamedEntitySpawn(((CraftPlayer) this.p).getHandle()));
+		try {
+
+		    Field f = Entity.class.getDeclaredField("id");
+		    f.setAccessible(true);
+		    f.setInt(passenger, ((CraftPlayer) this.p).getHandle().getId());
+
+			} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
+				e.printStackTrace();
+			}
+
+				p.getHandle().playerConnection.sendPacket(new PacketPlayOutSpawnEntity(passenger, 70, getDataInt()));
+			    p.getHandle().playerConnection.sendPacket(new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.REMOVE_PLAYER, ((CraftPlayer) this.p).getHandle()));
 	}
 	
 	
@@ -177,7 +175,6 @@ public class FallingBlockDisguise {
 		for(Player P : Bukkit.getOnlinePlayers()) if(P != p) ((CraftPlayer) P).getHandle().playerConnection.sendPacket(new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.ADD_PLAYER, ((CraftPlayer) p).getHandle()));
 		PacketPlayOutNamedEntitySpawn ps = new PacketPlayOutNamedEntitySpawn(((CraftPlayer) p).getHandle());
 		for(Player P : Bukkit.getOnlinePlayers()) if(P != p) ((CraftPlayer) P).getHandle().playerConnection.sendPacket(ps);
-		resendTask.cancel();
 	}
 	
 	public void excludeFrom(Player player) {
