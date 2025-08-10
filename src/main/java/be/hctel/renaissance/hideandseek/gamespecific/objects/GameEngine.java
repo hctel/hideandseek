@@ -580,6 +580,7 @@ public class GameEngine {
 						Utils.sendCenteredMessage(p, "§c§lGAME OVER! §cSeekers WIN!");
 						p.sendMessage("");
 						Utils.sendCenteredMessage(p, "§lTop Seekers by Kills");
+						Hide.stats.updateKilledOnMap(p, map, seekerKills.get(p));						
 						String worker = "";
 						for(int i = 0; i < seekersByKillsDesc.size(); i++) {
 							if(i == 3) break;

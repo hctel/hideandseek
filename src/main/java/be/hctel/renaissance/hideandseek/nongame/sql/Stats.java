@@ -20,6 +20,7 @@ import org.json.JSONObject;
 
 import be.hctel.renaissance.hideandseek.Hide;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.GameAchievement;
+import be.hctel.renaissance.hideandseek.gamespecific.enums.GameMap;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.JoinMessages;
 import be.hctel.renaissance.hideandseek.nongame.utils.Utils;
 
@@ -34,7 +35,7 @@ import be.hctel.renaissance.hideandseek.nongame.utils.Utils;
  */
 public class Stats {
 	private Connection con;
-	private String baseJson = "{\"UUID\":\"%s\",\"total_points\":0,\"victories\":0,\"hiderkills\":0,\"seekerkills\":0,\"deaths\":0,\"gamesplayed\":0,\"blocks\":\"\",\"bookupgrade\":null,\"timealive\":0,\"rawBlockExperience\":{},\"blockExperience\":{},\"achievements\":{\"SEEKER25\":{\"progress\":0,\"unlockedAt\":0},\"SEEKER1\":{\"progress\":0,\"unlockedAt\":0},\"SETINPLACE\":{\"progress\":0,\"unlockedAt\":0},\"HIDER500\":{\"progress\":0,\"unlockedAt\":0},\"HIDER250\":{\"progress\":0,\"unlockedAt\":0},\"HIDER50\":{\"progress\":0,\"unlockedAt\":0},\"HIDER1000\":{\"progress\":0,\"unlockedAt\":0},\"HIDER1\":{\"progress\":0,\"unlockedAt\":0},},\"lastlogin\":%TIME%,\"firstlogin\":%d,\"title\":\"Blind\"}";
+	private String baseJson = "{\"UUID\":\"%s\",\"mapkills\":{},\"total_points\":0,\"victories\":0,\"hiderkills\":0,\"seekerkills\":0,\"deaths\":0,\"gamesplayed\":0,\"blocks\":\"\",\"bookupgrade\":null,\"timealive\":0,\"rawBlockExperience\":{},\"blockExperience\":{},\"achievements\":{\"SEEKER25\":{\"progress\":0,\"unlockedAt\":0},\"SEEKER1\":{\"progress\":0,\"unlockedAt\":0},\"SETINPLACE\":{\"progress\":0,\"unlockedAt\":0},\"HIDER500\":{\"progress\":0,\"unlockedAt\":0},\"HIDER250\":{\"progress\":0,\"unlockedAt\":0},\"HIDER50\":{\"progress\":0,\"unlockedAt\":0},\"HIDER1000\":{\"progress\":0,\"unlockedAt\":0},\"HIDER1\":{\"progress\":0,\"unlockedAt\":0}},\"lastlogin\":%d,\"firstlogin\":%d,\"title\":\"Blind\"}";
 	private HashMap<String, JSONObject> jsonList = new HashMap<String , JSONObject>();
 	private HashMap<OfflinePlayer, JSONArray> unlockedJMS = new HashMap<OfflinePlayer, JSONArray>();
 	private HashMap<OfflinePlayer, Integer> jms = new HashMap<OfflinePlayer, Integer>();
@@ -74,6 +75,8 @@ public class Stats {
 				joinMessage  = rs.getInt("usedJoinMessage");
 				unlockedjms = new JSONArray(rs.getString("unlockedJoinMessage"));
 				JSONObject j = new JSONObject(json);
+				if(!j.has("mapkills")) j.put("mapkills", new JSONObject());
+				j.put("lastlogin", System.currentTimeMillis());
 				jsonList.put(Utils.getUUID(player), j);
 				unlockedJMS.put(player, unlockedjms);
 				jms.put(player, joinMessage);
@@ -82,7 +85,7 @@ public class Stats {
 					st.execute(String.format("UPDATE HIDE SET points = %d WHERE UUID = '%s'", j.getInt("total_points"), uuid));
 				}
 			} else {
-				json = baseJson;
+				json = String.format(baseJson, uuid, System.currentTimeMillis(), System.currentTimeMillis());
 				st.execute("INSERT INTO HIDE (UUID, JSON, unlockedJoinMessage) VALUES ('" + Utils.getUUID(player) + "', '" + json.toString() + "', '[\"HIDE\"]');");
 				JSONObject j = new JSONObject(json);
 				jsonList.put(Utils.getUUID(player), j);
@@ -229,6 +232,21 @@ public class Stats {
 	
 	public int getKilledHiders(OfflinePlayer player) {
 		return jsonList.get(Utils.getUUID(player)).getInt("seekerkills");
+	}
+	
+	public int getKilledOnMap(OfflinePlayer player, GameMap map) {
+		JSONObject js = jsonList.get(Utils.getUUID(player)).getJSONObject("mapkills");
+		if(js.has(map.getSystemName())) {
+			return js.getInt(map.getSystemName());
+		} 
+		return 0;
+		
+	}
+	
+	public void updateKilledOnMap(OfflinePlayer player, GameMap map, int qty) {
+		if(qty > 0 && qty > getKilledOnMap(player, map)) {
+			jsonList.get(Utils.getUUID(player)).getJSONObject("mapkills").put(map.getSystemName(), qty);
+		}
 	}
 	
 	public ArrayList<Material> getUnlockedBlocks(OfflinePlayer player) {
