@@ -23,18 +23,19 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BookMeta;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import be.hctel.renaissance.hideandseek.Hide;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.GameRanks;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.GameTeam;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.JoinMessages;
-import be.hctel.renaissance.hideandseek.nongame.utils.PackettedUtils;
 import be.hctel.renaissance.hideandseek.nongame.utils.Utils;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -71,6 +72,7 @@ public class PlayerListener implements Listener {
 			if(!(a.getPlayer().hasPermission("hide.spectate"))) a.getPlayer().kickPlayer("Only staff members are allowed to spectate in Hide and Seek.");
 		}*/
 	}
+	
 	@EventHandler
 	public void onJoin(PlayerJoinEvent e) throws SQLException {
 		if(Hide.preGameTimer.choosingBlock && !Hide.preGameTimer.gameStarted) {
@@ -103,7 +105,10 @@ public class PlayerListener implements Listener {
 		p.sendMessage("");
 		Utils.sendCenteredMessage(e.getPlayer(), "§6Welcome on the HnS Alpha release v1!");
 		e.getPlayer().spigot().sendMessage(reportBug);
-		if(!Hide.preGameTimer.gameStarted) p.getInventory().setItem(0, Utils.createQuickItemStack(Material.DIAMOND, (short) 0, "§b§lJoin messages"));
+		if(!Hide.preGameTimer.gameStarted) {
+			p.getInventory().setItem(2, Utils.createQuickItemStack(Material.BOOK, (short) 0, "§r§lSeeker kill records"));
+			p.getInventory().setItem(1, Utils.createQuickItemStack(Material.DIAMOND, (short) 0, "§b§lJoin messages"));
+		}
 		p.setPlayerListName(Hide.rankManager.getRankColor(p) + p.getName());
 	
 	}

@@ -1,12 +1,17 @@
 package be.hctel.renaissance.hideandseek.listeners;
 
+import java.util.ArrayList;
+
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
+import be.hctel.api.books.FakeBook;
 import be.hctel.renaissance.hideandseek.Hide;
+import be.hctel.renaissance.hideandseek.gamespecific.enums.GameMap;
 
 public class InventoryListener implements Listener {
 	@EventHandler
@@ -47,6 +52,23 @@ public class InventoryListener implements Listener {
 			}
 			if(e.getItem().getType().equals(Material.DIAMOND) && e.getItem().getItemMeta().getDisplayName().equalsIgnoreCase("§b§lJoin messages") && !Hide.preGameTimer.gameStarted) {
 				Hide.joinMessageMenu.openInventory(e.getPlayer());
+			}
+			if(e.getItem().getType().equals(Material.BOOK) && e.getItem().getItemMeta().getDisplayName().equalsIgnoreCase("§r§lSeeker kill records")) {
+				Player p = e.getPlayer();
+				int counter = 0;
+				String currentPage = "";
+				ArrayList<String> pages = new ArrayList<>();
+				for(GameMap M : GameMap.values()) {
+					if(counter == 14) {
+						counter = 0;
+						pages.add(currentPage);
+						currentPage = "";
+					}
+					currentPage += String.format("§1%s: §2%d\n", M.getMapName(), Hide.stats.getKilledOnMap(p, M));
+					counter++;
+				}
+				pages.add(currentPage);
+				new FakeBook(pages).open(p);
 			}
 		}			
 	}
