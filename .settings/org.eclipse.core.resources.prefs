@@ -1,6 +1,7 @@
 eclipse.preferences.version=1
 encoding//src/main/java/be/hctel/renaissance/hideandseek/Hide.java=UTF-8
 encoding//src/main/java/be/hctel/renaissance/hideandseek/commands/StatCommands.java=UTF-8
+encoding//src/main/java/be/hctel/renaissance/hideandseek/commonclass/VotesHandler.java=UTF-8
 encoding//src/main/java/be/hctel/renaissance/hideandseek/gamespecific/objects/DisguiseBlockManager.java=UTF-8
 encoding//src/main/java/be/hctel/renaissance/hideandseek/gamespecific/objects/GameEngine.java=UTF-8
 encoding//src/main/java/be/hctel/renaissance/hideandseek/listeners/PlayerListener.java=UTF-8

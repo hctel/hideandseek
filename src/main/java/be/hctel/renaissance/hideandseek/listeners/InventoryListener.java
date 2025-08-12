@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import be.hctel.api.books.FakeBook;
@@ -36,6 +37,18 @@ public class InventoryListener implements Listener {
 				if(e.getCurrentItem().getType() != Material.AIR) Hide.joinMessageMenu.eventHandler(e);
 			}
 		}
+		else if(e.getInventory().getName().equalsIgnoreCase("Vote for an Option")) {
+			e.setCancelled(true);
+			Hide.votesHandler.registerPlayerVote((Player) e.getWhoClicked(), (int) (e.getSlot()/9)+1, Hide.rankManager.getRank((Player) e.getWhoClicked()).getVotes());
+			Hide.votesHandler.refreshVotesInventory((Player) e.getWhoClicked());
+		}
+	}
+	
+	@EventHandler
+	public void onInventoryClose(InventoryCloseEvent e) {
+		if(e.getInventory().getName().equalsIgnoreCase("Vote for an Option")) {
+			Hide.votesHandler.closeVotesInventory((Player) e.getPlayer());
+		}
 	}
 	@EventHandler
 	public void onInteract(PlayerInteractEvent e) {
@@ -49,6 +62,9 @@ public class InventoryListener implements Listener {
 				if(Hide.preGameTimer.gameStarted) {
 					Hide.gameEngine.getTauntManager().openMenu(e.getPlayer());
 				}
+			}
+			if(e.getItem().getType().equals(Material.DIAMOND) && e.getItem().getItemMeta().getDisplayName().equals("§6§lView Vote Menu")) {
+				Hide.votesHandler.openVotesInventory(e.getPlayer());
 			}
 			if(e.getItem().getType().equals(Material.DIAMOND) && e.getItem().getItemMeta().getDisplayName().equalsIgnoreCase("§b§lJoin messages") && !Hide.preGameTimer.gameStarted) {
 				Hide.joinMessageMenu.openInventory(e.getPlayer());

@@ -106,14 +106,17 @@ public class PlayerListener implements Listener {
 		Utils.sendCenteredMessage(e.getPlayer(), "§6Welcome on the HnS Alpha release v1!");
 		e.getPlayer().spigot().sendMessage(reportBug);
 		if(!Hide.preGameTimer.gameStarted) {
+			p.getInventory().setItem(1, Utils.createQuickItemStack(Material.DIAMOND, (short) 0, "§6§lView Vote Menu"));
 			p.getInventory().setItem(2, Utils.createQuickItemStack(Material.BOOK, (short) 0, "§r§lSeeker kill records"));
-			p.getInventory().setItem(1, Utils.createQuickItemStack(Material.DIAMOND, (short) 0, "§b§lJoin messages"));
+			p.getInventory().setItem(7, Utils.createQuickItemStack(Material.DIAMOND, (short) 0, "§b§lJoin messages"));
 		}
 		p.setPlayerListName(Hide.rankManager.getRankColor(p) + p.getName());
 	
 	}
 	@EventHandler
 	public void onDisconnect(PlayerQuitEvent e) throws SQLException {
+		e.setQuitMessage(null);
+		Hide.votesHandler.registerPlayerVote(e.getPlayer(), 0, Hide.rankManager.getRank(e.getPlayer()).getVotes());
 		Hide.rankManager.unLoad(e.getPlayer());
 		Hide.cosmeticManager.unloadPlayer(e.getPlayer());
 		Hide.stats.saveOfflinePlayer((OfflinePlayer) e.getPlayer());

@@ -31,10 +31,12 @@ import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_12_R1.entity.CraftFallingBlock;
 import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_12_R1.util.CraftMagicNumbers;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -514,6 +516,27 @@ public class Utils {
 		ItemStack toReturn = new ItemStack(material, 1, damage);
 		ItemMeta meta = toReturn.getItemMeta();
 		meta.setDisplayName(name);
+		toReturn.setItemMeta(meta);
+		return toReturn;
+		
+	}
+	
+	public static ItemStack createQuickItemStack(Material material, short damage, String name, String...lore) {
+		return createQuickItemStack(material, damage, false, name, lore);
+		
+	}
+	
+	public static ItemStack createQuickItemStack(Material material, short damage, boolean enchanted, String name, String...lore) {
+		ItemStack toReturn = new ItemStack(material, 1, damage);
+		ItemMeta meta = toReturn.getItemMeta();
+		meta.setDisplayName(name);
+		if(enchanted) {
+			meta.addEnchant(Enchantment.DAMAGE_ARTHROPODS, 1, true);
+			meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+		}
+		List<String> loreList = new ArrayList<>();
+		for(String S : lore) loreList.add(S);
+		meta.setLore(loreList);
 		toReturn.setItemMeta(meta);
 		return toReturn;
 		

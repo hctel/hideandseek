@@ -24,7 +24,7 @@ public class Config {
 		}
 		InputStream is = new FileInputStream(file);
 		String out = IOUtils.toString(is, "UTF-8");
-		if(out == null) {
+		if(out == null || (!out.startsWith("{") && !out.endsWith("}"))) {
 			config = new JSONObject();
 		} else {
 			config = new JSONObject(out);
