@@ -66,13 +66,16 @@ public class InventoryListener implements Listener {
 			if(e.getItem().getType().equals(Material.DIAMOND) && e.getItem().getItemMeta().getDisplayName().equals("§6§lView Vote Menu")) {
 				Hide.votesHandler.openVotesInventory(e.getPlayer());
 			}
-			if(e.getItem().getType().equals(Material.DIAMOND) && e.getItem().getItemMeta().getDisplayName().equalsIgnoreCase("§b§lJoin messages") && !Hide.preGameTimer.gameStarted) {
+			if(e.getItem().getType().equals(Material.REDSTONE_COMPARATOR) && e.getItem().getItemMeta().getDisplayName().equalsIgnoreCase("§b§lJoin messages") && !Hide.preGameTimer.gameStarted) {
 				Hide.joinMessageMenu.openInventory(e.getPlayer());
+			}
+			if(e.getItem().getType().equals(Material.SLIME_BALL) && e.getItem().getItemMeta().getDisplayName().equalsIgnoreCase("§c§lReturn to Hub")) {
+				Hide.bm.sendToServer(e.getPlayer(), "HUB01");
 			}
 			if(e.getItem().getType().equals(Material.BOOK) && e.getItem().getItemMeta().getDisplayName().equalsIgnoreCase("§r§lSeeker kill records")) {
 				Player p = e.getPlayer();
-				int counter = 0;
-				String currentPage = "";
+				int counter = 1;
+				String currentPage = "§3Your map kills\n";
 				ArrayList<String> pages = new ArrayList<>();
 				for(GameMap M : GameMap.values()) {
 					if(counter == 14) {

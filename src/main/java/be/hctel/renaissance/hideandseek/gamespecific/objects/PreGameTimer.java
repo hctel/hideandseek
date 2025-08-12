@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
 import org.bukkit.entity.Player;
@@ -111,6 +112,7 @@ public class PreGameTimer {
 								Hide.bm.send("ServerMapVoted", Hide.votesHandler.currentGameMaps.get(Hide.votesHandler.voted).getMapName());
 								Hide.bm.sendForward("MapVoted", Hide.votesHandler.currentGameMaps.get(Hide.votesHandler.voted).getMapName());
 								Bukkit.broadcastMessage(Hide.header + "§3Voting has ended. §bThe map §f" + Hide.votesHandler.currentGameMaps.get(Hide.votesHandler.voted).getMapName() + " §bhas won.");
+								
 								Bukkit.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
 									public void run() {
 									}

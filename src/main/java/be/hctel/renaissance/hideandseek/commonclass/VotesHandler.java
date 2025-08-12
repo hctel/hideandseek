@@ -125,6 +125,7 @@ public class VotesHandler {
 					}
 				}
 			} else {
+				if(in == -1) return;
 				totalVotes+=qty;
 				playerVote.put(player, in);
 				votes.replace(currentGameMaps.get(in), votes.get(currentGameMaps.get(in)) + qty);

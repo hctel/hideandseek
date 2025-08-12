@@ -29,9 +29,8 @@ import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.BookMeta;
-import org.bukkit.inventory.meta.ItemMeta;
 
+import be.hctel.api.books.FakeBook;
 import be.hctel.renaissance.hideandseek.Hide;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.GameRanks;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.GameTeam;
@@ -51,7 +50,7 @@ public class PlayerListener implements Listener {
 		reportBug.addExtra(end);
 	}
 	
-	
+	private static ItemStack rulesBook = new FakeBook("§b§lRules §7§l& §e§lInfo", "§d§lHide and Seek\n§7-=-=-=-=-=-=-=-=-\n\n§c§lRules\n\n§81: Do not cheat\n§82: Do not glitch\n§83: Clean chat\n§84: Respect others\n\n§8Full rules are\n§8available at hctel.net").getItemStack();	
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onLogin(PlayerLoginEvent a) {
@@ -106,9 +105,11 @@ public class PlayerListener implements Listener {
 		Utils.sendCenteredMessage(e.getPlayer(), "§6Welcome on the HnS Alpha release v1!");
 		e.getPlayer().spigot().sendMessage(reportBug);
 		if(!Hide.preGameTimer.gameStarted) {
+			p.getInventory().setItem(0, rulesBook);
 			p.getInventory().setItem(1, Utils.createQuickItemStack(Material.DIAMOND, (short) 0, "§6§lView Vote Menu"));
 			p.getInventory().setItem(2, Utils.createQuickItemStack(Material.BOOK, (short) 0, "§r§lSeeker kill records"));
-			p.getInventory().setItem(7, Utils.createQuickItemStack(Material.DIAMOND, (short) 0, "§b§lJoin messages"));
+			p.getInventory().setItem(7, Utils.createQuickItemStack(Material.REDSTONE_COMPARATOR, (short) 0, "§b§lJoin messages"));
+			p.getInventory().setItem(8, Utils.createQuickItemStack(Material.SLIME_BALL, (short) 0, "§c§lReturn to Hub"));
 		}
 		p.setPlayerListName(Hide.rankManager.getRankColor(p) + p.getName());
 	
