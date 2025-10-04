@@ -48,9 +48,9 @@ public class TauntManager {
 			if(type != null) {
 				e.getView().close();
 				if(nextTaunt.get(((Player)e.getWhoClicked())) < seconds) {
-					e.getWhoClicked().sendMessage(Hide.header + "§cYour taunts are on cooldown! Please wait " + (-nextTaunt.get(((Player)e.getWhoClicked())) + seconds) + " seconds");
+					e.getWhoClicked().sendMessage(Hide.header + "Â§cYour taunts are on cooldown! Please wait " + (-nextTaunt.get(((Player)e.getWhoClicked())) + seconds) + " seconds");
 				} else if(isWarmingUp) {
-					e.getWhoClicked().sendMessage(Hide.header + "§cYou can't taunt while the game is still warming up!");
+					e.getWhoClicked().sendMessage(Hide.header + "Â§cYou can't taunt while the game is still warming up!");
 				} else {
 					nextTaunt.replace((Player) e.getWhoClicked(), - new Taunt((Player) e.getWhoClicked(), type).perform() + seconds);
 				}
@@ -63,14 +63,14 @@ public class TauntManager {
 		Inventory a = Bukkit.createInventory(null, 45, "Select a Taunt");
 		@SuppressWarnings("deprecation")
 		ItemStack glass = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 0, (byte) 2);
-		ItemMeta µ = glass.getItemMeta();
-		µ.setDisplayName("");
-		glass.setItemMeta(µ);
+		ItemMeta m = glass.getItemMeta();
+		m.setDisplayName("");
+		glass.setItemMeta(m);
 		@SuppressWarnings("deprecation")
 		ItemStack cancel = new ItemStack(Material.INK_SACK, 1, (short) 0, (byte) 1);
-		µ = cancel.getItemMeta();
-		µ.setDisplayName("§c§lClose menu");
-		cancel.setItemMeta(µ);
+		m = cancel.getItemMeta();
+		m.setDisplayName("ï¿½cï¿½lClose menu");
+		cancel.setItemMeta(m);
 		for(int i = 0; i < 9; i++) {
 			a.setItem(i, glass);
 		}
@@ -97,9 +97,9 @@ public class TauntManager {
 	public void tryPerfomTaunt(TauntType type, Player player) {
 		if(type != null) {
 			if(nextTaunt.get(player) < seconds) {
-				player.sendMessage(Hide.header + "§cYour taunts are on cooldown! Please wait " + (-nextTaunt.get(player) + seconds) + " seconds");
+				player.sendMessage(Hide.header + "Â§cYour taunts are on cooldown! Please wait " + (-nextTaunt.get(player) + seconds) + " seconds");
 			} else if(isWarmingUp) {
-				player.sendMessage(Hide.header + "§cYou can't taunt while the game is still warming up!");
+				player.sendMessage(Hide.header + "Â§cYou can't taunt while the game is still warming up!");
 			} else {
 				nextTaunt.replace(player, - new Taunt(player, type).perform() + seconds);
 			}
