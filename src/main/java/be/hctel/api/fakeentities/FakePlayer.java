@@ -160,6 +160,17 @@ public class FakePlayer extends EntityPlayer implements Listener {
 		}
 	}
 	
+	public boolean setSkin(String base64, String signature) {
+		try {
+            this.getProfile().getProperties().put("textures", new Property("textures", base64, signature));
+            return true;
+    } catch (Exception e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+		return false;
+	}
+	}
+	
 	private String getBase64data(String url) {
 		String base = "{\"timestamp\":"+ System.currentTimeMillis() + ",\"profileId\" : \"df61af011cb5441981ee63c902c1b956\",\"profileName\" : \"hctel\",\"textures\" : { \"SKIN\" : {\"url\" : \""+ url +"\"}}}";
 		return Base64.getEncoder().encodeToString(base.getBytes());

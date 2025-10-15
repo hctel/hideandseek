@@ -64,4 +64,7 @@ commands:
     usage: /whereami
     permission: hide.default
     decription: Tells you which server you are on
+  getskin:
+    usage: /getskin
+    permission: hide.admin
     

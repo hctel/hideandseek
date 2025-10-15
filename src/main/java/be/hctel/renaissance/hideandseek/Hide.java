@@ -176,6 +176,7 @@ public class Hide extends JavaPlugin {
 		getCommand("dev").setExecutor(new DevCommands());
 		getCommand("showhiders").setExecutor(new StaffComands());
 		getCommand("whereami").setExecutor(new UtilsCommands());
+		getCommand("getskin").setExecutor(new StaffComands());
 	}
 	
 	private void openConnection() {
