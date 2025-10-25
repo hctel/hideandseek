@@ -53,29 +53,29 @@ public class InventoryListener implements Listener {
 	@EventHandler
 	public void onInteract(PlayerInteractEvent e) {
 		if(e.getItem() != null) {
-			if(e.getItem().getType().equals(Material.COMPASS) && e.getItem().getItemMeta().getDisplayName().equals("§b§lSelect your Block!")) {
+			if(e.getItem().getType().equals(Material.COMPASS) && e.getItem().getItemMeta().getDisplayName().equals("Â§bÂ§lSelect your Block!")) {
 				if(Hide.preGameTimer.choosingBlock) {
 					Hide.blockPicker.reopen(e.getPlayer());
 				}
 			}
-			if(e.getItem().getType().equals(Material.EMERALD) && e.getItem().getItemMeta().getDisplayName().equals("§a§lTaunt Menu")) {
+			if(e.getItem().getType().equals(Material.EMERALD) && e.getItem().getItemMeta().getDisplayName().equals("Â§aÂ§lTaunt Menu")) {
 				if(Hide.preGameTimer.gameStarted) {
 					Hide.gameEngine.getTauntManager().openMenu(e.getPlayer());
 				}
 			}
-			if(e.getItem().getType().equals(Material.DIAMOND) && e.getItem().getItemMeta().getDisplayName().equals("§6§lView Vote Menu")) {
+			if(e.getItem().getType().equals(Material.DIAMOND) && e.getItem().getItemMeta().getDisplayName().equals("Â§6Â§lView Vote Menu")) {
 				Hide.votesHandler.openVotesInventory(e.getPlayer());
 			}
-			if(e.getItem().getType().equals(Material.REDSTONE_COMPARATOR) && e.getItem().getItemMeta().getDisplayName().equalsIgnoreCase("§b§lJoin messages") && !Hide.preGameTimer.gameStarted) {
+			if(e.getItem().getType().equals(Material.REDSTONE_COMPARATOR) && e.getItem().getItemMeta().getDisplayName().equalsIgnoreCase("Â§bÂ§lJoin messages") && !Hide.preGameTimer.gameStarted) {
 				Hide.joinMessageMenu.openInventory(e.getPlayer());
 			}
-			if(e.getItem().getType().equals(Material.SLIME_BALL) && e.getItem().getItemMeta().getDisplayName().equalsIgnoreCase("§c§lReturn to Hub")) {
+			if(e.getItem().getType().equals(Material.SLIME_BALL) && e.getItem().getItemMeta().getDisplayName().equalsIgnoreCase("Â§cÂ§lReturn to Hub")) {
 				Hide.bm.sendToServer(e.getPlayer(), "HUB01");
 			}
-			if(e.getItem().getType().equals(Material.BOOK) && e.getItem().getItemMeta().getDisplayName().equalsIgnoreCase("§r§lSeeker kill records")) {
+			if(e.getItem().getType().equals(Material.BOOK) && e.getItem().getItemMeta().getDisplayName().equalsIgnoreCase("Â§rÂ§lSeeker kill records")) {
 				Player p = e.getPlayer();
 				int counter = 1;
-				String currentPage = "§3Your map kills\n";
+				String currentPage = "Â§3Your map kills\n";
 				ArrayList<String> pages = new ArrayList<>();
 				for(GameMap M : GameMap.values()) {
 					if(counter == 14) {
@@ -83,7 +83,7 @@ public class InventoryListener implements Listener {
 						pages.add(currentPage);
 						currentPage = "";
 					}
-					currentPage += String.format("§1%s: §2%d\n", M.getMapName(), Hide.stats.getKilledOnMap(p, M));
+					currentPage += String.format("Â§1%s: Â§2%d\n", M.getMapName(), Hide.stats.getKilledOnMap(p, M));
 					counter++;
 				}
 				pages.add(currentPage);

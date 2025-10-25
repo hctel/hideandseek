@@ -56,7 +56,7 @@ public class Signer implements Listener {
 	public void addEditor(Player player, String operation) {
 		loadSigns();
 		editors.put(player, operation);
-		player.sendMessage(Hide.header + "§aEntered Signer editor mode");
+		player.sendMessage(Hide.header + "Â§aEntered Signer editor mode");
 	}
 	
 	/**
@@ -113,14 +113,14 @@ public class Signer implements Listener {
 			if(editors.get(e.getPlayer()).equalsIgnoreCase("remove ")) {
 				signs.remove(e.getBlock());
 				jsonConfig.remove(e.getBlock().getLocation().getWorld().getName() + "," + e.getBlock().getLocation().getBlockX() + "," + e.getBlock().getLocation().getBlockY() + "," + e.getBlock().getLocation().getBlockZ());
-				e.getPlayer().sendMessage(Hide.header + "§aRemoved this sign from Signer.");
+				e.getPlayer().sendMessage(Hide.header + "Â§aRemoved this sign from Signer.");
 				editors.remove(e.getPlayer());
 			} else {
 				if(!(editors.get(e.getPlayer()).equalsIgnoreCase("remove "))) {
 					String[] editData = editors.get(e.getPlayer()).split(",");
 					SignType type = SignType.getfromName(editData[0]);
 					if(type == null) {
-						e.getPlayer().sendMessage(Hide.header + "§cPlease enter a correct sign type!");
+						e.getPlayer().sendMessage(Hide.header + "Â§cPlease enter a correct sign type!");
 						e.setCancelled(true);
 						return;
 					}
@@ -130,7 +130,7 @@ public class Signer implements Listener {
 					signJson.put("type", type.getName());
 					signJson.put("data", data.getData());
 					jsonConfig.put(data.getLocation().getWorld().getName() + "," + data.getLocation().getBlockX() + "," + data.getLocation().getBlockY() + "," + data.getLocation().getBlockZ(), signJson);
-					e.getPlayer().sendMessage(Hide.header + "§aAdded the sign to Signer.");
+					e.getPlayer().sendMessage(Hide.header + "Â§aAdded the sign to Signer.");
 					editors.remove(e.getPlayer());
 				}
 				}

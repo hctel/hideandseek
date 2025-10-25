@@ -42,7 +42,7 @@ public class PreGameTimer {
 		this.plugin = plugin;
 		scheduler = Bukkit.getServer().getScheduler();
 		
-		seekerQueueNPC = new FakePlayer(((CraftWorld) Bukkit.getWorld("HIDE_Lobby")).getHandle(), new GameProfile(UUID.fromString("fef039ef-e6cd-4987-9c84-26a3e6134277"), "§bSeeker queue"), new Location(Bukkit.getWorld("HIDE_Lobby"), -75.5, 90.01, 65.5, 135.0f, 0.0f), plugin);
+		seekerQueueNPC = new FakePlayer(((CraftWorld) Bukkit.getWorld("HIDE_Lobby")).getHandle(), new GameProfile(UUID.fromString("fef039ef-e6cd-4987-9c84-26a3e6134277"), "Â§bSeeker queue"), new Location(Bukkit.getWorld("HIDE_Lobby"), -75.5, 90.01, 65.5, 135.0f, 0.0f), plugin);
 		//seekerQueueNPC.setSkin(UUID.fromString("4c13b583-2355-465f-aad8-d202d621176b"));
 		seekerQueueNPC.setSkin("https://fr.namemc.com/texture/212dd1d9cafbb877.png");
 		seekerQueueNPC.setOnRightClickTask(new ArgumentRunnable() {
@@ -56,21 +56,21 @@ public class PreGameTimer {
 								if(!seekerQueue.contains(p)) {
 									p.playSound(p.getLocation(), Sound.BLOCK_NOTE_PLING, 1.0f, 1.0f);
 									seekerQueue.add(p);
-									Utils.sendCenteredMessage(p, "§e§m-----------------------------");
+									Utils.sendCenteredMessage(p, "Â§eÂ§m-----------------------------");
 									p.sendMessage("");
-									Utils.sendCenteredMessage(p, "§a§lJoined seeker queue");
-									Utils.sendCenteredMessage(p, "§7You now have a chance at starting out as the Seeker.");
+									Utils.sendCenteredMessage(p, "Â§aÂ§lJoined seeker queue");
+									Utils.sendCenteredMessage(p, "Â§7You now have a chance at starting out as the Seeker.");
 									p.sendMessage("");
-									Utils.sendCenteredMessage(p, "§e§m-----------------------------");
+									Utils.sendCenteredMessage(p, "Â§eÂ§m-----------------------------");
 								} else {
 									p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BASS, 1.0f, 0.8f);
 									seekerQueue.remove(p);
-									Utils.sendCenteredMessage(p, "§e§m-----------------------------");
+									Utils.sendCenteredMessage(p, "Â§eÂ§m-----------------------------");
 									p.sendMessage("");
-									Utils.sendCenteredMessage(p, "§c§lLeft seeker queue");
-									Utils.sendCenteredMessage(p, "§7You left the queue to become the starting Seeker.");
+									Utils.sendCenteredMessage(p, "Â§cÂ§lLeft seeker queue");
+									Utils.sendCenteredMessage(p, "Â§7You left the queue to become the starting Seeker.");
 									p.sendMessage("");
-									Utils.sendCenteredMessage(p, "§e§m-----------------------------");
+									Utils.sendCenteredMessage(p, "Â§eÂ§m-----------------------------");
 								}	
 						}
 					}.runTaskAsynchronously(plugin);
@@ -85,11 +85,11 @@ public class PreGameTimer {
 					if(Bukkit.getOnlinePlayers().size() < minPlayers) {
 						if(minPlayers - Bukkit.getOnlinePlayers().size() == 1) {
 							for(Player p : Bukkit.getOnlinePlayers()) {
-								Utils.sendActionBarMessage(p, "§e" + (minPlayers - Bukkit.getOnlinePlayers().size()) + " player needed to start...");
+								Utils.sendActionBarMessage(p, "Â§e" + (minPlayers - Bukkit.getOnlinePlayers().size()) + " player needed to start...");
 							}
 						} else {
 							for(Player p : Bukkit.getOnlinePlayers()) {
-								Utils.sendActionBarMessage(p, "§e" + (minPlayers - Bukkit.getOnlinePlayers().size()) + " players needed to start...");
+								Utils.sendActionBarMessage(p, "Â§e" + (minPlayers - Bukkit.getOnlinePlayers().size()) + " players needed to start...");
 							}
 						}
 					} else if(Bukkit.getOnlinePlayers().size() < minPlayers && timer != 36) {
@@ -101,7 +101,7 @@ public class PreGameTimer {
 					} else if(Bukkit.getOnlinePlayers().size() >= minPlayers) {
 						if(timer > 21) {
 							for(Player p : Bukkit.getOnlinePlayers()) {
-								Utils.sendActionBarMessage(p, "§aStarting in §l" + (timer - 16));
+								Utils.sendActionBarMessage(p, "Â§aStarting in Â§l" + (timer - 16));
 							}
 							if(timer == 31) {
 								Hide.votesHandler.sendMapChoices();
@@ -111,7 +111,7 @@ public class PreGameTimer {
 								Hide.votesHandler.endVotes();
 								Hide.bm.send("ServerMapVoted", Hide.votesHandler.currentGameMaps.get(Hide.votesHandler.voted).getMapName());
 								Hide.bm.sendForward("MapVoted", Hide.votesHandler.currentGameMaps.get(Hide.votesHandler.voted).getMapName());
-								Bukkit.broadcastMessage(Hide.header + "§3Voting has ended. §bThe map §f" + Hide.votesHandler.currentGameMaps.get(Hide.votesHandler.voted).getMapName() + " §bhas won.");
+								Bukkit.broadcastMessage(Hide.header + "Â§3Voting has ended. Â§bThe map Â§f" + Hide.votesHandler.currentGameMaps.get(Hide.votesHandler.voted).getMapName() + " Â§bhas won.");
 								
 								Bukkit.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
 									public void run() {
@@ -120,7 +120,7 @@ public class PreGameTimer {
 								Hide.blockPicker = new BlockPicker(Hide.votesHandler.currentGameMaps.get(Hide.votesHandler.voted), Hide.stats, plugin);
 							}
 							for(Player p : Bukkit.getOnlinePlayers()) {
-								Utils.sendActionBarMessage(p, "§aStarting in §c§l" + (timer - 16));
+								Utils.sendActionBarMessage(p, "Â§aStarting in Â§cÂ§l" + (timer - 16));
 								p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1.0f, 1.0f);
 							}
 						} else if(timer <= 16 && timer > 5) {
@@ -130,7 +130,7 @@ public class PreGameTimer {
 								choosingBlock = true;
 								for(Player p : Bukkit.getOnlinePlayers()) {
 									p.playSound(p.getLocation(), Sound.ENTITY_ENDERDRAGON_GROWL, 1.0f, 1.0f);
-									Utils.sendActionBarMessage(p, "§eChoose your Block! §8| §aStarting in §l" + timer);
+									Utils.sendActionBarMessage(p, "Â§eChoose your Block! Â§8| Â§aStarting in Â§l" + timer);
 									Hide.blockPicker.buildBlockSelector(p);
 									p.getInventory().clear();
 									p.getInventory().setItem(4, ItemsManager.blockSelector());
@@ -138,12 +138,12 @@ public class PreGameTimer {
 								Hide.gameEngine = new GameEngine(plugin, Hide.votesHandler.currentGameMaps.get(Hide.votesHandler.voted));
 							} else {
 								for(Player p : Bukkit.getOnlinePlayers()) {
-									Utils.sendActionBarMessage(p, "§eChoose your Block! §8| §aStarting in §l" + timer);
+									Utils.sendActionBarMessage(p, "Â§eChoose your Block! Â§8| Â§aStarting in Â§l" + timer);
 								}
 							}
 						} else if(timer <= 5 && timer > 0) {
 							for(Player p : Bukkit.getOnlinePlayers()) {
-								Utils.sendActionBarMessage(p, "§eChoose your Block! §8| §aStarting in §c§l" + timer);
+								Utils.sendActionBarMessage(p, "Â§eChoose your Block! Â§8| Â§aStarting in Â§cÂ§l" + timer);
 								p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1.0f, 1.0f);
 							}
 						} else if(timer == 0) {
@@ -161,28 +161,28 @@ public class PreGameTimer {
 		}, 0L, 20L);
 	}
 	public void loadPlayer(Player player) {
-		sidebars.put(player, new DynamicScoreboard(player.getName(), "§eYour HIDE stats", Bukkit.getScoreboardManager()));
-		sidebars.get(player).setLine(Hide.stats.getPoints(player), "§bPoints", false);
-		sidebars.get(player).setLine(Hide.cosmeticManager.getTokens(player), "§aTokens", false);
-		sidebars.get(player).setLine(Hide.stats.getGamesPlayed(player), "§bGames Played", false);
-		sidebars.get(player).setLine(Hide.stats.getDeaths(player), "§bTotal Deaths", false);
-		sidebars.get(player).setLine(Hide.stats.getKills(player), "§bTotal Kills", false);
-		sidebars.get(player).setLine(Hide.stats.getKilledHiders(player), "§bKills as Seeker", false);
-		sidebars.get(player).setLine(Hide.stats.getVictories(player), "§bVictories", false);
-		sidebars.get(player).setLine(Hide.stats.getKilledSeekers(player), "§bKills as Hider", false);
+		sidebars.put(player, new DynamicScoreboard(player.getName(), "Â§eYour HIDE stats", Bukkit.getScoreboardManager()));
+		sidebars.get(player).setLine(Hide.stats.getPoints(player), "Â§bPoints", false);
+		sidebars.get(player).setLine(Hide.cosmeticManager.getTokens(player), "Â§aTokens", false);
+		sidebars.get(player).setLine(Hide.stats.getGamesPlayed(player), "Â§bGames Played", false);
+		sidebars.get(player).setLine(Hide.stats.getDeaths(player), "Â§bTotal Deaths", false);
+		sidebars.get(player).setLine(Hide.stats.getKills(player), "Â§bTotal Kills", false);
+		sidebars.get(player).setLine(Hide.stats.getKilledHiders(player), "Â§bKills as Seeker", false);
+		sidebars.get(player).setLine(Hide.stats.getVictories(player), "Â§bVictories", false);
+		sidebars.get(player).setLine(Hide.stats.getKilledSeekers(player), "Â§bKills as Hider", false);
 		sidebars.get(player).addReceiver(player);
 		seekerQueueNPC.spawnFor(player);
 	}
 	
 	public void updatePlayerScoreboard(Player player) {
-		sidebars.get(player).setLine(Hide.stats.getPoints(player), "§bPoints", false);
-		sidebars.get(player).setLine(Hide.cosmeticManager.getTokens(player), "§aTokens", false);
-		sidebars.get(player).setLine(Hide.stats.getGamesPlayed(player), "§bGames Played", false);
-		sidebars.get(player).setLine(Hide.stats.getDeaths(player), "§bTotal Deaths", false);
-		sidebars.get(player).setLine(Hide.stats.getKills(player), "§bTotal Kills", false);
-		sidebars.get(player).setLine(Hide.stats.getKilledHiders(player), "§bKills as Seeker", false);
-		sidebars.get(player).setLine(Hide.stats.getVictories(player), "§bVictories", false);
-		sidebars.get(player).setLine(Hide.stats.getKilledSeekers(player), "§bKills as Hider", false);
+		sidebars.get(player).setLine(Hide.stats.getPoints(player), "Â§bPoints", false);
+		sidebars.get(player).setLine(Hide.cosmeticManager.getTokens(player), "Â§aTokens", false);
+		sidebars.get(player).setLine(Hide.stats.getGamesPlayed(player), "Â§bGames Played", false);
+		sidebars.get(player).setLine(Hide.stats.getDeaths(player), "Â§bTotal Deaths", false);
+		sidebars.get(player).setLine(Hide.stats.getKills(player), "Â§bTotal Kills", false);
+		sidebars.get(player).setLine(Hide.stats.getKilledHiders(player), "Â§bKills as Seeker", false);
+		sidebars.get(player).setLine(Hide.stats.getVictories(player), "Â§bVictories", false);
+		sidebars.get(player).setLine(Hide.stats.getKilledSeekers(player), "Â§bKills as Hider", false);
 		sidebars.get(player).addReceiver(player);
 	}
 }

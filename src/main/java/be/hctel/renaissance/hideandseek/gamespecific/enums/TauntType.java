@@ -8,22 +8,22 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public enum TauntType {
-	BARK(Material.RECORD_5, "Barking Dog", "bark bark", 1, 4),
-	GHAST(Material.RECORD_5, "Screeching Ghast", "Wakes you up!", 1, 4),
-	ENDERMAN(Material.RECORD_5, "Angry Enderman", "Endermen don't like bolognese!", 1, 4),
-	CREEPER(Material.RECORD_5, "Hissing Creeper", "Run!", 1, 4),
-	WATER(Material.RECORD_5, "Spashing Water", "Bomb!", 1, 4),
-	PIG(Material.RECORD_5, "Squeaking Pig", "This is not Halal...", 1, 4),
-	DRAGON(Material.RECORD_5, "Growling Ender Dragon", "Y u mean 2 me?", 2, 8),
+	BARK(Material.MUSIC_DISC_5, "Barking Dog", "bark bark", 1, 4),
+	GHAST(Material.MUSIC_DISC_5, "Screeching Ghast", "Wakes you up!", 1, 4),
+	ENDERMAN(Material.MUSIC_DISC_5, "Angry Enderman", "Endermen don't like bolognese!", 1, 4),
+	CREEPER(Material.MUSIC_DISC_5, "Hissing Creeper", "Run!", 1, 4),
+	WATER(Material.MUSIC_DISC_5, "Spashing Water", "Bomb!", 1, 4),
+	PIG(Material.MUSIC_DISC_5, "Squeaking Pig", "This is not Halal...", 1, 4),
+	DRAGON(Material.MUSIC_DISC_5, "Growling Ender Dragon", "Y u mean 2 me?", 2, 8),
 	TNT(Material.TNT, "Explosion", "Kaboom!", 4, 15),
 	EGGS(Material.EGG, "Raining Eggs", "Who wants an omelette?", 4, 15),
 	FLAME(Material.BLAZE_POWDER, "Flames", "Flamegrilled since 2021", 4, 15),
 	LOVE(Material.REDSTONE, "Love", "Luv is in the air", 4, 15),
-	FIREWORKS(Material.FIREWORK, "Fireworks", "Ooooooh!", 8, 30),
+	FIREWORKS(Material.FIREWORK_ROCKET, "Fireworks", "Ooooooh!", 8, 30),
 	POTION(Material.POTION, "Potion Thrower", "That wasn't me!", 8, 30),
-	SHEEPER(Material.SULPHUR, "Sheeper", "Bzzzz Bzzzz I'm a bee!", 8, 30),
+	SHEEPER(Material.GUNPOWDER, "Sheeper", "Bzzzz Bzzzz I'm a bee!", 8, 30),
 	BAT(Material.COAL, "Batbomb", "Is that batman's bomb?", 8, 30),
-	FLY_CREEPER(Material.SULPHUR, "Flying creeper", "I'm on the top of the world!", 8, 30),
+	FLY_CREEPER(Material.GUNPOWDER, "Flying creeper", "I'm on the top of the world!", 8, 30),
 	TNT_TOSS(Material.TNT, "TNT Toss", "TNT? I love TNT!", 8, 30);
 	
 	Material material;
@@ -74,7 +74,7 @@ public enum TauntType {
 		if(itemLookup.containsKey(clicked)) return itemLookup.get(clicked); else return null;
 	}
 	public String getName() {
-		return  "§e§l" + name;
+		return  "Â§eÂ§l" + name;
 	}
 	public String getDescription() {
 		return description;
@@ -91,14 +91,14 @@ public enum TauntType {
 	public ItemStack getItem() {
 		ItemStack a = new ItemStack(material);
 		ItemMeta b = a.getItemMeta();
-		b.setDisplayName("§e§l" + getName());
+		b.setDisplayName("Â§eÂ§l" + getName());
 		ArrayList<String> lore = new ArrayList<String>();
 		lore.add("");
 		lore.add(description);
 		lore.add("");
-		lore.add("§d" + points + " Points/Experience");
+		lore.add("Â§d" + points + " Points/Experience");
 		lore.add("");
-		lore.add("§b -> Click to perform " + name);
+		lore.add("Â§b -> Click to perform " + name);
 		b.setLore(lore);
 		a.setItemMeta(b);
 		return a;

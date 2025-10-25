@@ -9,15 +9,15 @@ public class ItemsManager {
 	public static ItemStack blockSelector() {
 		ItemStack a = new ItemStack(Material.COMPASS);
 		ItemMeta b = a.getItemMeta();
-		b.setDisplayName("§b§lSelect your Block!");
+		b.setDisplayName("Â§bÂ§lSelect your Block!");
 		a.setItemMeta(b);
 		return a;
 	}
 	public static ItemStack hidersSword() {
-		ItemStack a = new ItemStack(Material.WOOD_SWORD);
+		ItemStack a = new ItemStack(Material.WOODEN_SWORD);
 		ItemMeta b = a.getItemMeta();
 		b.setUnbreakable(true);
-		b.setDisplayName("§c§lSeeker Killer");
+		b.setDisplayName("Â§cÂ§lSeeker Killer");
 		b.addEnchant(Enchantment.KNOCKBACK, 1, true);
 		a.setItemMeta(b);
 		return a;
@@ -25,7 +25,7 @@ public class ItemsManager {
 	public static ItemStack tauntButton = new ItemStack(Material.EMERALD);
 	static {
 		ItemMeta b = tauntButton.getItemMeta();
-		b.setDisplayName("§a§lTaunt Menu");
+		b.setDisplayName("Â§aÂ§lTaunt Menu");
 		tauntButton.setItemMeta(b);
 	}
 }

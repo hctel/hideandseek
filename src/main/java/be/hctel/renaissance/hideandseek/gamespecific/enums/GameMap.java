@@ -43,7 +43,7 @@ public enum GameMap {
 	HOSPITAL("Hospital", "HIDE_Hospital", new SpawnLocation("HIDE_Hospital", 25.5,6,26.5, 0.1f, 0.1f), new SpawnLocation("HIDE_Hospital", -24.5,8,-11.5,-90.1f, 0.1f)),
 	BORA("Bora Bora", "HIDE_Bora", new SpawnLocation("HIDE_Bora", 0.5,117, -31.5, 0.1f, 0.1f), new SpawnLocation("HIDE_Bora", -32.5,117,-48.5,-90.1f, 0.1f)),
 	KEEP("Keep", "HIDE_Keep", new SpawnLocation("HIDE_Keep", 93.5, 73, -0.5, 180.1f, 0.1f), new SpawnLocation("HIDE_Keep", -27.5, 72, 0.5, 0.1f, 0.1f)),
-	HOTEL("ง9Hotel", "HIDE_Hotel", new SpawnLocation("HIDE_Hotel", -2, 64, -35, 0.1f, 0.1f), new SpawnLocation("HIDE_Hotel", -3, 61, -21, 0.1f, 0.1f));
+	HOTEL("ยง9Hotel", "HIDE_Hotel", new SpawnLocation("HIDE_Hotel", -2, 64, -35, 0.1f, 0.1f), new SpawnLocation("HIDE_Hotel", -3, 61, -21, 0.1f, 0.1f));
 	
 	String mapName;
 	String systemName;
@@ -73,7 +73,7 @@ public enum GameMap {
 	public ArrayList<ItemStack> getDefaultBlocks() {
 		ArrayList<ItemStack> toAdd = new ArrayList<ItemStack>();
 		if(this == GameMap.HOTEL) {
-			ItemStack a = new ItemStack(Material.WOOD);
+			ItemStack a = new ItemStack(Material.OAK_PLANKS);
 			toAdd.add(a);
 			ItemStack b = new ItemStack(Material.SNOW_BLOCK);
 			toAdd.add(b);
@@ -83,14 +83,14 @@ public enum GameMap {
 			toAdd.add(d);
 		}
 		if(this == GameMap.HUMBUG) {
-			@SuppressWarnings("deprecation")
-			ItemStack a = new ItemStack(Material.WOOD, 1, (short) 0, (byte) 5);
+			
+			ItemStack a = new ItemStack(Material.DARK_OAK_PLANKS);
 			toAdd.add(a);
 			ItemStack b = new ItemStack(Material.JUKEBOX);
 			toAdd.add(b);
 			ItemStack c = new ItemStack(Material.ANVIL);
 			toAdd.add(c);
-			ItemStack d = new ItemStack(Material.WORKBENCH);
+			ItemStack d = new ItemStack(Material.CRAFTING_TABLE);
 			toAdd.add(d);
 			ItemStack e = new ItemStack(Material.BOOKSHELF);
 			toAdd.add(e);
@@ -98,7 +98,7 @@ public enum GameMap {
 		if(this == GameMap.HEARTHSTONE_VILLAGE) {
 			ItemStack a = new ItemStack(Material.HAY_BLOCK);
 			toAdd.add(a);
-			ItemStack b = new ItemStack(Material.WORKBENCH);
+			ItemStack b = new ItemStack(Material.CRAFTING_TABLE);
 			toAdd.add(b);
 			ItemStack c = new ItemStack(Material.FURNACE);
 			toAdd.add(c);
@@ -112,26 +112,26 @@ public enum GameMap {
 			toAdd.add(a);
 			ItemStack b = new ItemStack(Material.BEACON);
 			toAdd.add(b);
-			@SuppressWarnings("deprecation")
-			ItemStack c = new ItemStack(Material.PRISMARINE, 1, (short) 0, (byte) 2);
+			
+			ItemStack c = new ItemStack(Material.DARK_PRISMARINE);
 			toAdd.add(c);
-			@SuppressWarnings("deprecation")
-			ItemStack d = new ItemStack(Material.WOOD, 1, (short) 0, (byte) 1);
+			
+			ItemStack d = new ItemStack(Material.SPRUCE_PLANKS);
 			toAdd.add(d);
 			ItemStack e = new ItemStack(Material.ANVIL);
 			toAdd.add(e);
-			ItemStack f = new ItemStack(Material.CARPET);
+			ItemStack f = new ItemStack(Material.WHITE_CARPET);
 			toAdd.add(f);
 		}
 		if(this == GameMap.OFFICE) {
-			ItemStack a = new ItemStack(Material.LEAVES);
+			ItemStack a = new ItemStack(Material.OAK_LEAVES);
 			toAdd.add(a);
 			ItemStack b = new ItemStack(Material.FLOWER_POT);
 			toAdd.add(b);
 			@SuppressWarnings("deprecation")
-			ItemStack c = new ItemStack(Material.PISTON_BASE, 1, (short) 0, (byte) 1);
+			ItemStack c = new ItemStack(Material.PISTON, 1, (short) 0, (byte) 1);
 			toAdd.add(c);
-			ItemStack d = new ItemStack(Material.WORKBENCH);
+			ItemStack d = new ItemStack(Material.CRAFTING_TABLE);
 			toAdd.add(d);
 			ItemStack e = new ItemStack(Material.BOOKSHELF);
 			toAdd.add(e);
@@ -143,12 +143,12 @@ public enum GameMap {
 		if(this == GameMap.TALAVERA) {
 			ItemStack a = new ItemStack(Material.BEACON);
 			toAdd.add(a);
-			ItemStack b = new ItemStack(Material.LEAVES);
+			ItemStack b = new ItemStack(Material.OAK_LEAVES);
 			toAdd.add(b);
 			ItemStack c = new ItemStack(Material.NOTE_BLOCK);
 			toAdd.add(c);
-			@SuppressWarnings("deprecation")
-			ItemStack d = new ItemStack(Material.WOOD, 1, (short) 0, (byte) 3);
+			
+			ItemStack d = new ItemStack(Material.JUNGLE_PLANKS);
 			toAdd.add(d);
 			ItemStack e = new ItemStack(Material.BOOKSHELF);
 			toAdd.add(e);
@@ -158,10 +158,9 @@ public enum GameMap {
 			toAdd.add(a);
 			ItemStack b = new ItemStack(Material.HAY_BLOCK);
 			toAdd.add(b);
-			ItemStack c = new ItemStack(Material.WORKBENCH);
+			ItemStack c = new ItemStack(Material.CRAFTING_TABLE);
 			toAdd.add(c);
-			@SuppressWarnings("deprecation")
-			ItemStack d = new ItemStack(Material.WOOD, 1, (short) 0, (byte) 2);
+			ItemStack d = new ItemStack(Material.BIRCH_PLANKS);
 			toAdd.add(d);
 			ItemStack e = new ItemStack(Material.GOLD_ORE);
 			toAdd.add(e);
@@ -175,7 +174,7 @@ public enum GameMap {
 			toAdd.add(c);
 		}
 		if(this == GameMap.INDUSTRIA) {
-			ItemStack a = new ItemStack(Material.WORKBENCH);
+			ItemStack a = new ItemStack(Material.CRAFTING_TABLE);
 			toAdd.add(a);
 			ItemStack b = new ItemStack(Material.BOOKSHELF);
 			toAdd.add(b);
@@ -189,20 +188,20 @@ public enum GameMap {
 			toAdd.add(g);
 		}
 		if(this == GameMap.SUNSET_TERRACE) {
-			@SuppressWarnings("deprecation")
-			ItemStack a = new ItemStack(Material.WOOD, 1, (short) 0, (byte) 3);
+			
+			ItemStack a = new ItemStack(Material.JUNGLE_PLANKS);
 			toAdd.add(a);
-			ItemStack b = new ItemStack(Material.LEAVES);
+			ItemStack b = new ItemStack(Material.OAK_LEAVES);
 			toAdd.add(b);
 			ItemStack c = new ItemStack(Material.BOOKSHELF);
 			toAdd.add(c);
-			ItemStack e = new ItemStack(Material.MELON_BLOCK);
+			ItemStack e = new ItemStack(Material.MELON);
 			toAdd.add(e);
-			ItemStack f = new ItemStack(Material.HARD_CLAY);
+			ItemStack f = new ItemStack(Material.TERRACOTTA);
 			toAdd.add(f);
 		}
 		if(this == GameMap.TEITAKU) {
-			ItemStack a = new ItemStack(Material.WORKBENCH);
+			ItemStack a = new ItemStack(Material.CRAFTING_TABLE);
 			toAdd.add(a);
 			ItemStack b = new ItemStack(Material.BOOKSHELF);
 			toAdd.add(b);
@@ -216,20 +215,20 @@ public enum GameMap {
 			toAdd.add(g);
 		}
 		if(this == GameMap.SEQUOIA) {
-			@SuppressWarnings("deprecation")
-			ItemStack a = new ItemStack(Material.STAINED_CLAY, 1, (short) 0, (byte) 5);
+			
+			ItemStack a = new ItemStack(Material.LIME_TERRACOTTA);
 			toAdd.add(a);
-			@SuppressWarnings("deprecation")
-			ItemStack b = new ItemStack(Material.LOG, 1, (short) 0, (byte) 3);
+			
+			ItemStack b = new ItemStack(Material.JUNGLE_LOG);
 			toAdd.add(b);
-			ItemStack c = new ItemStack(Material.LEAVES);
+			ItemStack c = new ItemStack(Material.OAK_LEAVES);
 			toAdd.add(c);
 			ItemStack e = new ItemStack(Material.BOOKSHELF);
 			toAdd.add(e);
-			@SuppressWarnings("deprecation")
-			ItemStack f = new ItemStack(Material.WOOD, 1, (short) 0, (byte) 2);
+			
+			ItemStack f = new ItemStack(Material.JUNGLE_PLANKS);
 			toAdd.add(f);
-			ItemStack g = new ItemStack(Material.SPRUCE_WOOD_STAIRS);
+			ItemStack g = new ItemStack(Material.SPRUCE_STAIRS);
 			toAdd.add(g);
 		}
 		if(this == GameMap.HOTEL_CALIFORNIA) {
@@ -237,10 +236,10 @@ public enum GameMap {
 			toAdd.add(a);
 			ItemStack b = new ItemStack(Material.FLOWER_POT);
 			toAdd.add(b);
-			ItemStack c = new ItemStack(Material.LEAVES);
+			ItemStack c = new ItemStack(Material.OAK_LEAVES);
 			toAdd.add(c);
-			@SuppressWarnings("deprecation")
-			ItemStack d = new ItemStack(Material.WOOD, 1, (short) 0, (byte) 1);
+			
+			ItemStack d = new ItemStack(Material.SPRUCE_PLANKS);
 			toAdd.add(d);
 			ItemStack e = new ItemStack(Material.BEACON);
 			toAdd.add(e);
@@ -248,7 +247,7 @@ public enum GameMap {
 			toAdd.add(f);
 		}
 		if(this == GameMap.LOTUS) {
-			ItemStack a = new ItemStack(Material.WORKBENCH);
+			ItemStack a = new ItemStack(Material.CRAFTING_TABLE);
 			toAdd.add(a);
 			ItemStack b = new ItemStack(Material.BEACON);
 			toAdd.add(b);
@@ -260,14 +259,14 @@ public enum GameMap {
 			toAdd.add(e);
 		}
 		if(this == GameMap.DEPARTURE) {
-			ItemStack a = new ItemStack(Material.WOOD_STAIRS);
+			ItemStack a = new ItemStack(Material.OAK_STAIRS);
 			toAdd.add(a);
 			ItemStack b = new ItemStack(Material.GLOWSTONE);
 			toAdd.add(b);
 			ItemStack c = new ItemStack(Material.BEACON);
 			toAdd.add(c);
-			@SuppressWarnings("deprecation")
-			ItemStack d = new ItemStack(Material.WOOL, 1, (short) 0, (byte) 7);
+			
+			ItemStack d = new ItemStack(Material.GRAY_WOOL);
 			toAdd.add(d);
 			ItemStack e = new ItemStack(Material.QUARTZ_BLOCK);
 			toAdd.add(e);
@@ -281,7 +280,7 @@ public enum GameMap {
 			toAdd.add(c);
 			ItemStack d = new ItemStack(Material.BRICK);
 			toAdd.add(d);
-			ItemStack e = new ItemStack(Material.WORKBENCH);
+			ItemStack e = new ItemStack(Material.CRAFTING_TABLE);
 			toAdd.add(e);
 		}
 		if(this == GameMap.KINGSTON) {
@@ -289,23 +288,23 @@ public enum GameMap {
 			toAdd.add(a);
 			ItemStack b = new ItemStack(Material.ANVIL);
 			toAdd.add(b);
-			ItemStack c = new ItemStack(Material.LEAVES);
+			ItemStack c = new ItemStack(Material.OAK_LEAVES);
 			toAdd.add(c);
 			ItemStack d = new ItemStack(Material.BOOKSHELF);
 			toAdd.add(d);
 			ItemStack e = new ItemStack(Material.BEACON);
 			toAdd.add(e);
-			@SuppressWarnings("deprecation")
-			ItemStack f = new ItemStack(Material.PRISMARINE, 1, (short) 0, (byte) 2);
+			
+			ItemStack f = new ItemStack(Material.DARK_PRISMARINE);
 			toAdd.add(f);
-			@SuppressWarnings("deprecation")
-			ItemStack g = new ItemStack(Material.WOOD, 1, (short) 0, (byte) 1);
+			
+			ItemStack g = new ItemStack(Material.SPRUCE_PLANKS);
 			toAdd.add(g);
 		}
 		if(this == GameMap.PRIP) {
 			ItemStack a = new ItemStack(Material.BOOKSHELF);
 			toAdd.add(a);
-			ItemStack b = new ItemStack(Material.LEAVES);
+			ItemStack b = new ItemStack(Material.OAK_LEAVES);
 			toAdd.add(b);
 			ItemStack d = new ItemStack(Material.DARK_OAK_STAIRS);
 			toAdd.add(d);
@@ -315,26 +314,26 @@ public enum GameMap {
 			toAdd.add(a);
 			ItemStack b = new ItemStack(Material.COAL_BLOCK);
 			toAdd.add(b);
-			ItemStack c = new ItemStack(Material.LEAVES);
+			ItemStack c = new ItemStack(Material.OAK_LEAVES);
 			toAdd.add(c);
-			@SuppressWarnings("deprecation")
-			ItemStack d = new ItemStack(Material.WOOD, 1, (short) 0, (byte) 5);
+			
+			ItemStack d = new ItemStack(Material.DARK_OAK_PLANKS);
 			toAdd.add(d);
 		}
 		if(this == GameMap.ARCH) {
-			ItemStack a = new ItemStack(Material.WORKBENCH);
+			ItemStack a = new ItemStack(Material.CRAFTING_TABLE);
 			toAdd.add(a);
-			ItemStack b = new ItemStack(Material.QUARTZ_ORE);
+			ItemStack b = new ItemStack(Material.NETHER_QUARTZ_ORE);
 			toAdd.add(b);
-			ItemStack c = new ItemStack(Material.JUNGLE_WOOD_STAIRS);
+			ItemStack c = new ItemStack(Material.JUNGLE_STAIRS);
 			toAdd.add(c);
 			ItemStack d = new ItemStack(Material.REDSTONE_BLOCK);
 			toAdd.add(d);
-			@SuppressWarnings("deprecation")
-			ItemStack f = new ItemStack(Material.STONE, 1, (short) 0, (byte) 6);
+			
+			ItemStack f = new ItemStack(Material.POLISHED_ANDESITE);
 			toAdd.add(f);
-			@SuppressWarnings("deprecation")
-			ItemStack g = new ItemStack(Material.WOOL, 1, (short) 0, (byte) 15);
+			
+			ItemStack g = new ItemStack(Material.BLACK_WOOL);
 			toAdd.add(g);
 		}
 		if(this == GameMap.FROZEN) {
@@ -350,7 +349,7 @@ public enum GameMap {
 			toAdd.add(a);
 			ItemStack b = new ItemStack(Material.BEACON);
 			toAdd.add(b);
-			ItemStack c = new ItemStack(Material.WORKBENCH);
+			ItemStack c = new ItemStack(Material.CRAFTING_TABLE);
 			toAdd.add(c);
 			ItemStack d = new ItemStack(Material.STONE);
 			toAdd.add(d);
@@ -358,37 +357,37 @@ public enum GameMap {
 		if(this == GameMap.SPACE) {
 			ItemStack a = new ItemStack(Material.BEACON);
 			toAdd.add(a);
-			ItemStack b = new ItemStack(Material.WORKBENCH);
+			ItemStack b = new ItemStack(Material.CRAFTING_TABLE);
 			toAdd.add(b);
 			ItemStack c = new ItemStack(Material.FURNACE);
 			toAdd.add(c);
 			ItemStack d = new ItemStack(Material.JUKEBOX);
 			toAdd.add(d);
-			ItemStack e = new ItemStack(Material.LOG);
+			ItemStack e = new ItemStack(Material.OAK_LOG);
 			toAdd.add(e);
 		}
 		if(this == GameMap.SHIPYARD) {
 			ItemStack a = new ItemStack(Material.BEACON);
 			toAdd.add(a);
-			ItemStack b = new ItemStack(Material.LOG);
+			ItemStack b = new ItemStack(Material.OAK_LOG);
 			toAdd.add(b);
 			ItemStack c = new ItemStack(Material.ANVIL);
 			toAdd.add(c);
-			ItemStack d = new ItemStack(Material.MELON_BLOCK);
+			ItemStack d = new ItemStack(Material.MELON);
 			toAdd.add(d);
-			ItemStack e = new ItemStack(Material.WORKBENCH);
+			ItemStack e = new ItemStack(Material.CRAFTING_TABLE);
 			toAdd.add(e);
 		}
 		if(this == GameMap.CRUISE) {
 			ItemStack a = new ItemStack(Material.BEACON);
 			toAdd.add(a);
-			ItemStack b = new ItemStack(Material.FLOWER_POT_ITEM);
+			ItemStack b = new ItemStack(Material.FLOWER_POT);
 			toAdd.add(b);
 			ItemStack c = new ItemStack(Material.BOOKSHELF);
 			toAdd.add(c);
 			ItemStack d = new ItemStack(Material.FURNACE);
 			toAdd.add(d);
-			ItemStack e = new ItemStack(Material.WORKBENCH);
+			ItemStack e = new ItemStack(Material.CRAFTING_TABLE);
 			toAdd.add(e);
 		}
 		if(this == GameMap.ANIMAL) {
@@ -396,29 +395,29 @@ public enum GameMap {
 			toAdd.add(a);
 			ItemStack b = new ItemStack(Material.ANVIL);
 			toAdd.add(b);
-			ItemStack c = new ItemStack(Material.WORKBENCH);
+			ItemStack c = new ItemStack(Material.CRAFTING_TABLE);
 			toAdd.add(c);
-			ItemStack d = new ItemStack(Material.LOG);
+			ItemStack d = new ItemStack(Material.OAK_LOG);
 			toAdd.add(d);
 		}
 		if(this == GameMap.PIRATE) {
-			ItemStack a = new ItemStack(Material.LOG);
+			ItemStack a = new ItemStack(Material.OAK_LOG);
 			toAdd.add(a);
-			@SuppressWarnings("deprecation")
-			ItemStack b = new ItemStack(Material.WOOD, 1, (short) 1, (byte) 1);
+			
+			ItemStack b = new ItemStack(Material.DARK_OAK_PLANKS);
 			toAdd.add(b);
-			@SuppressWarnings("deprecation")
-			ItemStack c = new ItemStack(Material.PISTON_BASE, 1, (short) 0, (byte) 0);
+			
+			ItemStack c = new ItemStack(Material.PISTON);
 			toAdd.add(c);
-			ItemStack d = new ItemStack(Material.WORKBENCH);
+			ItemStack d = new ItemStack(Material.CRAFTING_TABLE);
 			toAdd.add(d);
 			ItemStack e = new ItemStack(Material.BOOKSHELF);
 			toAdd.add(e);
-			ItemStack f = new ItemStack(Material.LEAVES);
+			ItemStack f = new ItemStack(Material.OAK_LEAVES);
 			toAdd.add(f);
 		}
 		if(this == GameMap.PARIS) {
-			ItemStack a = new ItemStack(Material.FLOWER_POT_ITEM);
+			ItemStack a = new ItemStack(Material.FLOWER_POT);
 			toAdd.add(a);
 			ItemStack b = new ItemStack(Material.JACK_O_LANTERN);
 			toAdd.add(b);
@@ -436,7 +435,7 @@ public enum GameMap {
 		if(this == GameMap.OASIS) {
 			ItemStack a = new ItemStack(Material.ANVIL);
 			toAdd.add(a);
-			ItemStack b = new ItemStack(Material.FLOWER_POT_ITEM);
+			ItemStack b = new ItemStack(Material.FLOWER_POT);
 			toAdd.add(b);
 			ItemStack c = new ItemStack(Material.BOOKSHELF);
 			toAdd.add(c);
@@ -444,41 +443,41 @@ public enum GameMap {
 			toAdd.add(d);
 			ItemStack e = new ItemStack(Material.HAY_BLOCK);
 			toAdd.add(e);
-			ItemStack f = new ItemStack(Material.WORKBENCH);
+			ItemStack f = new ItemStack(Material.CRAFTING_TABLE);
 			toAdd.add(f);
 		}
 		if(this == GameMap.HOSPITAL) {
-			@SuppressWarnings("deprecation")
-			ItemStack a = new ItemStack(Material.STONE, 1, (short) 0, (byte) 6);
+			
+			ItemStack a = new ItemStack(Material.POLISHED_ANDESITE);
 			toAdd.add(a);
-			@SuppressWarnings("deprecation")
-			ItemStack b = new ItemStack(Material.STONE, 1, (short) 0, (byte) 2);
+			
+			ItemStack b = new ItemStack(Material.POLISHED_GRANITE);
 			toAdd.add(b);
 			ItemStack c = new ItemStack(Material.QUARTZ_BLOCK);
 			toAdd.add(c);
-			ItemStack d = new ItemStack(Material.LEAVES);
+			ItemStack d = new ItemStack(Material.OAK_LEAVES);
 			toAdd.add(d);
-			ItemStack e = new ItemStack(Material.WORKBENCH);
+			ItemStack e = new ItemStack(Material.CRAFTING_TABLE);
 			toAdd.add(e);
-			@SuppressWarnings("deprecation")
-			ItemStack f = new ItemStack(Material.WOOD, 1, (short) 0, (byte) 2);
+			
+			ItemStack f = new ItemStack(Material.BIRCH_PLANKS);
 			toAdd.add(f);
 		}
 		if(this == GameMap.BORA) {
 			ItemStack a = new ItemStack(Material.BEACON);
 			toAdd.add(a);
-			ItemStack b = new ItemStack(Material.WORKBENCH);
+			ItemStack b = new ItemStack(Material.CRAFTING_TABLE);
 			toAdd.add(b);
 			ItemStack c = new ItemStack(Material.BOOKSHELF);
 			toAdd.add(c);
-			ItemStack d = new ItemStack(Material.MELON_BLOCK);
+			ItemStack d = new ItemStack(Material.MELON);
 			toAdd.add(d);
-			ItemStack e = new ItemStack(Material.REDSTONE_LAMP_OFF);
+			ItemStack e = new ItemStack(Material.REDSTONE_LAMP);
 			toAdd.add(e);
 			ItemStack f = new ItemStack(Material.FURNACE);
 			toAdd.add(f);
-			ItemStack g = new ItemStack(Material.WOOD_PLATE);
-			//toAdd.add(g);
+			ItemStack g = new ItemStack(Material.LEVER);
+			toAdd.add(g);
 		}
 		if(this == GameMap.KEEP) {
 			ItemStack a = new ItemStack(Material.HOPPER);

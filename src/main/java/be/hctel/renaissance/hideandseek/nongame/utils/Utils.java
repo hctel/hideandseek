@@ -407,7 +407,7 @@ public class Utils {
 	                boolean isBold = false;
 	 
 	                for(char c : message.toCharArray()){
-	                        if(c == 'ง'){
+	                        if(c == 'ยง'){
 	                                previousCode = true;
 	                                continue;
 	                        }else if(previousCode == true){
@@ -541,6 +541,21 @@ public class Utils {
 		return toReturn;
 		
 	}
+	
+	public static ItemStack createQuickItemStack(Material material, boolean enchanted, String name, String...lore) {
+		ItemStack toReturn = new ItemStack(material);
+		ItemMeta meta = toReturn.getItemMeta();
+		meta.setDisplayName(name);
+		if(enchanted) {
+			meta.addEnchant(Enchantment.BANE_OF_ARTHROPODS, 1, true);
+			meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+		}
+		List<String> loreList = new ArrayList<>();
+		for(String S : lore) loreList.add(S);
+		meta.setLore(loreList);
+		toReturn.setItemMeta(meta);
+		return toReturn;
+	  }
 	/**
 	 * A quick way to create an ItemStack and make the code cleaner
 	 * @deprecated This method uses an anmbiguous data type object
@@ -836,6 +851,5 @@ public class Utils {
 			  );
 			
 			  return sortedEntries;
-		  }
- 
+		  } 
 }

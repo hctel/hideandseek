@@ -69,7 +69,7 @@ public class TauntManager {
 		@SuppressWarnings("deprecation")
 		ItemStack cancel = new ItemStack(Material.INK_SACK, 1, (short) 0, (byte) 1);
 		m = cancel.getItemMeta();
-		m.setDisplayName("�c�lClose menu");
+		m.setDisplayName("§c§lClose menu");
 		cancel.setItemMeta(m);
 		for(int i = 0; i < 9; i++) {
 			a.setItem(i, glass);

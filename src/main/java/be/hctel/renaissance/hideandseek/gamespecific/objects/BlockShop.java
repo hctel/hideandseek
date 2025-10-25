@@ -21,7 +21,7 @@ import be.hctel.renaissance.hideandseek.nongame.utils.Utils;
 
 public class BlockShop {
 	Plugin plugin;
-	public final static Material[] availableBlocks = {Material.OBSIDIAN, Material.QUARTZ_ORE, Material.REDSTONE_BLOCK, Material.REDSTONE_ORE, Material.SOUL_SAND, Material.JACK_O_LANTERN, Material.JUKEBOX, Material.LAPIS_BLOCK, Material.ICE, Material.BOOKSHELF, Material.MELON_BLOCK, Material.PUMPKIN, Material.REDSTONE_LAMP_OFF, Material.LEAVES, Material.ENDER_PORTAL_FRAME, Material.ENCHANTMENT_TABLE, Material.IRON_BLOCK, Material.DIAMOND_BLOCK, Material.EMERALD_BLOCK, Material.TNT};
+	public final static Material[] availableBlocks = {Material.OBSIDIAN, Material.NETHER_QUARTZ_ORE, Material.REDSTONE_BLOCK, Material.REDSTONE_ORE, Material.SOUL_SAND, Material.JACK_O_LANTERN, Material.JUKEBOX, Material.LAPIS_BLOCK, Material.ICE, Material.BOOKSHELF, Material.MELON, Material.PUMPKIN, Material.REDSTONE_LAMP, Material.OAK_LEAVES, Material.END_PORTAL_FRAME, Material.ENCHANTING_TABLE, Material.IRON_BLOCK, Material.DIAMOND_BLOCK, Material.EMERALD_BLOCK, Material.TNT};
 	HashMap<OfflinePlayer, ArrayList<Material>> blocks = new HashMap<OfflinePlayer, ArrayList<Material>>();
 	public BlockShop(Plugin plugin) {
 		this.plugin = plugin;
@@ -34,12 +34,12 @@ public class BlockShop {
 		for(Material M : availableBlocks) {
 			lore.clear();
 			lore.add("");
-			lore.add("§7Right-click to buy this " + Utils.getUserItemName(M) + ".");
+			lore.add("Â§7Right-click to buy this " + Utils.getUserItemName(M) + ".");
 			lore.add("");
-			lore.add("§aPrice§r: " + getItemPrice(M));
+			lore.add("Â§aPriceÂ§r: " + getItemPrice(M));
 			lore.add("");
 			if(blocks.get(player).contains(M)) {
-				lore.add("§a§lYou already own this item!");
+				lore.add("Â§aÂ§lYou already own this item!");
 				inv.setItem(getItemPosition(M), getSimpflifiedItem(M, true, lore));
 			} else {
 				inv.setItem(getItemPosition(M), getSimpflifiedItem(M, false, lore));
@@ -51,13 +51,13 @@ public class BlockShop {
 	public void eventHandler(InventoryClickEvent e) {
 		Player p = (Player) e.getWhoClicked();
 			if(blocks.get(p).contains(e.getCurrentItem().getType())) {
-				p.sendMessage(Hide.header + "§cYou can't buy this block as you already own it.");
-				p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BASS, 1.0f, 0.5f);
+				p.sendMessage(Hide.header + "Â§cYou can't buy this block as you already own it.");
+				p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1.0f, 0.5f);
 				e.setCancelled(true);
 				return;
 			} else {
 				if(Hide.cosmeticManager.getTokens(p) >= getItemPrice(e.getCurrentItem().getType())) {
-					p.sendMessage(Hide.header + "§aYou bought the " + Utils.getUserItemName(e.getCurrentItem()) + " block. Enjoy it in your next game!");
+					p.sendMessage(Hide.header + "Â§aYou bought the " + Utils.getUserItemName(e.getCurrentItem()) + " block. Enjoy it in your next game!");
 					p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 0.975f);
 					Hide.cosmeticManager.addTokens(p, -getItemPrice(e.getCurrentItem().getType()));
 					Hide.stats.unlockBlock(p, e.getCurrentItem());
@@ -67,20 +67,20 @@ public class BlockShop {
 					ArrayList<String> lore = new ArrayList<String>();
 					lore.clear();
 					lore.add("");
-					lore.add("§7Right-click to buy this " + Utils.getUserItemName(M) + ".");
+					lore.add("Â§7Right-click to buy this " + Utils.getUserItemName(M) + ".");
 					lore.add("");
-					lore.add("§aPrice§r: " + getItemPrice(M));
+					lore.add("Â§aPriceÂ§r: " + getItemPrice(M));
 					lore.add("");
 					if(blocks.get(p).contains(M)) {
-						lore.add("§a§lYou already own this item!");
+						lore.add("Â§aÂ§lYou already own this item!");
 						e.getInventory().setItem(getItemPosition(M), getSimpflifiedItem(M, true, lore));
 					} else {
 						e.getInventory().setItem(getItemPosition(M), getSimpflifiedItem(M, false, lore));
 					}
 					
 				} else {
-					p.sendMessage(Hide.header + "§cYou can't buy this block as you don't have enough tokens. Play more games to earn some!");
-					p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BASS, 1.0f, 0.5f);
+					p.sendMessage(Hide.header + "Â§cYou can't buy this block as you don't have enough tokens. Play more games to earn some!");
+					p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1.0f, 0.5f);
 					e.setCancelled(true);
 					return;
 				}
@@ -99,9 +99,9 @@ public class BlockShop {
 	
 	private int getItemPrice(Material material) {
 		switch(material) {
-		case ENDER_PORTAL:
+		case END_PORTAL_FRAME:
 			return 4000;
-		case ENCHANTMENT_TABLE:
+		case ENCHANTING_TABLE:
 			return 4000;
 		case IRON_BLOCK:
 			return 4000;
@@ -120,7 +120,7 @@ public class BlockShop {
 		switch(material) {
 		case OBSIDIAN:
 			return 11;
-		case QUARTZ_ORE:
+		case NETHER_QUARTZ_ORE:
 			return 12;
 		case REDSTONE_BLOCK:
 			return 13;
@@ -138,17 +138,17 @@ public class BlockShop {
 			return 22;
 		case BOOKSHELF:
 			return 23;
-		case MELON_BLOCK:
+		case MELON:
 			return 24;
 		case PUMPKIN:
 			return 25;
-		case REDSTONE_LAMP_OFF:
+		case REDSTONE_LAMP:
 			return 28;
-		case LEAVES:
+		case OAK_LEAVES:
 			return 29;
-		case ENDER_PORTAL_FRAME:
+		case END_PORTAL_FRAME:
 			return 30;
-		case ENCHANTMENT_TABLE:
+		case ENCHANTING_TABLE:
 			return 31;
 		case IRON_BLOCK:
 			return 32;

@@ -3,16 +3,16 @@ package be.hctel.renaissance.hideandseek.gamespecific.enums;
 import be.hctel.renaissance.hideandseek.nongame.utils.Utils;
 
 public enum JoinMessages {
-	RONAN(-1, " §6wants to be a §aR§cu§bb§ei§fk§b'§es §cC§au§bb§ee", 999999999),
-	HIDE(0, " §7wants to hide!", 0),
-	BLEND_IN(1, " §ewants to blend in!", 2000),
-	DISAPPEAR(2, " §6is ready to disappear.", 2000),
-	HUNT(3, " §6is ready to hunt!", 2000),
-	MASTER(4, " §dis a hiding master.", 5000),
-	NINJA(5, " §8is going to be a ninja.", 5000),
-	SNEAKY(6, " §cWants to be sneaky!", 2000),
-	DIFFERENCE(7, " §fis going to spot the difference!", 3000),
-	MAGIC(8, " §bwants to do a magic trick", 7500);
+	RONAN(-1, " Â§6wants to be a Â§aRÂ§cuÂ§bbÂ§eiÂ§fkÂ§b'Â§es Â§cCÂ§auÂ§bbÂ§ee", 999999999),
+	HIDE(0, " Â§7wants to hide!", 0),
+	BLEND_IN(1, " Â§ewants to blend in!", 2000),
+	DISAPPEAR(2, " Â§6is ready to disappear.", 2000),
+	HUNT(3, " Â§6is ready to hunt!", 2000),
+	MASTER(4, " Â§dis a hiding master.", 5000),
+	NINJA(5, " Â§8is going to be a ninja.", 5000),
+	SNEAKY(6, " Â§cWants to be sneaky!", 2000),
+	DIFFERENCE(7, " Â§fis going to spot the difference!", 3000),
+	MAGIC(8, " Â§bwants to do a magic trick", 7500);
 	
 	int stor;
 	String message;	
