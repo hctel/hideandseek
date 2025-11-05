@@ -176,13 +176,13 @@ public class GameEngine {
 						if(timer < 304 && timer > 300) {
 							Bukkit.broadcastMessage(Hide.header + "§eStarting in §f" + (timer-300));
 							for(Player p : Bukkit.getOnlinePlayers()) {
-								p.playSound(p.getLocation(), Sound.BLOCK_NOTE_PLING, 1.0f, 1.0f);
+								p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0f, 1.0f);
 							}
 						}
 						if(timer == 300) {
 							Bukkit.broadcastMessage(Hide.header + "§c§lReady or not, here they come!");
 							for(Player p : hiders) {
-								p.playSound(p.getLocation(), Sound.ENTITY_ENDERDRAGON_GROWL, 1.0f, 1.0f);
+								p.playSound(p.getLocation(), Sound.ENTITY_ENDER_DRAGON_GROWL, 1.0f, 1.0f);
 							}
 							for(Player p : seekers) {
 								p.teleport(hiderSpawn);
@@ -213,7 +213,7 @@ public class GameEngine {
 						}
 						if(timer < 4 && timer > 0) {
 							for(Player p : Bukkit.getOnlinePlayers()) {
-								p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BASS, 1.0f, 1.0f);
+								p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1.0f, 1.0f);
 							}
 							Bukkit.broadcastMessage(Hide.header + "§eEnding in §f" + timer);
 						}
@@ -259,11 +259,11 @@ public class GameEngine {
 					for(Player P : heartbeat) {
 						if(every2second-tick > 40) {
 							P.addPotionEffect(hbeft);
-							P.playSound(P.getLocation(), Sound.BLOCK_NOTE_BASEDRUM, 2.0f, 0.8f);
+							P.playSound(P.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASEDRUM, 2.0f, 0.8f);
 						}
 						if(every2second-tick > 45) {
 							P.removePotionEffect(PotionEffectType.SPEED);
-							P.playSound(P.getLocation(), Sound.BLOCK_NOTE_BASEDRUM, 2.0f, 0.8f);
+							P.playSound(P.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASEDRUM, 2.0f, 0.8f);
 							every2second = tick-5;
 						}
 					}
@@ -304,7 +304,6 @@ public class GameEngine {
 		if(player == null) {
 			if(seekerKill) {
 				//heartbeat.remove(killed);
-				Utils.normalVignette(killed);
 				Hide.stats.addDeath(killed);
 				Hide.cosmeticManager.addTokens(player, 15);
 				deaths.replace(killed, deaths.get(killed)+1);
@@ -360,7 +359,7 @@ public class GameEngine {
 					case FLOWER_POT:
 						unlockAch(player, GameAchievement.PLANT);
 						break;
-					case LEAVES:
+					case OAK_LEAVES:
 						unlockAch(player, GameAchievement.LEAF);
 						break;
 					case ANVIL:
@@ -381,7 +380,6 @@ public class GameEngine {
 				}
 				if(seekers.size() == 1) unlockAch(killed, GameAchievement.PEEKABOO);
 				//heartbeat.remove(killed);
-				Utils.normalVignette(killed);
 				seekerKills.replace(player, seekerKills.get(player)+1);
 				Hide.stats.addKilledHider(player);
 				Hide.stats.addPoints(player, 30);

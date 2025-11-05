@@ -17,27 +17,27 @@ import be.hctel.renaissance.hideandseek.gamespecific.enums.GameMap;
 public class InventoryListener implements Listener {
 	@EventHandler
 	public void onInventoryClick(InventoryClickEvent e) {
-		if(e.getInventory().getName().equalsIgnoreCase("Choose your block!")) {
+		if(e.getView().getTitle().equalsIgnoreCase("Choose your block!")) {
 			if(Hide.preGameTimer.choosingBlock && e.getCurrentItem() != null) {
 				if(e.getCurrentItem().getType() != Material.AIR) Hide.blockPicker.listener(e);
 			}
 		}
-		else if(e.getInventory().getName().equalsIgnoreCase("Select a Taunt")) {
+		else if(e.getView().getTitle().equalsIgnoreCase("Select a Taunt")) {
 			if(Hide.preGameTimer.gameStarted && e.getCurrentItem() != null) {
 				if(e.getCurrentItem().getType() != Material.AIR) Hide.gameEngine.getTauntManager().triggerMenu(e);
 			}
 		}
-		else if(e.getInventory().getName().equalsIgnoreCase("Block Shop!")) {
+		else if(e.getView().getTitle().equalsIgnoreCase("Block Shop!")) {
 			if(!Hide.preGameTimer.choosingBlock && !Hide.preGameTimer.gameStarted && e.getCurrentItem() != null) {
 				if(e.getCurrentItem().getType() != Material.AIR) Hide.blockShop.eventHandler(e);
 			}
 		}
-		else if(e.getInventory().getName().equalsIgnoreCase("Join messages menu")) {
+		else if(e.getView().getTitle().equalsIgnoreCase("Join messages menu")) {
 			if(!Hide.preGameTimer.choosingBlock && !Hide.preGameTimer.gameStarted && e.getCurrentItem() != null) {
 				if(e.getCurrentItem().getType() != Material.AIR) Hide.joinMessageMenu.eventHandler(e);
 			}
 		}
-		else if(e.getInventory().getName().equalsIgnoreCase("Vote for an Option")) {
+		else if(e.getView().getTitle().equalsIgnoreCase("Vote for an Option")) {
 			e.setCancelled(true);
 			Hide.votesHandler.registerPlayerVote((Player) e.getWhoClicked(), (int) (e.getSlot()/9)+1, Hide.rankManager.getRank((Player) e.getWhoClicked()).getVotes());
 			Hide.votesHandler.refreshVotesInventory((Player) e.getWhoClicked());
@@ -46,7 +46,7 @@ public class InventoryListener implements Listener {
 	
 	@EventHandler
 	public void onInventoryClose(InventoryCloseEvent e) {
-		if(e.getInventory().getName().equalsIgnoreCase("Vote for an Option")) {
+		if(e.getView().getTitle().equalsIgnoreCase("Vote for an Option")) {
 			Hide.votesHandler.closeVotesInventory((Player) e.getPlayer());
 		}
 	}
@@ -66,7 +66,7 @@ public class InventoryListener implements Listener {
 			if(e.getItem().getType().equals(Material.DIAMOND) && e.getItem().getItemMeta().getDisplayName().equals("§6§lView Vote Menu")) {
 				Hide.votesHandler.openVotesInventory(e.getPlayer());
 			}
-			if(e.getItem().getType().equals(Material.REDSTONE_COMPARATOR) && e.getItem().getItemMeta().getDisplayName().equalsIgnoreCase("§b§lJoin messages") && !Hide.preGameTimer.gameStarted) {
+			if(e.getItem().getType().equals(Material.COMPARATOR) && e.getItem().getItemMeta().getDisplayName().equalsIgnoreCase("§b§lJoin messages") && !Hide.preGameTimer.gameStarted) {
 				Hide.joinMessageMenu.openInventory(e.getPlayer());
 			}
 			if(e.getItem().getType().equals(Material.SLIME_BALL) && e.getItem().getItemMeta().getDisplayName().equalsIgnoreCase("§c§lReturn to Hub")) {

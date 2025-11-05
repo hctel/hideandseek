@@ -1,11 +1,11 @@
 package be.hctel.renaissance.hideandseek.gamespecific.objects;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_21_R6.entity.CraftFallingBlock;
+import org.bukkit.craftbukkit.v1_21_R6.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
@@ -23,8 +23,7 @@ import be.hctel.renaissance.hideandseek.Hide;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.GameAchievement;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.ItemsManager;
 import be.hctel.renaissance.hideandseek.nongame.utils.Utils;
-import net.minecraft.server.v1_12_R1.EntityFallingBlock;
-import net.minecraft.server.v1_12_R1.PacketPlayOutEntityDestroy;
+import net.minecraft.network.protocol.game.PacketPlayOutEntityDestroy;
 
 public class DisguiseBlockManager {
 	Player player;
@@ -41,7 +40,7 @@ public class DisguiseBlockManager {
 	private boolean sentMessage = false;
 	int fakeEntityId = 0;
 	BukkitRunnable run;
-	EntityFallingBlock solidPlayerBlock;
+	CraftFallingBlock solidPlayerBlock;
 	@SuppressWarnings("deprecation")
 	public DisguiseBlockManager(Player player, ItemStack block, Plugin plugin) {
 		this.player = player;
@@ -102,7 +101,6 @@ public class DisguiseBlockManager {
 		}
 	}
 	
-	@SuppressWarnings("deprecation")
 	private void makeSolid() {
 		if(isAllowedBlock()) {
 			stopDisguise();
@@ -110,13 +108,13 @@ public class DisguiseBlockManager {
 			player.sendTitle("§aYou are now solid", "", 5, 60, 20);
 			player.getInventory().setItem(4, ItemsManager.tauntButton);
 			solidLocation = Utils.locationFlattenner(lastLocation);
-			player.getWorld().playEffect(player.getLocation(), Effect.COLOURED_DUST, 0, 2);
+			// player.getWorld().playEffect(player.getLocation(), Effect.COLOURED_DUST, 0, 2);
 			player.sendMessage(Hide.header + "§6You are now §ahidden");
 			b = solidLocation.getBlock();
 			plugin.getLogger().info(player.getName() + " went solid at " + solidLocation.getBlockX() + ", " + solidLocation.getBlockY() + ", " + solidLocation.getBlockZ() + " as a " + block.getType().toString());
 			PacketPlayOutEntityDestroy ed = new PacketPlayOutEntityDestroy(player.getEntityId());
-			for(Player P : Bukkit.getOnlinePlayers()) if(P != player) ((CraftPlayer) P).getHandle().playerConnection.sendPacket(ed);
-			solidPlayerBlock = Utils.spawnFakeBlockEntity(player, solidLocation.add(0.5, 0, 0.5), block.getType(), block.getData().getData());
+			for(Player P : Bukkit.getOnlinePlayers()) if(P != player) ((CraftPlayer) P).getHandle().g.sendPacket(ed);
+			solidPlayerBlock = Utils.spawnFakeBlockEntity(player, solidLocation.add(0.5, 0, 0.5), block.getType());
 			sentMessage = false;
 			timesWentSolid++;
 		} else if(!sentMessage) {
@@ -135,12 +133,11 @@ public class DisguiseBlockManager {
 			p.sendBlockChange(solidLocation, Material.AIR, (byte) 0);
 		}
 		startDisguise();
-		solidPlayerBlock.killEntity();
+		solidPlayerBlock.remove();
 	}
 	
-	@SuppressWarnings("deprecation")
 	private void startDisguise() {
-		if(disguise == null) disguise = new FallingBlockDisguise(player, block.getType(), block.getData().getData(), plugin).restart();
+		if(disguise == null) disguise = new FallingBlockDisguise(player, block.getType(), plugin);
 		else disguise.restart();
 	}
 	private void stopDisguise() {
@@ -166,7 +163,7 @@ public class DisguiseBlockManager {
 	}
 	
 	public boolean isAllowedBlock() {
-		return lastLocation.getBlock().getType() == Material.AIR || lastLocation.getBlock().getType() == Material.STATIONARY_WATER || lastLocation.getBlock().getType() == Material.WATER || lastLocation.getBlock().getType() == Material.LAVA || lastLocation.getBlock().getType() == Material.STATIONARY_LAVA || lastLocation.getBlock().getType() == Material.FENCE || lastLocation.getBlock().getType() == Material.ACACIA_FENCE || lastLocation.getBlock().getType() == Material.BIRCH_FENCE || lastLocation.getBlock().getType() == Material.DARK_OAK_FENCE || lastLocation.getBlock().getType() == Material.JUNGLE_FENCE || lastLocation.getBlock().getType() == Material.NETHER_FENCE || lastLocation.getBlock().getType() == Material.SPRUCE_FENCE;
+		return lastLocation.getBlock().getType().toString().contains("AIR") || lastLocation.getBlock().getType().toString().contains("FENCE") || lastLocation.getBlock().getType().equals(Material.WATER) || lastLocation.getBlock().getType().equals(Material.LAVA);
 	}
 	
 	public void showTo(Player player) {

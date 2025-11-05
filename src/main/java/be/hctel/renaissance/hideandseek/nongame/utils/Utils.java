@@ -5,9 +5,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.lang.reflect.Field;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -27,43 +28,36 @@ import org.bukkit.FireworkEffect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_12_R1.entity.CraftFallingBlock;
-import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_12_R1.util.CraftMagicNumbers;
+import org.bukkit.craftbukkit.v1_21_R6.entity.CraftFallingBlock;
+import org.bukkit.craftbukkit.v1_21_R6.entity.CraftPlayer;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.material.MaterialData;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.mvplugins.multiverse.external.vavr.NotImplementedError;
 
-import com.comphenix.packetwrapper.WrapperPlayServerBlockChange;
-import com.comphenix.packetwrapper.WrapperPlayServerEntityDestroy;
-import com.comphenix.packetwrapper.WrapperPlayServerSpawnEntity;
-import com.comphenix.packetwrapper.WrapperPlayServerWorldBorder;
-import com.comphenix.protocol.wrappers.EnumWrappers.WorldBorderAction;
+import com.comphenix.packetwrapper.wrappers.play.clientbound.WrapperPlayServerBlockChange;
+import com.comphenix.packetwrapper.wrappers.play.clientbound.WrapperPlayServerEntityDestroy;
+import com.comphenix.packetwrapper.wrappers.play.clientbound.WrapperPlayServerSpawnEntity;
 import com.comphenix.protocol.wrappers.WrappedBlockData;
 
+import it.unimi.dsi.fastutil.ints.IntList;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
-import net.minecraft.server.v1_12_R1.BlockPosition;
-import net.minecraft.server.v1_12_R1.EntityFallingBlock;
-import net.minecraft.server.v1_12_R1.IChatBaseComponent;
-import net.minecraft.server.v1_12_R1.IChatBaseComponent.ChatSerializer;
-import net.minecraft.server.v1_12_R1.PacketPlayOutBlockChange;
-import net.minecraft.server.v1_12_R1.PacketPlayOutEntityDestroy;
-import net.minecraft.server.v1_12_R1.PacketPlayOutPlayerListHeaderFooter;
-import net.minecraft.server.v1_12_R1.PacketPlayOutSpawnEntity;
-import net.minecraft.server.v1_12_R1.PacketPlayOutWorldBorder;
+import net.minecraft.network.protocol.game.PacketPlayOutBlockChange;
+import net.minecraft.network.protocol.game.PacketPlayOutEntityDestroy;
+import net.minecraft.network.protocol.game.PacketPlayOutSpawnEntity;
+import net.minecraft.world.entity.item.EntityFallingBlock;
 
 /*
  * This file is a part of the Renaissance Project API
@@ -78,25 +72,6 @@ public class Utils {
 	 */
 	public static int convertToInt(String input) throws NumberFormatException {
 		return Integer.parseInt(input);
-	}
-	/**
-	 * Gets an ItemStack from a numerical ID.
-	 * @param id The numerica ID of the item
-	 * @return the ItemStack
-	 */
-	@SuppressWarnings("deprecation")
-	public static ItemStack getItemStackFromNumericalID(int id) {
-		return new ItemStack(Material.getMaterial(id));
-	}
-	/**
-	 * Gets an ItemStack from a numerical ID and a data value
-	 * @param id the numerical ID of the item
-	 * @param data the data value of the item
-	 * @return the ItemStack
-	 */
-	@SuppressWarnings("deprecation")
-	public static ItemStack getItemStackFromNumericalID(int id, int data) {
-		return new ItemStack(Material.getMaterial(id), 1, (short) 0, (byte) data);
 	}
 	/**
 	 * Gets an ItemStack matching a formatted name.
@@ -150,103 +125,7 @@ public class Utils {
 	 * @return the name of te ItemStack
 	 */
 	public static String getUserItemName(ItemStack it) {
-		Material a;
-		try {
-			a = it.getType();
-		} catch (NullPointerException e) {
-			a = Material.STONE;
-		}		
-		String aN = a.toString().toLowerCase().replace('_', ' ');
-		String aN1 = StringUtils.capitalize(aN);
-		@SuppressWarnings("deprecation")
-		int b = it.getData().getData();
-		if(a == Material.STONE) {
-			 switch (b) {
-			 case 0:
-				 return "Stone";
-			 case 1:
-				 return "Granite";
-			 case 2:
-				 return "Polished granite";
-			 case 3:
-				 return "Diorite";
-			 case 4:
-				 return "Polished diorite";
-			 case 5:
-				 return "Andesite";
-			 case 6:
-				 return "Polished andesite";
-			 }
-		} else if(a == Material.STAINED_CLAY) {
-			 switch (b) {
-			 case 0:
-				 return "White clay";
-			 case 1:
-				 return "Orange clay";
-			 case 2:
-				 return "Magenta clay";
-			 case 3:
-				 return "Light blue clay";
-			 case 4:
-				 return "Yellow clay";
-			 case 5:
-				 return "Lime clay";
-			 case 6:
-				 return "Pink clay";
-			 case 7:
-				 return "Gray clay";
-			 case 8:
-				 return "Light gay clay";
-			 case 9:
-				 return "Cyan clay";
-			 case 10:
-				 return "Purple clay";
-			 case 11:
-				 return "Blue clay";
-			 case 12:
-				 return "Brown clay";
-			 case 13:
-				 return "Green clay";
-			 case 14:
-				 return "Red clay";
-			 case 15:
-				 return "Black clay";	 
-			 }
-		} else if(a == Material.WOOD) {
-			switch (b) {
-			 case 0:
-				 return "Oak planks";
-			 case 1:
-				 return "Spruce planks";
-			 case 2:
-				 return "Birch planks";
-			 case 3:
-				 return "Jungle planks";
-			 case 4:
-				 return "Acacia planks";
-			 case 5:
-				 return "Dark oak planks";
-			}
-		} else if(a == Material.LOG) {
-			switch (b) {
-			 case 0:
-				 return "Oak log";
-			 case 1:
-				 return "Spruce log";
-			 case 2:
-				 return "Birch log";
-			 case 3:
-				 return "Jungle log";
-			 case 4:
-				 return "Acacia log";
-			 case 5:
-				 return "Dark oak log";
-			}
-		}
-		else {
-			return aN1;
-		}
-		return aN1;
+		return getUserItemName(it.getType());
 	}
 	/**
 	 * Get the user-friendly name of a material
@@ -254,96 +133,7 @@ public class Utils {
 	 * @return the name of te ItemStack
 	 */
 	public static String getUserItemName(Material a) {
-		String aN = a.toString().toLowerCase().replace('_', ' ');
-		String aN1 = StringUtils.capitalize(aN);
-		int b = 0;
-		if(a == Material.STONE) {
-			 switch (b) {
-			 case 0:
-				 return "Stone";
-			 case 1:
-				 return "Granite";
-			 case 2:
-				 return "Polished granite";
-			 case 3:
-				 return "Diorite";
-			 case 4:
-				 return "Polished diorite";
-			 case 5:
-				 return "Andesite";
-			 case 6:
-				 return "Polished andesite";
-			 }
-		} else if(a == Material.STAINED_CLAY) {
-			 switch (b) {
-			 case 0:
-				 return "White clay";
-			 case 1:
-				 return "Orange clay";
-			 case 2:
-				 return "Magenta clay";
-			 case 3:
-				 return "Light blue clay";
-			 case 4:
-				 return "Yellow clay";
-			 case 5:
-				 return "Lime clay";
-			 case 6:
-				 return "Pink clay";
-			 case 7:
-				 return "Gray clay";
-			 case 8:
-				 return "Light gay clay";
-			 case 9:
-				 return "Cyan clay";
-			 case 10:
-				 return "Purple clay";
-			 case 11:
-				 return "Blue clay";
-			 case 12:
-				 return "Brown clay";
-			 case 13:
-				 return "Green clay";
-			 case 14:
-				 return "Red clay";
-			 case 15:
-				 return "Black clay";	 
-			 }
-		} else if(a == Material.WOOD) {
-			switch (b) {
-			 case 0:
-				 return "Oak planks";
-			 case 1:
-				 return "Spruce planks";
-			 case 2:
-				 return "Birch planks";
-			 case 3:
-				 return "Jungle planks";
-			 case 4:
-				 return "Acacia planks";
-			 case 5:
-				 return "Dark oak planks";
-			}
-		} else if(a == Material.LOG) {
-			switch (b) {
-			 case 0:
-				 return "Oak log";
-			 case 1:
-				 return "Spruce log";
-			 case 2:
-				 return "Birch log";
-			 case 3:
-				 return "Jungle log";
-			 case 4:
-				 return "Acacia log";
-			 case 5:
-				 return "Dark oak log";
-			}
-		}
-		else {
-			return aN1;
-		}
-		return aN1;
+		return StringUtils.capitalize(a.toString().replace('_', ' ').toLowerCase());
 	}
 	/**
 	 * Spawns a firework at the given location
@@ -477,25 +267,7 @@ public class Utils {
 	 * @param footer The footer
 	 */
 	public static void sendHeaderFooter(Player player, String header, String footer) {
-        IChatBaseComponent tabHeader = ChatSerializer.a("{\"text\": \"" + header + "\"}");
-        IChatBaseComponent tabFooter = ChatSerializer.a("{\"text\": \"" + footer + "\"}");
-        PacketPlayOutPlayerListHeaderFooter packet = new PacketPlayOutPlayerListHeaderFooter();
-        try
-        {
-            Field headerField = packet.getClass().getDeclaredField("a");
-            headerField.setAccessible(true);
-            headerField.set(packet, tabHeader);
-            headerField.setAccessible(false);
-            Field footerField = packet.getClass().getDeclaredField("b");
-            footerField.setAccessible(true);
-            footerField.set(packet, tabFooter);
-            footerField.setAccessible(false);
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-        ((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
+        throw new NotImplementedError();
     }
 	/**
 	 * Sends an action bar message to a player (used to clean other classes)
@@ -503,7 +275,7 @@ public class Utils {
 	 * @param msg The message to send
 	 */
 	public static void sendActionBarMessage(Player player, String msg) {
-		player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(msg));
+		player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacy(msg));
 	}
 	/**
 	 * A quick way to create an ItemStack and make the code cleaner
@@ -512,8 +284,8 @@ public class Utils {
 	 * @param name the name of the ItemStack
 	 * @return the generated ItemStack
 	 */
-	public static ItemStack createQuickItemStack(Material material, short damage, String name) {
-		ItemStack toReturn = new ItemStack(material, 1, damage);
+	public static ItemStack createQuickItemStack(Material material, String name) {
+		ItemStack toReturn = new ItemStack(material);
 		ItemMeta meta = toReturn.getItemMeta();
 		meta.setDisplayName(name);
 		toReturn.setItemMeta(meta);
@@ -527,11 +299,11 @@ public class Utils {
 	}
 	
 	public static ItemStack createQuickItemStack(Material material, short damage, boolean enchanted, String name, String...lore) {
-		ItemStack toReturn = new ItemStack(material, 1, damage);
+		ItemStack toReturn = new ItemStack(material);
 		ItemMeta meta = toReturn.getItemMeta();
 		meta.setDisplayName(name);
 		if(enchanted) {
-			meta.addEnchant(Enchantment.DAMAGE_ARTHROPODS, 1, true);
+			meta.addEnchant(Enchantment.BANE_OF_ARTHROPODS, 1, true);
 			meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 		}
 		List<String> loreList = new ArrayList<>();
@@ -643,60 +415,55 @@ public class Utils {
 	public static int spawnBlock(Player player, Location loc, int blockID, int data){
 		WrapperPlayServerSpawnEntity fbs = new WrapperPlayServerSpawnEntity();
 			int entityID = new Random().nextInt();
-	        fbs.setEntityID(entityID);
-	        fbs.setObjectData(blockID | (data << 0x10));	
+	        fbs.setId(entityID);
+	        fbs.setData(blockID | (data << 0x10));	
 	        Location l = player.getLocation();
 	        fbs.setX(l.getX());
 	        fbs.setY(l.getY());
 	        fbs.setZ(l.getZ());
-	        fbs.setOptionalSpeedX(0);
-	        fbs.setOptionalSpeedY(0);
-	        fbs.setOptionalSpeedY(0);
-			((CraftPlayer) player).getHandle().playerConnection.sendPacket((PacketPlayOutSpawnEntity) fbs.getHandle().getHandle());
+			((CraftPlayer) player).getHandle().g.sendPacket((PacketPlayOutSpawnEntity) fbs.getHandle().getHandle());
 			return entityID;
 	}
 	
 	public static void sendBlockChange(Player player, Material block, Location location) {
 		WrapperPlayServerBlockChange fbs = new WrapperPlayServerBlockChange();
-		fbs.setLocation(new com.comphenix.protocol.wrappers.BlockPosition(location.getBlockX(), location.getBlockY(), location.getBlockZ()));
-		fbs.setBlockData(WrappedBlockData.createData(block));
-		((CraftPlayer) player).getHandle().playerConnection.sendPacket((PacketPlayOutBlockChange) fbs.getHandle().getHandle());
+		fbs.setBlockState(WrappedBlockData.createData(block));
+		fbs.setPos(new com.comphenix.protocol.wrappers.BlockPosition(location.getBlockX(), location.getBlockY(), location.getBlockZ()));
+		((CraftPlayer) player).getHandle().g.sendPacket((PacketPlayOutBlockChange) fbs.getHandle().getHandle());
 	}
 	
 	public static void sendEntityDestroy(Player player, int entityID) {
 		WrapperPlayServerEntityDestroy fbs = new WrapperPlayServerEntityDestroy();
-		int[] entityIDs = {entityID};
-		fbs.setEntityIds(entityIDs);
-		((CraftPlayer) player).getHandle().playerConnection.sendPacket((PacketPlayOutEntityDestroy) fbs.getHandle().getHandle());
+		fbs.setEntityIds(IntList.of(entityID));
+		((CraftPlayer) player).getHandle().g.sendPacket((PacketPlayOutEntityDestroy) fbs.getHandle().getHandle());
 	}
 	
-	public static EntityFallingBlock spawnFakeBlockEntity(Player player, Location location, Material material, byte data) {
-		@SuppressWarnings("deprecation")
-		EntityFallingBlock f = ((CraftFallingBlock) player.getWorld().spawnFallingBlock(location.add(0.0, 0.01, 0.0), material, data)).getHandle();
-		f.setNoGravity(true);
-		f.setInvulnerable(true);
-		PacketPlayOutEntityDestroy ed = new PacketPlayOutEntityDestroy(f.getId());
-		for(Player P : Bukkit.getOnlinePlayers()) if(P != player) ((CraftPlayer) P).getHandle().playerConnection.sendPacket(ed);
-		return f;
+	public static CraftFallingBlock spawnFakeBlockEntity(Player player, Location location, Material material) {
+		CraftFallingBlock block = (CraftFallingBlock) player.getWorld().spawnFallingBlock(location.add(0.0, 0.01, 0.0), material.createBlockData());
+		block.setGravity(false);
+		block.setInvulnerable(true);
+		PacketPlayOutEntityDestroy ed = new PacketPlayOutEntityDestroy(block.getEntityId());
+		for(Player P : Bukkit.getOnlinePlayers()) if(P != player) ((CraftPlayer) P).getHandle().g.sendPacket(ed);
+		return block;
 	}
 	public static void testEntotyDestroyNMS(Player player,int entityID) {
 		PacketPlayOutEntityDestroy packet = new PacketPlayOutEntityDestroy(entityID);
 		try {
-			((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
+			((CraftPlayer) player).getHandle().g.sendPacket(packet);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	public static void testBlockChangeNMS(Player player,Location loc, Material material) {
-		PacketPlayOutBlockChange packet = new PacketPlayOutBlockChange(((CraftWorld) loc.getWorld()).getHandle(), new BlockPosition(loc.getX(), loc.getY(), loc.getZ()));
-		net.minecraft.server.v1_12_R1.Block nmsBlock = CraftMagicNumbers.getBlock(material);
-		packet.block = nmsBlock.getBlockData();
-		try {
-			((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+//	public static void testBlockChangeNMS(Player player,Location loc, Material material) {
+//		PacketPlayOutBlockChange packet = new PacketPlayOutBlockChange(((CraftWorld) loc.getWorld()).getHandle(), new BlockPosition(loc.getX(), loc.getY(), loc.getZ()));
+//		Block nmsBlock = CraftMagicNumbers.getBlock(material);
+//		packet.block = nmsBlock.getBlockData();
+//		try {
+//			((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//	}
 	public static Location locationFlattenner(Location loc) {
 		return new Location(loc.getWorld(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), loc.getYaw(), loc.getPitch());
 	}
@@ -717,24 +484,24 @@ public class Utils {
 
 	    return MM + ":" + SS;
 	} 
-	public static int spawnBlockTestFGDSHGDFSQGFD(Player player, Location loc, int blockID, int data){
-		@SuppressWarnings("deprecation")
-		FallingBlock block = loc.getWorld().spawnFallingBlock(loc, blockID, (byte) data);
-		block.setGravity(false);
-		WrapperPlayServerSpawnEntity fbs = new WrapperPlayServerSpawnEntity(block, 27, blockID | (data << 0x10));
-		block.remove();
-			int entityID = fbs.getEntityID();
-	        fbs.setEntityID(entityID);
-	        fbs.setObjectData(blockID | (data << 0x10));
-	        Location l = player.getLocation();
-	        fbs.setX(l.getX());
-	        fbs.setY(l.getY());
-	        fbs.setZ(l.getZ());
-	        System.out.println("ProtocolLib packet done");
-			((CraftPlayer) player).getHandle().playerConnection.sendPacket((PacketPlayOutSpawnEntity) fbs.getHandle().getHandle());
-			System.out.println("send packet");
-			return entityID;
-	}
+//	public static int spawnBlockTestFGDSHGDFSQGFD(Player player, Location loc, int blockID, int data){
+//		@SuppressWarnings("deprecation")
+//		FallingBlock block = loc.getWorld().spawnFallingBlock(loc, blockID, (byte) data);
+//		block.setGravity(false);
+//		WrapperPlayServerSpawnEntity fbs = new WrapperPlayServerSpawnEntity(block, 27, blockID | (data << 0x10));
+//		block.remove();
+//			int entityID = fbs.getEntityID();
+//	        fbs.setEntityID(entityID);
+//	        fbs.setObjectData(blockID | (data << 0x10));
+//	        Location l = player.getLocation();
+//	        fbs.setX(l.getX());
+//	        fbs.setY(l.getY());
+//	        fbs.setZ(l.getZ());
+//	        System.out.println("ProtocolLib packet done");
+//			((CraftPlayer) player).getHandle().playerConnection.sendPacket((PacketPlayOutSpawnEntity) fbs.getHandle().getHandle());
+//			System.out.println("send packet");
+//			return entityID;
+//	}
 	public static Location substractLocation(Location a, Location b) {
 		if(!a.getWorld().equals(b.getWorld())) throw new IllegalArgumentException("The two locations are not in the same world!");
 		double x = a.getX() - b.getX();
@@ -742,28 +509,28 @@ public class Utils {
 		double z = a.getZ() - b.getZ();
 		return new Location(a.getWorld(), x, y, z);
 	}
-	public static void sendRedVignette(Player player) {
-		CraftPlayer cp = (CraftPlayer) player;
-		WrapperPlayServerWorldBorder p = new WrapperPlayServerWorldBorder();
-		p.setAction(WorldBorderAction.SET_SIZE);
-		p.setRadius(0);
-		p.setWarningDistance(0);
-		p.setSpeed(1);
-		p.setCenterX(player.getLocation().getX());
-		p.setCenterZ(player.getLocation().getZ());
-		cp.getHandle().playerConnection.sendPacket((PacketPlayOutWorldBorder) p.getHandle().getHandle());
-	}
-	public static void normalVignette(Player player) {
-		CraftPlayer cp = (CraftPlayer) player;
-		WrapperPlayServerWorldBorder p = new WrapperPlayServerWorldBorder();
-		p.setAction(WorldBorderAction.SET_SIZE);
-		p.setRadius(2^15);
-		p.setWarningDistance(0);
-		p.setSpeed(1);
-		p.setCenterX(0);
-		p.setCenterZ(0);
-		cp.getHandle().playerConnection.sendPacket((PacketPlayOutWorldBorder) p.getHandle().getHandle());
-	}
+//	public static void sendRedVignette(Player player) {
+//		CraftPlayer cp = (CraftPlayer) player;
+//		WrapperPlayServerWorldBorder p = new WrapperPlayServerWorldBorder();
+//		p.setAction(WorldBorderAction.SET_SIZE);
+//		p.setRadius(0);
+//		p.setWarningDistance(0);
+//		p.setSpeed(1);
+//		p.setCenterX(player.getLocation().getX());
+//		p.setCenterZ(player.getLocation().getZ());
+//		cp.getHandle().g.sendPacket((Packe) p.getHandle().getHandle());
+//	}
+//	public static void normalVignette(Player player) {
+//		CraftPlayer cp = (CraftPlayer) player;
+//		WrapperPlayServerWorldBorder p = new WrapperPlayServerWorldBorder();
+//		p.setAction(WorldBorderAction.SET_SIZE);
+//		p.setRadius(2^15);
+//		p.setWarningDistance(0);
+//		p.setSpeed(1);
+//		p.setCenterX(0);
+//		p.setCenterZ(0);
+//		cp.getHandle().playerConnection.sendPacket((PacketPlayOutWorldBorder) p.getHandle().getHandle());
+//	}
 	public static boolean doubleContains(List<Entity> list, ArrayList<Player> seekers) {
 		for(Player P : seekers) {
 			if(list.contains(P)) return true;
@@ -780,8 +547,8 @@ public class Utils {
 		    return sb.toString();
 		  }
 
-		  public static JSONObject readJsonFromUrl(String url) throws IOException, JSONException {
-		    InputStream is = new URL(url).openStream();
+		  public static JSONObject readJsonFromUrl(String url) throws IOException, JSONException, URISyntaxException {
+		    InputStream is = new URI(url).toURL().openStream();
 		    try {
 		      BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
 		      String jsonText = readAll(rd);
@@ -791,10 +558,10 @@ public class Utils {
 		      is.close();
 		    }
 		  }
-		  public static String getHTTPResponse(String url, int timeout) {
+		  public static String getHTTPResponse(String url, int timeout) throws URISyntaxException {
 			    HttpURLConnection c = null;
 			    try {
-			        URL u = new URL(url);
+			        URL u = new URI(url).toURL();
 			        c = (HttpURLConnection) u.openConnection();
 			        c.setRequestMethod("GET");
 			        c.setRequestProperty("Content-length", "0");

@@ -21,6 +21,6 @@ public class MiscListeners implements Listener {
 	
 	@EventHandler
 	public void onEntitySpawn(EntitySpawnEvent e) {
-		if(e.getEntityType() != EntityType.DROPPED_ITEM && e.getEntityType() != EntityType.FALLING_BLOCK && e.getEntityType() != EntityType.SHEEP && e.getEntityType() != EntityType.CREEPER && e.getEntityType() != EntityType.BAT) e.setCancelled(true);
+		if(e.getEntityType() != EntityType.ITEM && e.getEntityType() != EntityType.FALLING_BLOCK && e.getEntityType() != EntityType.SHEEP && e.getEntityType() != EntityType.CREEPER && e.getEntityType() != EntityType.BAT) e.setCancelled(true);
 	}
 }

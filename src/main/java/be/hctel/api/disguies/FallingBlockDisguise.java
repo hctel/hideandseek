@@ -1,53 +1,56 @@
 package be.hctel.api.disguies;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_12_R1.entity.CraftFallingBlock;
-import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.craftbukkit.v1_21_R6.block.data.CraftBlockData;
+import org.bukkit.craftbukkit.v1_21_R6.entity.CraftPlayer;
+import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
 
 import com.comphenix.packetwrapper.WrapperPlayServerNamedEntitySpawn;
+import com.comphenix.packetwrapper.WrapperPlayServerPlayerInfo;
+import com.comphenix.packetwrapper.WrapperPlayServerSpawnEntity;
+import com.comphenix.packetwrapper.WrapperPlayServerSpawnEntity.ObjectTypes;
 import com.comphenix.packetwrapper.WrapperPlayServerUpdateAttributes;
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.ListenerPriority;
 import com.comphenix.protocol.events.PacketAdapter;
+import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
+import com.comphenix.protocol.wrappers.EnumWrappers.NativeGameMode;
+import com.comphenix.protocol.wrappers.EnumWrappers.PlayerInfoAction;
+import com.comphenix.protocol.wrappers.PlayerInfoData;
+import com.comphenix.protocol.wrappers.WrappedChatComponent;
+import com.comphenix.protocol.wrappers.WrappedGameProfile;
 
-import net.minecraft.server.v1_12_R1.Entity;
-import net.minecraft.server.v1_12_R1.EntityFallingBlock;
-import net.minecraft.server.v1_12_R1.PacketPlayOutEntityDestroy;
-import net.minecraft.server.v1_12_R1.PacketPlayOutNamedEntitySpawn;
-import net.minecraft.server.v1_12_R1.PacketPlayOutPlayerInfo;
-import net.minecraft.server.v1_12_R1.PacketPlayOutPlayerInfo.EnumPlayerInfoAction;
-import net.minecraft.server.v1_12_R1.PacketPlayOutSpawnEntity;
+import net.minecraft.world.level.block.state.IBlockData;
+
 
 public class FallingBlockDisguise {
 	Player p;
 	Plugin plugin;
-	Material m;
-	byte d;
+	BlockData m;
 	boolean isCancelled = false;
-	CraftFallingBlock a;
-	EntityFallingBlock passenger;
+	FallingBlock passenger;
 	
 	private ArrayList<Player> excludeList = new ArrayList<>();
 	
 	@SuppressWarnings("deprecation")
-	public FallingBlockDisguise(Player player, Material m, byte d, Plugin plugin) {
+	public FallingBlockDisguise(Player player, Material m, Plugin plugin) {
 		this.plugin = plugin;	
 		this.p = player;
-		this.m = m;
-		a = ((CraftFallingBlock) p.getWorld().spawnFallingBlock(p.getLocation().add(255, 50, 255), m, d));
-		a.setGravity(false);
-		passenger = a.getHandle();
-		passenger.setNoGravity(true);
+		this.m = m.createBlockData();
+		FallingBlock b = player.getWorld().spawnFallingBlock(player.getLocation().clone().add(0,255,0), this.m);
+		b.setGravity(false);
+		b.setInvulnerable(true);
+		b.setDropItem(false);
 		restart();
 		
 		ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(plugin,
@@ -82,10 +85,12 @@ public class FallingBlockDisguise {
 	
 	
 	public void remove() {
-		passenger.killEntity();
-		PacketPlayOutEntityDestroy ed = new PacketPlayOutEntityDestroy(p.getEntityId());
-		for(Player P : Bukkit.getOnlinePlayers()) if(P != p) {
-			((CraftPlayer) P).getHandle().playerConnection.sendPacket(ed);
+		passenger.remove();
+		ProtocolManager mgr = ProtocolLibrary.getProtocolManager();
+		PacketContainer packet = mgr.createPacket(PacketType.Play.Server.ENTITY_DESTROY);
+		packet.getIntegers().write(0, p.getEntityId());
+		for(Player P : Bukkit.getOnlinePlayers()) {
+			mgr.sendServerPacket(P, packet);
 		}
 		
 	}
@@ -99,95 +104,73 @@ public class FallingBlockDisguise {
 	
 	private void restart(Player player) {
 		CraftPlayer p = (CraftPlayer) player;
-		p.getHandle().playerConnection.sendPacket(new PacketPlayOutEntityDestroy(p.getEntityId()));
-		p.getHandle().playerConnection.sendPacket(new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.ADD_PLAYER, ((CraftPlayer) this.p).getHandle()));
+		ProtocolManager mgr = ProtocolLibrary.getProtocolManager();
+		PacketContainer packet1 = mgr.createPacket(PacketType.Play.Server.ENTITY_DESTROY);
+		packet1.getIntegers().write(0, p.getEntityId());
+		mgr.sendServerPacket(player, packet1);
+		WrapperPlayServerPlayerInfo packet2 = new WrapperPlayServerPlayerInfo();
+		packet2.setAction(PlayerInfoAction.ADD_PLAYER);
+		WrappedGameProfile profile = new WrappedGameProfile(this.p.getUniqueId(), this.p.getName());
+		WrappedChatComponent displayName = WrappedChatComponent.fromText(this.p.getDisplayName());
+		PlayerInfoData data = new PlayerInfoData(profile,this.p.getPing(), NativeGameMode.fromBukkit(this.p.getGameMode()), displayName);
+		packet2.setData(Arrays.asList(data));
+		mgr.sendServerPacket(p, packet2.getHandle());
 		//p.getHandle().playerConnection.sendPacket(new PacketPlayOutNamedEntitySpawn(((CraftPlayer) this.p).getHandle()));
-		try {
-
-		    Field f = Entity.class.getDeclaredField("id");
-		    f.setAccessible(true);
-		    f.setInt(passenger, ((CraftPlayer) this.p).getHandle().getId());
-
-			} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
-				e.printStackTrace();
-			}
-
-				p.getHandle().playerConnection.sendPacket(new PacketPlayOutSpawnEntity(passenger, 70, getDataInt()));
-			    p.getHandle().playerConnection.sendPacket(new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.REMOVE_PLAYER, ((CraftPlayer) this.p).getHandle()));
+		WrapperPlayServerSpawnEntity packet3 = new WrapperPlayServerSpawnEntity(passenger, ObjectTypes.FALLING_BLOCK, getDataInt());
+		packet3.setEntityID(this.p.getEntityId());
+		mgr.sendServerPacket(p, packet3.getHandle());
 	}
 	
 	
-	@SuppressWarnings("deprecation")
 	private void send() {
-		passenger = ((CraftFallingBlock) p.getWorld().spawnFallingBlock(p.getLocation().add(255, 50, 255), m, d)).getHandle();
-		passenger.locX = p.getLocation().getX();
-		passenger.locY = p.getLocation().getY();
-		passenger.locZ = p.getLocation().getZ();
-		passenger.setNoGravity(true);
-		try {
-
-		    Field f = Entity.class.getDeclaredField("id");
-		    f.setAccessible(true);
-		    f.setInt(passenger, ((CraftPlayer) p).getHandle().getId());
-
-			} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
-				e.printStackTrace();
-			}
-
-			for (Player o : Bukkit.getOnlinePlayers()) {
-				PacketPlayOutSpawnEntity pck = new PacketPlayOutSpawnEntity(passenger, 70, getDataInt());
-				if (p == o | excludeList.contains(o)) {
-					continue;
-				}
-				//plugin.getLogger().info(String.format("		Sending %s to %s", pck.toString(), o.getName()));
-				((CraftPlayer) o).getHandle().playerConnection.sendPacket(pck);
-			    ((CraftPlayer) o).getHandle().playerConnection.sendPacket(new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.REMOVE_PLAYER, ((CraftPlayer) p).getHandle()));
-			
-		    }
+		ProtocolManager mgr = ProtocolLibrary.getProtocolManager();
+		passenger = p.getWorld().spawnFallingBlock(p.getLocation().add(0,255,0), m);
+		passenger.setGravity(false);
+		passenger.setInvulnerable(true);
+		passenger.setDropItem(false);
+		WrapperPlayServerSpawnEntity packet1 = new WrapperPlayServerSpawnEntity(passenger, ObjectTypes.FALLING_BLOCK, getDataInt());
+		packet1.setEntityID(this.p.getEntityId());
+//		WrapperPlayServerPlayerInfoRemove packet2 = new WrapperPlayServerPlayerInfoRemove();
+//		packet2.setProfileIds(Arrays.asList(new UUID[] {this.p.getUniqueId()}));
+		for(Player P : Bukkit.getOnlinePlayers()) {
+			if(P.equals(this.p) | excludeList.contains(P)) continue;
+			mgr.sendServerPacket(P, packet1.getHandle());
+		}
 	}
 	
-	@SuppressWarnings("deprecation")
 	public void sendToPlayer(Player player) {
-		if(player == p | excludeList.contains(player)) return;
-		passenger = ((CraftFallingBlock) p.getWorld().spawnFallingBlock(p.getLocation().add(255, 50, 255), m, d)).getHandle();
-		passenger.setNoGravity(true);
-		passenger.locX = p.getLocation().getX();
-		passenger.locY = p.getLocation().getY();
-		passenger.locZ = p.getLocation().getZ();
-		try {
-
-		    Field f = Entity.class.getDeclaredField("id");
-		    f.setAccessible(true);
-		    f.setInt(passenger, ((CraftPlayer) p).getHandle().getId());
-
-			} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
-				e.printStackTrace();
-			}
-		PacketPlayOutSpawnEntity pck = new PacketPlayOutSpawnEntity(passenger, 70, getDataInt());
-		//plugin.getLogger().info(String.format("		Sending %s to %s as an individual send", pck.toString(), player.getName()));
-		((CraftPlayer) player).getHandle().playerConnection.sendPacket(pck);
-		((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.REMOVE_PLAYER, ((CraftPlayer) p).getHandle()));
+		ProtocolManager mgr = ProtocolLibrary.getProtocolManager();
+		passenger = p.getWorld().spawnFallingBlock(p.getLocation().add(0,255,0), m);
+		passenger.setGravity(false);
+		passenger.setInvulnerable(true);
+		passenger.setDropItem(false);
+		WrapperPlayServerSpawnEntity packet1 = new WrapperPlayServerSpawnEntity(passenger, ObjectTypes.FALLING_BLOCK, getDataInt());
+		packet1.setEntityID(this.p.getEntityId());
+//		WrapperPlayServerPlayerInfoRemove packet2 = new WrapperPlayServerPlayerInfoRemove();
+//		packet2.setProfileIds(Arrays.asList(new UUID[] {this.p.getUniqueId()}));
+		mgr.sendServerPacket(player, packet1.getHandle());		
 	}
 	
 	public void cancel() {
 		isCancelled = true;
 		remove();
-		for(Player P : Bukkit.getOnlinePlayers()) if(P != p) ((CraftPlayer) P).getHandle().playerConnection.sendPacket(new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.ADD_PLAYER, ((CraftPlayer) p).getHandle()));
-		PacketPlayOutNamedEntitySpawn ps = new PacketPlayOutNamedEntitySpawn(((CraftPlayer) p).getHandle());
-		for(Player P : Bukkit.getOnlinePlayers()) if(P != p) ((CraftPlayer) P).getHandle().playerConnection.sendPacket(ps);
+		ProtocolManager mgr = ProtocolLibrary.getProtocolManager();
+		WrapperPlayServerNamedEntitySpawn packet1 = new WrapperPlayServerNamedEntitySpawn(p);
+		for(Player P : Bukkit.getOnlinePlayers()) if(P != p) mgr.sendServerPacket(P, packet1.getHandle());;
 	}
 	
 	public void excludeFrom(Player player) {
 		excludeList.add(player);
 		player.showPlayer(plugin, p);
-		((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.ADD_PLAYER, ((CraftPlayer) p).getHandle()));
-		PacketPlayOutNamedEntitySpawn ps = new PacketPlayOutNamedEntitySpawn(((CraftPlayer) p).getHandle());
-		((CraftPlayer) player).getHandle().playerConnection.sendPacket(ps);
+		ProtocolManager mgr = ProtocolLibrary.getProtocolManager();
+		WrapperPlayServerNamedEntitySpawn packet1 = new WrapperPlayServerNamedEntitySpawn(p);
+		mgr.sendServerPacket(player, packet1.getHandle());
 	}
 	
-	@SuppressWarnings("deprecation")
 	private int getDataInt() {
-		return m.getId() | ((int) d << 0x10);
+		CraftBlockData cd = ((CraftBlockData) m);
+		IBlockData nd = cd.getState();
+		return net.minecraft.world.level.block.Block.j(nd);
 	}
 		
 }

@@ -2,22 +2,13 @@ package be.hctel.renaissance.hideandseek.gamespecific.objects;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.UUID;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
 
-import com.mojang.authlib.GameProfile;
-
-import be.hctel.api.fakeentities.FakePlayer;
-import be.hctel.api.runnables.ArgumentRunnable;
 import be.hctel.api.scoreboard.DynamicScoreboard;
 import be.hctel.renaissance.hideandseek.Hide;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.ItemsManager;
@@ -29,7 +20,6 @@ public class PreGameTimer {
 	int minPlayers = 2;
 	int timer = 36;
 	BukkitScheduler scheduler;
-	FakePlayer seekerQueueNPC;
 	
 	public boolean mapSelected = false;
 	public boolean gameStarted = false;
@@ -41,42 +31,6 @@ public class PreGameTimer {
 	public PreGameTimer(Plugin plugin) {
 		this.plugin = plugin;
 		scheduler = Bukkit.getServer().getScheduler();
-		
-		seekerQueueNPC = new FakePlayer(((CraftWorld) Bukkit.getWorld("HIDE_Lobby")).getHandle(), new GameProfile(UUID.fromString("fef039ef-e6cd-4987-9c84-26a3e6134277"), "§bSeeker queue"), new Location(Bukkit.getWorld("HIDE_Lobby"), -75.5, 90.01, 65.5, 135.0f, 0.0f), plugin);
-		//seekerQueueNPC.setSkin(UUID.fromString("4c13b583-2355-465f-aad8-d202d621176b"));
-		seekerQueueNPC.setSkin("https://fr.namemc.com/texture/212dd1d9cafbb877.png");
-		seekerQueueNPC.setOnRightClickTask(new ArgumentRunnable() {
-			@Override
-			public void run(Object o) {
-				if(o instanceof String) {
-					Player p = Bukkit.getPlayer((String) o);
-					new BukkitRunnable() {
-						@Override
-						public void run() {
-								if(!seekerQueue.contains(p)) {
-									p.playSound(p.getLocation(), Sound.BLOCK_NOTE_PLING, 1.0f, 1.0f);
-									seekerQueue.add(p);
-									Utils.sendCenteredMessage(p, "§e§m-----------------------------");
-									p.sendMessage("");
-									Utils.sendCenteredMessage(p, "§a§lJoined seeker queue");
-									Utils.sendCenteredMessage(p, "§7You now have a chance at starting out as the Seeker.");
-									p.sendMessage("");
-									Utils.sendCenteredMessage(p, "§e§m-----------------------------");
-								} else {
-									p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BASS, 1.0f, 0.8f);
-									seekerQueue.remove(p);
-									Utils.sendCenteredMessage(p, "§e§m-----------------------------");
-									p.sendMessage("");
-									Utils.sendCenteredMessage(p, "§c§lLeft seeker queue");
-									Utils.sendCenteredMessage(p, "§7You left the queue to become the starting Seeker.");
-									p.sendMessage("");
-									Utils.sendCenteredMessage(p, "§e§m-----------------------------");
-								}	
-						}
-					}.runTaskAsynchronously(plugin);
-				}
-			}
-		});
 			
 		scheduler.scheduleSyncRepeatingTask(plugin, new Runnable() {
 			public void run() {
@@ -129,7 +83,7 @@ public class PreGameTimer {
 								Hide.bm.sendForward("GameStarted");
 								choosingBlock = true;
 								for(Player p : Bukkit.getOnlinePlayers()) {
-									p.playSound(p.getLocation(), Sound.ENTITY_ENDERDRAGON_GROWL, 1.0f, 1.0f);
+									p.playSound(p.getLocation(), Sound.ENTITY_ENDER_DRAGON_GROWL, 1.0f, 1.0f);
 									Utils.sendActionBarMessage(p, "§eChoose your Block! §8| §aStarting in §l" + timer);
 									Hide.blockPicker.buildBlockSelector(p);
 									p.getInventory().clear();
@@ -171,7 +125,6 @@ public class PreGameTimer {
 		sidebars.get(player).setLine(Hide.stats.getVictories(player), "§bVictories", false);
 		sidebars.get(player).setLine(Hide.stats.getKilledSeekers(player), "§bKills as Hider", false);
 		sidebars.get(player).addReceiver(player);
-		seekerQueueNPC.spawnFor(player);
 	}
 	
 	public void updatePlayerScoreboard(Player player) {

@@ -9,6 +9,8 @@ import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
+import org.bukkit.damage.DamageSource;
+import org.bukkit.damage.DamageType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -99,7 +101,6 @@ public class PlayerListener implements Listener {
 		if(!Hide.preGameTimer.gameStarted) Hide.votesHandler.sendMapChoices(p);
 		Utils.sendHeaderFooter(p, "\n§6Renaissance §eProject\n§fBringing back good memories\n", "\n§aPlaying in §bHide §aAnd §eSeek.\n");
 		Hide.preGameTimer.loadPlayer(p);
-		Hide.shopPlayer.spawnFor(p);
 		p.sendMessage("");
 		p.sendMessage("");
 		Utils.sendCenteredMessage(e.getPlayer(), "§6Welcome on the HnS Alpha release v1!");
@@ -108,7 +109,7 @@ public class PlayerListener implements Listener {
 			p.getInventory().setItem(0, rulesBook);
 			p.getInventory().setItem(1, Utils.createQuickItemStack(Material.DIAMOND, (short) 0, "§6§lView Vote Menu"));
 			p.getInventory().setItem(2, Utils.createQuickItemStack(Material.BOOK, (short) 0, "§r§lSeeker kill records"));
-			p.getInventory().setItem(7, Utils.createQuickItemStack(Material.REDSTONE_COMPARATOR, (short) 0, "§b§lJoin messages"));
+			p.getInventory().setItem(7, Utils.createQuickItemStack(Material.COMPARATOR, (short) 0, "§b§lJoin messages"));
 			p.getInventory().setItem(8, Utils.createQuickItemStack(Material.SLIME_BALL, (short) 0, "§c§lReturn to Hub"));
 		}
 		p.setPlayerListName(Hide.rankManager.getRankColor(p) + p.getName());
@@ -152,7 +153,7 @@ public class PlayerListener implements Listener {
 		} else e.setCancelled(true);
 	}
 	
-	@SuppressWarnings("deprecation")
+	@SuppressWarnings("removal")
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onBlockDamage(BlockDamageEvent e) {
 		Player p = e.getPlayer();

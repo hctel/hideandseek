@@ -62,7 +62,7 @@ public class JoinMessageHandler {
 			if(item.getType() == Material.COAL) {
 				if(m.getPrice() > Hide.cosmeticManager.getTokens(p)) {
 					p.sendMessage(Hide.header + "§cYou don't have enough tokens to buy this join message.");
-					p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BASS, 1.0f, 0.5f);
+					p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1.0f, 0.5f);
 					e.setCancelled(true);
 					return;
 				} else {
@@ -85,7 +85,7 @@ public class JoinMessageHandler {
 			}
 		} else {
 			p.sendMessage(Hide.header + "§cYou can't select this join message as it's already selected.");
-			p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BASS, 1.0f, 0.5f);
+			p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1.0f, 0.5f);
 			e.setCancelled(true);
 			return;
 		}
