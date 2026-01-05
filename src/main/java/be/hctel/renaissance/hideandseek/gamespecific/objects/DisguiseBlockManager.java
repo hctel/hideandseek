@@ -11,14 +11,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import com.comphenix.packetwrapper.WrapperPlayServerNamedEntitySpawn;
-import com.comphenix.protocol.PacketType;
-import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.events.ListenerPriority;
-import com.comphenix.protocol.events.PacketAdapter;
-import com.comphenix.protocol.events.PacketEvent;
-
-import be.hctel.api.disguies.FallingBlockDisguise;
+import be.hctel.api.disguises.FallingBlockDisguise;
 import be.hctel.renaissance.hideandseek.Hide;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.GameAchievement;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.ItemsManager;
@@ -41,35 +34,22 @@ public class DisguiseBlockManager {
 	int fakeEntityId = 0;
 	BukkitRunnable run;
 	CraftFallingBlock solidPlayerBlock;
-	@SuppressWarnings("deprecation")
+
 	public DisguiseBlockManager(Player player, ItemStack block, Plugin plugin) {
 		this.player = player;
 		this.block = block;
 		this.plugin = plugin;
 		this.lastLocation = player.getLocation();
 		player.setPlayerListName(null);
-		ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(plugin,
-				ListenerPriority.NORMAL,
-				PacketType.Play.Server.NAMED_ENTITY_SPAWN) {
-			@Override
-			public void onPacketSending(PacketEvent e) {
-				if(e.getPlayer() != player && isAlive) {
-					WrapperPlayServerNamedEntitySpawn pk = new WrapperPlayServerNamedEntitySpawn(e.getPacket());
-					if(pk.getEntityID() == player.getEntityId()) {
-						e.setCancelled(true);
-					}
-				}
-			}
-		});
 		startDisguise();
 		run = new BukkitRunnable() {
 			@Override
 			public void run() {
-				if(isSolid && isAlive) for(Player P : Bukkit.getOnlinePlayers()) if(P != player) P.sendBlockChange(solidLocation, block.getType(), block.getData().getData());
+				if(isSolid && isAlive) for(Player P : Bukkit.getOnlinePlayers()) if(P != player) P.sendBlockChange(solidLocation, block.getType().createBlockData());
 			}
 		};
 		run.runTaskTimer(plugin, 0L, 20L);
-		for(Player P : Bukkit.getOnlinePlayers()) P.hidePlayer(P);
+		for(Player P : Bukkit.getOnlinePlayers()) P.hidePlayer(plugin, P);
 		
 	}
 	
@@ -103,7 +83,7 @@ public class DisguiseBlockManager {
 	
 	private void makeSolid() {
 		if(isAllowedBlock()) {
-			stopDisguise();
+			stopDisguise(true);
 			isSolid = true;
 			player.sendTitle("§aYou are now solid", "", 5, 60, 20);
 			player.getInventory().setItem(4, ItemsManager.tauntButton);
@@ -123,36 +103,35 @@ public class DisguiseBlockManager {
 			player.sendTitle("§c§l✖", "§6You can't go solid here", 0, 20, 70);
 		}
 	}
-	@SuppressWarnings("deprecation")
 	public void makeUnsolid() {
 		isSolid = false;
 		timeInLocation = 0;
 		player.sendTitle("§6You are now §cvisible!", "", 5, 25, 20);
 		player.sendMessage(Hide.header + "§aYou are now visible. §7Be careful!");
 		for(Player p : Bukkit.getOnlinePlayers()) {
-			p.sendBlockChange(solidLocation, Material.AIR, (byte) 0);
+			p.sendBlockChange(solidLocation, Material.AIR.createBlockData());
 		}
 		startDisguise();
 		solidPlayerBlock.remove();
 	}
 	
 	private void startDisguise() {
-		if(disguise == null) disguise = new FallingBlockDisguise(player, block.getType(), plugin);
+		if(disguise == null) disguise = new FallingBlockDisguise(plugin, player, block.getType());
 		else disguise.restart();
 	}
-	private void stopDisguise() {
-		disguise.cancel();
+	private void stopDisguise(boolean stayVanished) {
+		disguise.cancel(stayVanished);
 	}
 
 	public void resendDisguise(Player player) {
 		if(!isSolid) {
-			disguise.sendToPlayer(player);
+			disguise.sendTo(player);
 		}
 	}
 	
 	public void kill() {
 		isAlive = false;
-		stopDisguise();
+		stopDisguise(false);
 		run.cancel();
 		for(Player P : Bukkit.getOnlinePlayers()) P.showPlayer(plugin, player);
 		player.setPlayerListName(player.getName());
@@ -167,7 +146,6 @@ public class DisguiseBlockManager {
 	}
 	
 	public void showTo(Player player) {
-		disguise.excludeFrom(player);
 		player.showPlayer(plugin, this.player);
 	}
 	

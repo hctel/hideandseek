@@ -68,6 +68,7 @@ public class VotesHandler {
 		}.runTask(plugin);
 	}
 	
+	@SuppressWarnings("deprecation")
 	public void sendMapChoices() {
 		for(int i = 0; i < 5; i++) {
 			TextComponent message = new TextComponent(Hide.header + "§7§l" + (i+1) + ". §6" + currentGameMaps.get(i).getMapName() + getVoteAmountString(currentGameMaps.get(i)));
@@ -85,6 +86,7 @@ public class VotesHandler {
 			p.spigot().sendMessage(message);
 		}
 	}
+	@SuppressWarnings("deprecation")
 	public void sendMapChoices(Player player) {
 		player.sendMessage(Hide.header + "§e§lVote for a map! §7Use §f/v # §7or click.");
 		for(int i = 0; i < 5; i++) {

@@ -78,7 +78,6 @@ public class BlockPicker {
 			inv.setItem(i, a);
 		}
 		for(int i = 9; i < 18; i++) {
-			@SuppressWarnings("deprecation")
 			ItemStack a = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
 			ItemMeta b = a.getItemMeta();
 			b.setDisplayName("");

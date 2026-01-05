@@ -112,7 +112,7 @@ public class GameEngine {
 			hiders.add(p);
 			p.setGameMode(GameMode.ADVENTURE);
 			p.getInventory().clear();
-			p.setBedSpawnLocation(hiderSpawn, true);
+			p.setRespawnLocation(hiderSpawn, true);
 			
 		}
 		Player firstSeeker = getNewSeeker();

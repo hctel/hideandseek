@@ -9,6 +9,7 @@ import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.plugin.Plugin;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
+import org.mvplugins.multiverse.core.world.MultiverseWorld;
 import org.mvplugins.multiverse.core.world.options.CloneWorldOptions;
 import org.mvplugins.multiverse.core.world.options.DeleteWorldOptions;
 
@@ -27,6 +28,7 @@ public class MapLoader {
 	World dynamicWorld;
 	Plugin plugin;
 	public MapLoader(Plugin plugin) {
+		this.plugin = plugin;
 		for(GameMap map : GameMap.values()) {
 			worldNames.add(map.getSystemName());
 		}
@@ -51,7 +53,11 @@ public class MapLoader {
 	}
 	public void loadWorldsToTempWorld(ArrayList<GameMap> map) {
 		for(int i = 0; i < 6; i++) {
-			Hide.worldManager.cloneWorld(CloneWorldOptions.fromTo(Hide.worldManager.getLoadedWorld(map.get(i).getSystemName()).get(), "TEMPWORLD" + i));
+			plugin.getLogger().info(String.format("Cloning %s", map.get(i).getSystemName()));
+			MultiverseWorld mvworld = Hide.worldManager.getWorld(plugin.getServer().getWorld(map.get(i).getSystemName())).get();
+			LoadedMultiverseWorld world = (Hide.worldManager.isLoadedWorld(mvworld) ? Hide.worldManager.getLoadedWorld(mvworld).get() : Hide.worldManager.loadWorld(mvworld).get());
+			CloneWorldOptions option = CloneWorldOptions.fromTo(world, "TEMPWORLD" + i);
+			Hide.worldManager.cloneWorld(option);
 			Hide.worldManager.loadWorld("TEMPWORLD" + i);
 			Bukkit.getWorld("TEMPWORLD" + i).setGameRule(GameRule.KEEP_INVENTORY, true); 
 			Bukkit.getWorld("TEMPWORLD" + i).setGameRule(GameRule.RANDOM_TICK_SPEED, 0);

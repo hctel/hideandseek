@@ -21,6 +21,14 @@
        <id>lukasalt-repo</id>
        <url>https://repo.lukasa.lt/repository/maven-public/</url>
    </repository>
+   <repository>
+    <id>codemc-releases</id>
+    <url>https://repo.codemc.io/repository/maven-releases/</url>
+</repository>
+<repository>
+    <id>codemc-snapshots</id>
+    <url>https://repo.codemc.io/repository/maven-snapshots/</url>
+</repository>
   </repositories>
   <dependencies>
         <dependency>
@@ -60,6 +68,12 @@
 <groupId>io.netty</groupId>
 <artifactId>netty-all</artifactId>
 <version>4.2.6.Final</version>
+</dependency>
+<dependency>
+<groupId>com.github.retrooper</groupId>
+<artifactId>packetevents-spigot</artifactId>
+<version>2.10.1</version>
+<scope>provided</scope>
 </dependency>
   </dependencies>
 </project>

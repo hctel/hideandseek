@@ -82,15 +82,10 @@ public class Signer implements Listener {
 				case COMMAND:
 					Bukkit.dispatchCommand(p, clickedData.getData());
 					break;
-				case EASTER_EGG:
-					p.sendMessage(clickedData.getData());
-					break;
 				case QUEUE:
 					break;
 				case SERVER:
 					Hide.bm.sendToServer(p, clickedData.getData().replace(" ", ""));
-					break;
-				case TELEPORT:
 					break;
 				default:
 					break;

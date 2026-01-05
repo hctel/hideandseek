@@ -70,6 +70,7 @@ public enum GameRanks {
 	public String getName() {
 		return name;
 	}
+	@SuppressWarnings("deprecation")
 	public TextComponent getTextComponent() {
 		TextComponent t = new TextComponent(getChatColor() + getName());
 		t.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(getChatColor() + getName() + "§f[" + getMinPoints() + "-" + getMaxPoints() + "]").create()));

@@ -1,8 +1,10 @@
 name: HideAndSeek
 author: hctel
 version: beta1.1
+api-version: 1.21.10
 main: be.hctel.renaissance.hideandseek.Hide
-softdepend: ['Multiverse-Core', 'ViaVersion']
+depend: ['Multiverse-Core', 'ProtocolLib', 'packetevents']
+load: POSTWORLD
 commands: 
   stats:
     usage: /stats [player]

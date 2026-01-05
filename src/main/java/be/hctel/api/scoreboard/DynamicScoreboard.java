@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.bukkit.entity.Player;
+import org.bukkit.scoreboard.Criteria;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
@@ -49,7 +50,7 @@ public class DynamicScoreboard {
 		this.name = name;
 		this.manager = manager;
 		this.board = manager.getNewScoreboard();
-		this.obj = board.registerNewObjective(identifier, "dummy");
+		this.obj = board.registerNewObjective(identifier, Criteria.DUMMY, name);
 		this.obj.setDisplayName(name);
 		this.obj.setDisplaySlot(DisplaySlot.SIDEBAR);
 	}

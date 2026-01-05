@@ -38,26 +38,26 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.material.MaterialData;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.mvplugins.multiverse.external.vavr.NotImplementedError;
 
 import com.comphenix.packetwrapper.wrappers.play.clientbound.WrapperPlayServerBlockChange;
 import com.comphenix.packetwrapper.wrappers.play.clientbound.WrapperPlayServerEntityDestroy;
 import com.comphenix.packetwrapper.wrappers.play.clientbound.WrapperPlayServerSpawnEntity;
 import com.comphenix.protocol.wrappers.WrappedBlockData;
+import com.comphenix.protocol.wrappers.WrappedChatComponent;
 
 import it.unimi.dsi.fastutil.ints.IntList;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.minecraft.network.chat.IChatBaseComponent;
 import net.minecraft.network.protocol.game.PacketPlayOutBlockChange;
 import net.minecraft.network.protocol.game.PacketPlayOutEntityDestroy;
+import net.minecraft.network.protocol.game.PacketPlayOutPlayerListHeaderFooter;
 import net.minecraft.network.protocol.game.PacketPlayOutSpawnEntity;
-import net.minecraft.world.entity.item.EntityFallingBlock;
 
 /*
  * This file is a part of the Renaissance Project API
@@ -267,7 +267,10 @@ public class Utils {
 	 * @param footer The footer
 	 */
 	public static void sendHeaderFooter(Player player, String header, String footer) {
-        throw new NotImplementedError();
+		IChatBaseComponent tabHeader = (IChatBaseComponent) WrappedChatComponent.fromLegacyText(header).getHandle();
+        IChatBaseComponent tabFooter = (IChatBaseComponent) WrappedChatComponent.fromLegacyText(footer).getHandle();
+        PacketPlayOutPlayerListHeaderFooter packet = new PacketPlayOutPlayerListHeaderFooter(tabHeader, tabFooter);
+        ((CraftPlayer) player).getHandle().g.sendPacket(packet);
     }
 	/**
 	 * Sends an action bar message to a player (used to clean other classes)

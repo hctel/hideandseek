@@ -108,7 +108,7 @@ public class Hide extends JavaPlugin {
 		joinMessageMenu = new JoinMessageHandler(this);
 		signer = new Signer(this);
 		
-		//Speaks bby itself
+		//Speaks by itself
 		registerListeners();
 		loadCommands();
 		isServerStarting = false;
