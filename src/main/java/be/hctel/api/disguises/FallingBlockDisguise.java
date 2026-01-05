@@ -136,7 +136,7 @@ public class FallingBlockDisguise implements Listener {
 		if(sendTo.equals(player)) {
 			throw new IllegalArgumentException(String.format("Cannot send a disguise to the disguised player (%s -> %s)", player.getName(), sendTo.getName()));
 		}
-		EntityFallingBlock eFallingBlock = EntityFallingBlock.a(((CraftWorld) player.getWorld()).getHandle(), ((CraftBlock) player.getLocation().getBlock()).getPosition(), getIBlockData(Material.BIRCH_LEAVES.createBlockData()));
+		EntityFallingBlock eFallingBlock = EntityFallingBlock.a(((CraftWorld) player.getWorld()).getHandle(), ((CraftBlock) player.getLocation().getBlock()).getPosition(), getIBlockData(hideAs));
 		CraftFallingBlock cFallingBlock = (CraftFallingBlock) eFallingBlock.getBukkitEntity();
 		cFallingBlock.setCancelDrop(true);
 		cFallingBlock.setGravity(false);
@@ -146,7 +146,7 @@ public class FallingBlockDisguise implements Listener {
 		pck.setEntityId(player.getEntityId());
 		pck.setUniqueId(eFallingBlock.cT());
 		pck.setEntityType(EntityType.FALLING_BLOCK);
-		pck.setEntityData(getDataInt(Material.BIRCH_LEAVES.createBlockData()));
+		pck.setEntityData(getDataInt(hideAs));
 		pck.setX(player.getLocation().getX());
 		pck.setY(player.getLocation().getY()+0.1);
 		pck.setZ(player.getLocation().getZ());
