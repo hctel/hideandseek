@@ -124,7 +124,7 @@ public class DisguiseBlockManager {
 	}
 
 	public void resendDisguise(Player player) {
-		if(!isSolid) {
+		if(!isSolid && !player.equals(this.player)) {
 			disguise.sendTo(player);
 		}
 	}
