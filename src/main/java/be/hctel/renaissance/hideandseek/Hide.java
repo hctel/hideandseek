@@ -13,6 +13,7 @@ import org.mvplugins.multiverse.core.world.WorldManager;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
+import com.github.retrooper.packetevents.PacketEvents;
 
 import be.hctel.api.bungee.BungeeCordMessenger;
 import be.hctel.api.signs.Signer;
@@ -39,6 +40,7 @@ import be.hctel.renaissance.hideandseek.listeners.PlayerListener;
 import be.hctel.renaissance.hideandseek.nongame.sql.Stats;
 import be.hctel.renaissance.hideandseek.nongame.utils.MapLoader;
 import be.hctel.renaissance.ranks.RankManager;
+import io.github.retrooper.packetevents.factory.spigot.SpigotPacketEventsBuilder;
 
 public class Hide extends JavaPlugin {
 	public static String version = "b1.25.7";
@@ -81,10 +83,17 @@ public class Hide extends JavaPlugin {
 	public static Connection con;
 	
 	@Override
+	public void onLoad() {
+		getLogger().info("Waking up");
+		PacketEvents.setAPI(SpigotPacketEventsBuilder.build(this));
+		PacketEvents.getAPI().load();
+	}
+	
+	@Override
 	public void onEnable() {
 		getLogger().info("Enabling HideAndSeek...");
 		plugin = this;
-		
+		PacketEvents.getAPI().init();
 		//Enables external libraries
 		core = (MultiverseCore) Bukkit.getServer().getPluginManager().getPlugin("Multiverse-Core");
 		protocolLibManager = ProtocolLibrary.getProtocolManager();
@@ -130,6 +139,7 @@ public class Hide extends JavaPlugin {
 			cosmeticManager.saveAll();
 			rankManager.saveAll();
 			stats.saveAll();
+			PacketEvents.getAPI().terminate();
 			plugin = null;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
