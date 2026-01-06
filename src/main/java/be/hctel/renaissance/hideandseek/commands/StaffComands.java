@@ -8,6 +8,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import be.hctel.renaissance.hideandseek.Hide;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.GameMap;
@@ -131,13 +132,18 @@ public class StaffComands implements CommandExecutor {
 			Bukkit.broadcastMessage("");
 			Bukkit.broadcastMessage("§cYou were sent to a lobby because the server you were previously on was stopped by a staff member");
 			for(Player P : Bukkit.getOnlinePlayers()) Hide.bm.sendToServer(P, "HUB01");
-			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "stop");
 			try {
 				Hide.con.createStatement().execute("UPDATE servers SET status = 'OFF' WHERE name = '" + Hide.bm.getServerName() + "';");
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			new BukkitRunnable() {
+				@Override
+				public void run() {
+					Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "stop");
+				}
+			}.runTaskLater(Hide.plugin, 5*20L);
 			return true;
 		}
 		
