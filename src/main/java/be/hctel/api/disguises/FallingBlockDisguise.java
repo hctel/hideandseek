@@ -19,13 +19,14 @@ import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.EntityRemoveEvent.Cause;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.ListenerPriority;
 import com.comphenix.protocol.events.PacketAdapter;
-import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import com.github.retrooper.packetevents.PacketEvents;
 import com.github.retrooper.packetevents.protocol.entity.data.EntityData;
@@ -34,13 +35,11 @@ import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEn
 
 import be.hctel.api.protocol.NMSBridge;
 import be.hctel.api.protocol.adapters.AdapterPacketPlayOutSpawnEntity;
-import net.minecraft.network.protocol.game.ClientboundEntityPositionSyncPacket;
 import net.minecraft.network.protocol.game.PacketPlayOutEntityDestroy;
 import net.minecraft.network.protocol.game.PacketPlayOutEntityMetadata;
 import net.minecraft.network.protocol.game.PacketPlayOutEntityVelocity;
 import net.minecraft.network.syncher.DataWatcher;
 import net.minecraft.server.network.PlayerConnection;
-import net.minecraft.world.entity.PositionMoveRotation;
 import net.minecraft.world.entity.item.EntityFallingBlock;
 import net.minecraft.world.level.block.state.IBlockData;
 import net.minecraft.world.phys.Vec3D;
@@ -53,6 +52,8 @@ public class FallingBlockDisguise implements Listener {
 	Plugin plugin;
 	boolean disguised = true;
 	ArrayList<Player> bypassList = new ArrayList<>();
+	Vector playerSpeed;
+	private BukkitRunnable eachTickRun;
 	
 	/**
 	 * Creates a FallingBlockDisguises and start the disguise immediately
@@ -93,39 +94,64 @@ public class FallingBlockDisguise implements Listener {
 				}
 			}
 		});
-		pm.addPacketListener(new PacketAdapter(plugin, ListenerPriority.HIGHEST, PacketType.Play.Server.ENTITY_POSITION_SYNC) {
+//		pm.addPacketListener(new PacketAdapter(plugin, ListenerPriority.HIGHEST, PacketType.Play.Server.ENTITY_POSITION_SYNC) {
+//			@Override
+//			public void onPacketSending(PacketEvent e) {
+//				if(!test) {
+//					int entityId = e.getPacket().getIntegers().getValues().get(0);
+//					if(playerEntityId == entityId && isDisguised() && !bypassList.contains(e.getPlayer())) {
+//						ClientboundEntityPositionSyncPacket pck = (ClientboundEntityPositionSyncPacket) e.getPacket().getHandle();
+//						PositionMoveRotation nmsPos = pck.e();
+////						new ClientboundEntityPositionSyncPacket(entityId, new PositionMoveRotation(nmsPos.a(), new Vec3D(player.getVelocity().getX(), player.getVelocity().getY(), player.getVelocity().getZ()), nmsPos.c(), nmsPos.d()), pck.f());
+////						e.setPacket(new PacketContainer(PacketType.Play.Server.ENTITY_POSITION_SYNC, pck));
+//						Vec3D toSendInstead = new Vec3D((player.isSprinting() ? 0 : player.getVelocity().getX()), 0, (player.isSprinting() ? 0 : player.getVelocity().getZ()));
+//						PositionMoveRotation newNmsPos = new PositionMoveRotation(nmsPos.a(), toSendInstead, nmsPos.c(), nmsPos.d());
+//						ClientboundEntityPositionSyncPacket newPck = new ClientboundEntityPositionSyncPacket(pck.b(), newNmsPos, true);
+//						e.setPacket(PacketContainer.fromPacket(newPck));
+////						System.out.printf("Packet: (%f, %f, %f), ", newPck.e().b().g, newPck.e().b().h, newPck.e().b().i);
+////						System.out.printf("Player: (%f, %f, %f)\n", player.getVelocity().getX(), player.getVelocity().getY(), player.getVelocity().getZ());
+//					}
+//				}
+//			}
+//		});
+//		pm.addPacketListener(new PacketAdapter(plugin, ListenerPriority.HIGHEST, PacketType.Play.Server.ENTITY_VELOCITY) {
+//			@Override
+//			public void onPacketSending(PacketEvent e) {
+//				if(!test) {
+//					int entityId = e.getPacket().getIntegers().getValues().get(0);
+//					if(playerEntityId == entityId && isDisguised() && !bypassList.contains(e.getPlayer())) {
+//						PacketPlayOutEntityVelocity pck = (PacketPlayOutEntityVelocity) e.getPacket().getHandle();
+////						Vec3D vel = pck.e();
+//						Vec3D toSendInstead = new Vec3D((player.isSprinting() ? 0 : player.getVelocity().getX()), 0, (player.isSprinting() ? 0 : player.getVelocity().getZ()));
+//						PacketPlayOutEntityVelocity newPck = new PacketPlayOutEntityVelocity(pck.b(), toSendInstead);
+//						e.setPacket(PacketContainer.fromPacket(newPck));
+////						System.out.printf("Velocity Packet: (%f, %f, %f), ", vel.g, vel.h, vel.i);
+////						System.out.printf("Velocity Player: (%f, %f, %f)\n", player.getVelocity().getX(), player.getVelocity().getY(), player.getVelocity().getZ());
+//					}
+//				}
+//			}
+//		});
+		eachTickRun = new BukkitRunnable() {
+			
 			@Override
-			public void onPacketSending(PacketEvent e) {
-				int entityId = e.getPacket().getIntegers().getValues().get(0);
-				if(playerEntityId == entityId && isDisguised() && !bypassList.contains(e.getPlayer())) {
-					ClientboundEntityPositionSyncPacket pck = (ClientboundEntityPositionSyncPacket) e.getPacket().getHandle();
-					PositionMoveRotation nmsPos = pck.e();
-//					new ClientboundEntityPositionSyncPacket(entityId, new PositionMoveRotation(nmsPos.a(), new Vec3D(player.getVelocity().getX(), player.getVelocity().getY(), player.getVelocity().getZ()), nmsPos.c(), nmsPos.d()), pck.f());
-//					e.setPacket(new PacketContainer(PacketType.Play.Server.ENTITY_POSITION_SYNC, pck));
-					Vec3D toSendInstead = new Vec3D((player.isSprinting() ? 0 : player.getVelocity().getX()), 0, (player.isSprinting() ? 0 : player.getVelocity().getZ()));
-					PositionMoveRotation newNmsPos = new PositionMoveRotation(nmsPos.a(), toSendInstead, nmsPos.c(), nmsPos.d());
-					ClientboundEntityPositionSyncPacket newPck = new ClientboundEntityPositionSyncPacket(pck.b(), newNmsPos, true);
-					e.setPacket(PacketContainer.fromPacket(newPck));
-//					System.out.printf("Packet: (%f, %f, %f), ", newPck.e().b().g, newPck.e().b().h, newPck.e().b().i);
-//					System.out.printf("Player: (%f, %f, %f)\n", player.getVelocity().getX(), player.getVelocity().getY(), player.getVelocity().getZ());
+			public void run() {
+				if(disguised) {
+					if(!player.getVelocity().equals(playerSpeed)) {
+						playerSpeed = player.getVelocity();
+						Vec3D vec = new Vec3D(playerSpeed.getX(), playerSpeed.getY(), playerSpeed.getZ());
+						PacketPlayOutEntityVelocity pck = new PacketPlayOutEntityVelocity(playerEntityId, vec);
+						for(Player P : plugin.getServer().getOnlinePlayers()) {
+							if(!P.equals(player)) {
+								NMSBridge.getPlayerConnection(P).sendPacket(pck);
+							}
+						}
+					}
+				} else {
+					cancel();
 				}
 			}
-		});
-		pm.addPacketListener(new PacketAdapter(plugin, ListenerPriority.HIGHEST, PacketType.Play.Server.ENTITY_VELOCITY) {
-			@Override
-			public void onPacketSending(PacketEvent e) {
-				int entityId = e.getPacket().getIntegers().getValues().get(0);
-				if(playerEntityId == entityId && isDisguised() && !bypassList.contains(e.getPlayer())) {
-					PacketPlayOutEntityVelocity pck = (PacketPlayOutEntityVelocity) e.getPacket().getHandle();
-//					Vec3D vel = pck.e();
-					Vec3D toSendInstead = new Vec3D((player.isSprinting() ? 0 : player.getVelocity().getX()), 0, (player.isSprinting() ? 0 : player.getVelocity().getZ()));
-					PacketPlayOutEntityVelocity newPck = new PacketPlayOutEntityVelocity(pck.b(), toSendInstead);
-					e.setPacket(PacketContainer.fromPacket(newPck));
-//					System.out.printf("Velocity Packet: (%f, %f, %f), ", vel.g, vel.h, vel.i);
-//					System.out.printf("Velocity Player: (%f, %f, %f)\n", player.getVelocity().getX(), player.getVelocity().getY(), player.getVelocity().getZ());
-				}
-			}
-		});
+		};
+		eachTickRun.runTaskTimerAsynchronously(plugin, 0L, 1L);
 	}
 	
 	/**
@@ -137,7 +163,6 @@ public class FallingBlockDisguise implements Listener {
 		if(sendTo.equals(player)) {
 			throw new IllegalArgumentException(String.format("Cannot send a disguise to the disguised player (%s -> %s)", player.getName(), sendTo.getName()));
 		}
-		sendTo.showPlayer(plugin, player);
 		EntityFallingBlock eFallingBlock = EntityFallingBlock.a(((CraftWorld) player.getWorld()).getHandle(), ((CraftBlock) player.getLocation().getBlock()).getPosition(), getIBlockData(hideAs));
 		CraftFallingBlock cFallingBlock = (CraftFallingBlock) eFallingBlock.getBukkitEntity();
 		cFallingBlock.setCancelDrop(true);
@@ -155,6 +180,7 @@ public class FallingBlockDisguise implements Listener {
 		eFallingBlock.discard(Cause.DESPAWN);
 		PacketPlayOutEntityMetadata pck2 = new PacketPlayOutEntityMetadata(player.getEntityId(), dw.c());
 		PlayerConnection con = NMSBridge.getPlayerConnection(sendTo);
+		sendTo.showPlayer(plugin, player);
 		con.sendPacket(pck.getHandle());
 		con.sendPacket(pck2);
 	}
