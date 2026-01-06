@@ -116,9 +116,9 @@ public class GameEngine {
 			
 		}
 		Player firstSeeker = getNewSeeker();
-		if(!queuedSeekers.contains(Bukkit.getPlayer("hctel"))) {
-			while(firstSeeker == Bukkit.getPlayer("hctel")) firstSeeker = getNewSeeker();
-		}
+//		if(!queuedSeekers.contains(Bukkit.getPlayer("hctel"))) {
+//			while(firstSeeker == Bukkit.getPlayer("hctel")) firstSeeker = getNewSeeker();
+//		}
 		hiders.remove(firstSeeker);
 		seekers.add(firstSeeker);
 		
@@ -349,7 +349,7 @@ public class GameEngine {
 			addPoints(player, 30);
 			if(seekerKill) {
 				try {
-					switch(disguises.get(killed).getBlock().getType()) {
+					switch(disguises.get(killed).getHideAs().getType()) {
 					case FURNACE:
 						unlockAch(player, GameAchievement.FURNACE);
 						break;
@@ -633,7 +633,7 @@ public class GameEngine {
 				for(Player P : Bukkit.getOnlinePlayers()) {
 					Hide.bm.sendToServer(P, "HUB01");
 				}
-				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "stop");
+				// Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "stop");
 				try {
 					Hide.stats.saveAll();
 				} catch (SQLException e) {

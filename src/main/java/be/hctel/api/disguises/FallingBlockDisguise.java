@@ -2,6 +2,7 @@ package be.hctel.api.disguises;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -105,8 +106,8 @@ public class FallingBlockDisguise implements Listener {
 					PositionMoveRotation newNmsPos = new PositionMoveRotation(nmsPos.a(), toSendInstead, nmsPos.c(), nmsPos.d());
 					ClientboundEntityPositionSyncPacket newPck = new ClientboundEntityPositionSyncPacket(pck.b(), newNmsPos, true);
 					e.setPacket(PacketContainer.fromPacket(newPck));
-					System.out.printf("Packet: (%f, %f, %f), ", newPck.e().b().g, newPck.e().b().h, newPck.e().b().i);
-					System.out.printf("Player: (%f, %f, %f)\n", player.getVelocity().getX(), player.getVelocity().getY(), player.getVelocity().getZ());
+//					System.out.printf("Packet: (%f, %f, %f), ", newPck.e().b().g, newPck.e().b().h, newPck.e().b().i);
+//					System.out.printf("Player: (%f, %f, %f)\n", player.getVelocity().getX(), player.getVelocity().getY(), player.getVelocity().getZ());
 				}
 			}
 		});
@@ -116,12 +117,12 @@ public class FallingBlockDisguise implements Listener {
 				int entityId = e.getPacket().getIntegers().getValues().get(0);
 				if(playerEntityId == entityId && isDisguised() && !bypassList.contains(e.getPlayer())) {
 					PacketPlayOutEntityVelocity pck = (PacketPlayOutEntityVelocity) e.getPacket().getHandle();
-					Vec3D vel = pck.e();
+//					Vec3D vel = pck.e();
 					Vec3D toSendInstead = new Vec3D((player.isSprinting() ? 0 : player.getVelocity().getX()), 0, (player.isSprinting() ? 0 : player.getVelocity().getZ()));
 					PacketPlayOutEntityVelocity newPck = new PacketPlayOutEntityVelocity(pck.b(), toSendInstead);
 					e.setPacket(PacketContainer.fromPacket(newPck));
-					System.out.printf("Velocity Packet: (%f, %f, %f), ", vel.g, vel.h, vel.i);
-					System.out.printf("Velocity Player: (%f, %f, %f)\n", player.getVelocity().getX(), player.getVelocity().getY(), player.getVelocity().getZ());
+//					System.out.printf("Velocity Packet: (%f, %f, %f), ", vel.g, vel.h, vel.i);
+//					System.out.printf("Velocity Player: (%f, %f, %f)\n", player.getVelocity().getX(), player.getVelocity().getY(), player.getVelocity().getZ());
 				}
 			}
 		});
@@ -136,6 +137,7 @@ public class FallingBlockDisguise implements Listener {
 		if(sendTo.equals(player)) {
 			throw new IllegalArgumentException(String.format("Cannot send a disguise to the disguised player (%s -> %s)", player.getName(), sendTo.getName()));
 		}
+		sendTo.showPlayer(plugin, player);
 		EntityFallingBlock eFallingBlock = EntityFallingBlock.a(((CraftWorld) player.getWorld()).getHandle(), ((CraftBlock) player.getLocation().getBlock()).getPosition(), getIBlockData(hideAs));
 		CraftFallingBlock cFallingBlock = (CraftFallingBlock) eFallingBlock.getBukkitEntity();
 		cFallingBlock.setCancelDrop(true);
@@ -188,6 +190,7 @@ public class FallingBlockDisguise implements Listener {
 	 * @param stayVanished if the player should stay invisible after cancelling the disguise
 	 */
 	public void cancel(boolean stayVanished) {
+		if(!disguised) plugin.getLogger().log(Level.WARNING, "Tried to cancel a disguise while it has already been cancelled.");
 		disguised = false;
 		PacketPlayOutEntityDestroy ed = new PacketPlayOutEntityDestroy(player.getEntityId());
 		AdapterPacketPlayOutSpawnEntity respawnPacket = new AdapterPacketPlayOutSpawnEntity(player);

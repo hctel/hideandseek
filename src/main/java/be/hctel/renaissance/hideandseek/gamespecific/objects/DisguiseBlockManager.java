@@ -28,6 +28,7 @@ public class DisguiseBlockManager {
 	int timeInLocation = 0;
 	int timesWentSolid = 0;
 	public boolean isSolid = false;
+	boolean isDisguise = false;
 	FallingBlockDisguise disguise;
 	public boolean isAlive = true;
 	private boolean sentMessage = false;
@@ -40,7 +41,6 @@ public class DisguiseBlockManager {
 		this.block = block;
 		this.plugin = plugin;
 		this.lastLocation = player.getLocation();
-		player.setPlayerListName(null);
 		startDisguise();
 		run = new BukkitRunnable() {
 			@Override
@@ -57,8 +57,6 @@ public class DisguiseBlockManager {
 		if(isAlive) {
 			if(Utils.locationComparator(player.getLocation(), lastLocation)) timeInLocation++;
 			else timeInLocation = 0;
-			
-			
 			if(timeInLocation == 0 && isSolid) {
 				makeUnsolid();
 			}
@@ -116,37 +114,46 @@ public class DisguiseBlockManager {
 	}
 	
 	private void startDisguise() {
-		if(disguise == null) disguise = new FallingBlockDisguise(plugin, player, block.getType());
-		else disguise.restart();
-	}
-	private void stopDisguise(boolean stayVanished) {
-		disguise.cancel(stayVanished);
-	}
-
-	public void resendDisguise(Player player) {
-		if(!isSolid && !player.equals(this.player)) {
-			disguise.sendTo(player);
+		if(isDisguise) {
+			plugin.getLogger().warning("Tried to start the falling block disguise while it was already started!");
+			return;
 		}
+		disguise = new FallingBlockDisguise(plugin, player, block.getType());
+		System.out.println(disguise);
+		isDisguise = true;
+	}
+	
+	public void stopDisguise(boolean stayVanished) {
+		if(!isDisguise) {
+			plugin.getLogger().warning("Tried to strop the falling block disguise while it was already stopped!");
+			return;
+		}
+		disguise.cancel(stayVanished);
+		isDisguise = false;
 	}
 	
 	public void kill() {
+		disguise.cancel(false);
+		isSolid = false;
 		isAlive = false;
-		stopDisguise(false);
 		run.cancel();
-		for(Player P : Bukkit.getOnlinePlayers()) P.showPlayer(plugin, player);
-		player.setPlayerListName(player.getName());
+		System.out.println("Stopped disguise");
 	}
 	
 	public Block getBlock() {
 		return b;
 	}
 	
-	public boolean isAllowedBlock() {
-		return lastLocation.getBlock().getType().toString().contains("AIR") || lastLocation.getBlock().getType().toString().contains("FENCE") || lastLocation.getBlock().getType().equals(Material.WATER) || lastLocation.getBlock().getType().equals(Material.LAVA);
+	public ItemStack getHideAs() {
+		return block;
 	}
 	
-	public void showTo(Player player) {
-		player.showPlayer(plugin, this.player);
+	public void resendDisguise(Player to) {
+		if(disguise != null && !to.equals(player)) disguise.sendTo(to);
+	}
+	
+	public void showTo(Player to) {
+		if(disguise != null) disguise.cancelFor(to);
 	}
 	
 	public void endGameChecks() {
@@ -155,5 +162,10 @@ public class DisguiseBlockManager {
 		}
 		kill();
 	}
+	
+	public boolean isAllowedBlock() {
+		return lastLocation.getBlock().getType().toString().contains("AIR") || lastLocation.getBlock().getType().toString().contains("FENCE") || lastLocation.getBlock().getType().equals(Material.WATER) || lastLocation.getBlock().getType().equals(Material.LAVA);
+	}
+	
 	
 }

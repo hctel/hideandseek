@@ -1,6 +1,8 @@
 package be.hctel.renaissance.hideandseek.nongame.utils;
 
+
 import java.util.ArrayList;
+import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Difficulty;
@@ -8,10 +10,12 @@ import org.bukkit.GameRule;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.plugin.Plugin;
+import org.mvplugins.multiverse.core.utils.result.Attempt;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.MultiverseWorld;
 import org.mvplugins.multiverse.core.world.options.CloneWorldOptions;
 import org.mvplugins.multiverse.core.world.options.DeleteWorldOptions;
+import org.mvplugins.multiverse.core.world.reasons.DeleteFailureReason;
 
 import be.hctel.renaissance.hideandseek.Hide;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.GameMap;
@@ -74,7 +78,11 @@ public class MapLoader {
 	
 	public void deleteTempWorld() {
 		for(int i = 0; i < 6; i++) {
-			Hide.worldManager.deleteWorld(DeleteWorldOptions.world(Hide.worldManager.getWorld("TEMPWORLD" + i).get()));
+			plugin.getLogger().info(String.format("Deleting TEMPWORLD%d", i));
+			Attempt<String, DeleteFailureReason> result = Hide.worldManager.deleteWorld(DeleteWorldOptions.world(Hide.worldManager.getWorld("TEMPWORLD" + i).get()));
+			if(!result.isSuccess()) {
+				plugin.getLogger().log(Level.WARNING, String.format("Could not delete world: %s (%s)", result.getFailureReason(), result.getFailureMessage().formatted()));
+			}			
 		}
 	}	
 }
