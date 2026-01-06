@@ -119,7 +119,6 @@ public class DisguiseBlockManager {
 			return;
 		}
 		disguise = new FallingBlockDisguise(plugin, player, block.getType());
-		System.out.println(disguise);
 		isDisguise = true;
 	}
 	
@@ -137,7 +136,6 @@ public class DisguiseBlockManager {
 		isSolid = false;
 		isAlive = false;
 		run.cancel();
-		System.out.println("Stopped disguise");
 	}
 	
 	public Block getBlock() {

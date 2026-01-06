@@ -141,6 +141,7 @@ public class PlayerListener implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onDamageByEntity(EntityDamageByEntityEvent e) {
 		if(e.getDamager() instanceof Player && e.getEntity() instanceof Player) {
+			Player damager = (Player) e.getDamager();
 			if(Hide.preGameTimer.gameStarted) {
 				if (Hide.gameEngine.areSameTeam((Player) e.getEntity(), (Player) e.getDamager()) || Hide.gameEngine.isGameFinished) {
 					e.setCancelled(true);
@@ -148,11 +149,21 @@ public class PlayerListener implements Listener {
 				else if(Hide.gameEngine.getTeam((Player) e.getDamager()) == GameTeam.SEEKER) {
 					((Player) e.getEntity()).playSound(e.getDamager().getLocation(), Sound.ENTITY_PLAYER_DEATH, 2.0f, 0.5f);
 					for(Player P : Bukkit.getOnlinePlayers()) P.playSound(e.getDamager().getLocation(), Sound.ENTITY_PLAYER_DEATH, 1.0f, 0.5f);
-					//Player damaged = (Player) e.getEntity();
-					e.setDamage(7);
+					Player i = (Player) e.getEntity();
+					if(i.getHealth() < 7) {
+						if(Hide.preGameTimer.gameStarted) {
+							i.getInventory().clear();
+							i.setHealth(20.0);
+							Hide.gameEngine.addKill(damager, i, Hide.gameEngine.isSeeker(damager));
+						}
+						return;
+					}
+					i.damage(7);
+					return;
 				} 				
-			} else e.setCancelled(true);
-		} else e.setCancelled(true);
+			}
+		}
+		e.setCancelled(true);
 	}
 	
 	@SuppressWarnings("removal")
@@ -168,8 +179,16 @@ public class PlayerListener implements Listener {
 				if(Hide.gameEngine.disguises.get(i).getBlock().equals(b)) {
 					Hide.gameEngine.disguises.get(i).makeUnsolid();
 					onDamageByEntity(new EntityDamageByEntityEvent(p, i, DamageCause.ENTITY_ATTACK, 0));
+					if(i.getHealth() < 7) {
+						if(Hide.preGameTimer.gameStarted) {
+							i.getInventory().clear();
+							i.setHealth(20.0);
+							Hide.gameEngine.addKill(p, (Player) i, Hide.gameEngine.isSeeker(p));
+						}
+						return;
+					}
 					i.damage(7);
-					break;
+					return;
 				}
 			}
 		} else e.setCancelled(true);
@@ -197,10 +216,8 @@ public class PlayerListener implements Listener {
 	@EventHandler
 	public void onDeath(PlayerDeathEvent e) {
 		e.setDeathMessage(null);
-		//e.getEntity().spigot().respawn();
-		if(Hide.preGameTimer.gameStarted) {
-			Hide.gameEngine.addKill(e.getEntity().getKiller(), (Player) e.getEntity(), Hide.gameEngine.isSeeker(e.getEntity().getKiller()));
-		}
+		e.getEntity().spigot().respawn();
+		
 	}
  	
 	@EventHandler

@@ -93,11 +93,8 @@ public class Utils {
 	 * @param item the ItemStack
 	 * @return the formatted name
 	 */
-	@SuppressWarnings("deprecation")
 	public static String getFormattedName(ItemStack item) {
-		if(item.getType() == Material.REDSTONE_BLOCK) return "REDSTONE_BLOCK:0";
-		else if (item.getData().getData() == 0) return item.getType().toString();
-		else return item.getType().toString() + ":" + item.getData().getData();
+		return item.getType().toString();
 	}
 	/**
 	 * Gets the UUID of an online player

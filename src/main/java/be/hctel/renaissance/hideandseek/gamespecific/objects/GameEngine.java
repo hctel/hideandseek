@@ -294,7 +294,7 @@ public class GameEngine {
 	 * Registers a kill
 	 * @param player the killer
 	 * @param killed the {@link Player} that was killed
-	 * @param seekerKill if the kill was made by a seeker; true if {@link killed} was a hider
+	 * @param seekerKill if the kill was made by a seeker; true if killed was a hider
 	 */
 	public void addKill(Player player, Player killed, boolean seekerKill) {
 		killed.spigot().respawn();
