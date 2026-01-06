@@ -39,10 +39,10 @@ public class TauntManager {
 	}
 	public void triggerMenu(InventoryClickEvent e) {
 		ItemStack clicked = e.getCurrentItem();
-		if(clicked.getType().equals(Material.INK_SACK)) {
+		if(clicked.getType().equals(Material.RED_DYE)) {
 			e.getView().close();
 			e.setCancelled(true);
-		} else if(clicked.getType().equals(Material.STAINED_GLASS_PANE)) e.setCancelled(true);
+		} else if(clicked.getType().toString().contains("GLASS_PANE")) e.setCancelled(true);
 		else {
 			TauntType type = TauntType.getByItem(clicked);
 			if(type != null) {
@@ -61,15 +61,13 @@ public class TauntManager {
 	
 	private Inventory buildInventory() {
 		Inventory a = Bukkit.createInventory(null, 45, "Select a Taunt");
-		@SuppressWarnings("deprecation")
-		ItemStack glass = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 0, (byte) 2);
+		ItemStack glass = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
 		ItemMeta m = glass.getItemMeta();
 		m.setDisplayName("");
 		glass.setItemMeta(m);
-		@SuppressWarnings("deprecation")
-		ItemStack cancel = new ItemStack(Material.INK_SACK, 1, (short) 0, (byte) 1);
+		ItemStack cancel = new ItemStack(Material.RED_DYE);
 		m = cancel.getItemMeta();
-		m.setDisplayName("�c�lClose menu");
+		m.setDisplayName("§c§lClose menu");
 		cancel.setItemMeta(m);
 		for(int i = 0; i < 9; i++) {
 			a.setItem(i, glass);

@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -19,17 +18,17 @@ public class UtilsCommands implements CommandExecutor {
 			if(cmd.getName().equalsIgnoreCase("ping")) {
 				Player player = (Player) sender;
 				ArrayList<Integer> pings = new ArrayList<>();
-				player.sendMessage(Hide.header + "§aPong. Calculating your ping. Un momento per favor...");
+				player.sendMessage(Hide.header + "Â§aPong. Calculating your ping. Un momento per favor...");
 				new BukkitRunnable() {
 					@Override
 					public void run() {
-						pings.add(((CraftPlayer) player).getHandle().ping);
+						pings.add(player.getPing());
 						if(pings.size() == 4) {
 							int sum = 0;
 							for(int P : pings) {
 								sum += P;
 							}
-							player.sendMessage(Hide.header + "§aYour ping is " + sum/pings.size() + " ms.");
+							player.sendMessage(Hide.header + "Â§aYour ping is " + sum/pings.size() + " ms.");
 							this.cancel();
 						}
 					}
@@ -38,7 +37,7 @@ public class UtilsCommands implements CommandExecutor {
 			}
 		}
 		if(cmd.getName().equalsIgnoreCase("whereami")) {
-			sender.sendMessage(Hide.header + "§6You are currently playing on §a" + Hide.bm.getServerName());
+			sender.sendMessage(Hide.header + "Â§6You are currently playing on Â§a" + Hide.bm.getServerName());
 		}
 		return true;
 	}

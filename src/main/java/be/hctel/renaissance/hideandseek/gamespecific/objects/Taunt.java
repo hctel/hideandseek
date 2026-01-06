@@ -42,7 +42,7 @@ public class Taunt {
 			player.getWorld().playSound(player.getLocation(), Sound.ENTITY_GHAST_SCREAM, 1.0f, 1.0f);
 			break;
 		case ENDERMAN:
-			player.getWorld().playSound(player.getLocation(), Sound.ENTITY_ENDERMEN_SCREAM, 1.0f, 1.0f);
+			player.getWorld().playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_SCREAM, 1.0f, 1.0f);
 			break;
 		case WATER:
 			player.getWorld().playSound(player.getLocation(), Sound.ENTITY_PLAYER_SPLASH, 1.0f, 0.5f);
@@ -51,7 +51,7 @@ public class Taunt {
 			player.getWorld().playSound(player.getLocation(), Sound.ENTITY_PIG_AMBIENT, 1.0f, 1.0f);
 			break;
 		case DRAGON:
-			player.getWorld().playSound(player.getLocation(), Sound.ENTITY_ENDERDRAGON_GROWL, 1.0f, 1.0f);
+			player.getWorld().playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_GROWL, 1.0f, 1.0f);
 			break;
 		case TNT:
 			player.getWorld().playSound(player.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1.0f, 1.0f);
@@ -69,7 +69,7 @@ public class Taunt {
 			player.getWorld().spawnParticle(Particle.FLAME, player.getLocation().getX(), player.getLocation().getY(), player.getLocation().getZ(), 10, 1.5, 1.5, 1.5);
 			break;
 		case LOVE:
-			player.getWorld().playSound(player.getLocation(), Sound.ENTITY_VILLAGER_TRADING, 1.0f, 1.0f);
+			player.getWorld().playSound(player.getLocation(), Sound.ENTITY_VILLAGER_YES, 1.0f, 1.0f);
 			player.getWorld().spawnParticle(Particle.HEART, player.getLocation().getX(), player.getLocation().getY(), player.getLocation().getZ(), 10, 1.5, 1.5, 1.5);
 			break;
 		case FIREWORKS:
@@ -89,7 +89,7 @@ public class Taunt {
 				e.setInvulnerable(true);
 				Bukkit.getScheduler().scheduleSyncDelayedTask(Hide.plugin, new Runnable() {
 					public void run() {
-						e.getWorld().spawnParticle(Particle.CRIT_MAGIC, e.getLocation(), 5);
+						e.getWorld().spawnParticle(Particle.CRIT, e.getLocation(), 5);
 						e.getWorld().playSound(e.getLocation(), Sound.ENTITY_BAT_DEATH, 1.0f, 1.0f);
 						e.remove();
 					}
@@ -108,7 +108,7 @@ public class Taunt {
 			Bukkit.getScheduler().scheduleSyncDelayedTask(Hide.plugin, new Runnable() {
 				public void run() {
 					e1.getWorld().playSound(e1.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1.0f, 1.0f);
-					e1.getWorld().spawnParticle(Particle.EXPLOSION_HUGE, e1.getLocation(), 1);
+					e1.getWorld().spawnParticle(Particle.EXPLOSION, e1.getLocation(), 1);
 					e1.remove();
 				}
 			}, 60L);
@@ -126,17 +126,17 @@ public class Taunt {
 			Bukkit.getScheduler().scheduleSyncDelayedTask(Hide.plugin, new Runnable() {
 				public void run() {
 					e2.getWorld().playSound(e2.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1.0f, 1.0f);
-					e2.getWorld().spawnParticle(Particle.EXPLOSION_HUGE, e2.getLocation(), 1, 1.5, 1.5, 1.5);
+					e2.getWorld().spawnParticle(Particle.EXPLOSION, e2.getLocation(), 1, 1.5, 1.5, 1.5);
 					e2.remove();
 				}
 			}, 60L);
 			break;
 		case TNT_TOSS:
-			final Entity te1 = player.getWorld().spawnEntity(player.getLocation(),EntityType.PRIMED_TNT);
+			final Entity te1 = player.getWorld().spawnEntity(player.getLocation(),EntityType.TNT);
 			te1.setVelocity(this.a(player.getLocation(), 5));
 			Bukkit.getScheduler().scheduleSyncDelayedTask(Hide.plugin, new Runnable() {
 				public void run() {
-					player.getWorld().spawnParticle(Particle.EXPLOSION_HUGE, te1.getLocation(), 1);
+					player.getWorld().spawnParticle(Particle.EXPLOSION, te1.getLocation(), 1);
 					te1.remove();
 				}
 			}, 5L);

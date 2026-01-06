@@ -9,33 +9,33 @@ import net.md_5.bungee.api.chat.TextComponent;
 
 
 public enum GameRanks {
-	PP_SUK("§e", "u suk <3", -999999, 0),
-	BLIND("§7", "Blind", 0, 100),
-	SHORT_SIGHTED("§3", "Short Sighted", 100, 1000),
-	SNEAKER("§b", "Sneaker", 1000, 2500),
-	SNEAKY("§d", "Sneaky", 2500, 5000),
-	DECEPTIVE("§6", "Deceptive", 5000, 10000),
-	MYSTERIOUS("§e", "Mysterious", 10000, 15000),
-	DISGUISED("§a", "Disguised", 15000, 20000),
-	CAMOUFLAGED("§2", "Camouflaged", 20000, 30000),
-	CHAMELEON("§c", "Chameleon", 30000, 40000),
-	STEALTHY("§b", "Stealthy", 40000, 50000),
-	MASKED("§6","Masked", 50000, 75000),
-	HUNTER("§e", "Hunter", 75000, 100000),
-	MAGICIAN("§d", "Magician", 100000, 150000),
-	ESCAPIST("§3", "Escapist", 150000, 300000),
-	INVISIBLE("§9", "Invisible", 300000, 500000),
-	SHADOW("§5", "Shadow", 500000, 1000000),
-	//LOBBY("§2", "Lobby", 750000, 1000000),
-	HOUDINI("§b§l", "Houdini", 1000000, 1750000),
-	NINJA("§8§l", "Ninja", 1750000, 2500000),
-	WALLY("§c§l", "Wally", 2500000, 4000000),
-	GHOST("§f§l", "Ghost", 4000000, 6000000),
-	SILOUHETTE("§3§l", "Siloihette", 6000000, 8000000),
-	PHANTOM("§5§l", "Phantom", 8000000, 10000000),
-	VANISHED("§1§l", "Vanished", 10000000, 1000000000),
-	MOD("§a§l", "Master §e§lof §b§lDisguise", Integer.MAX_VALUE-1, Integer.MAX_VALUE),
-	CODEBREAKER("§0§l", "Code Breaker", 1000000000, Integer.MAX_VALUE-2);
+	PP_SUK("Â§e", "u suk <3", -999999, 0),
+	BLIND("Â§7", "Blind", 0, 100),
+	SHORT_SIGHTED("Â§3", "Short Sighted", 100, 1000),
+	SNEAKER("Â§b", "Sneaker", 1000, 2500),
+	SNEAKY("Â§d", "Sneaky", 2500, 5000),
+	DECEPTIVE("Â§6", "Deceptive", 5000, 10000),
+	MYSTERIOUS("Â§e", "Mysterious", 10000, 15000),
+	DISGUISED("Â§a", "Disguised", 15000, 20000),
+	CAMOUFLAGED("Â§2", "Camouflaged", 20000, 30000),
+	CHAMELEON("Â§c", "Chameleon", 30000, 40000),
+	STEALTHY("Â§b", "Stealthy", 40000, 50000),
+	MASKED("Â§6","Masked", 50000, 75000),
+	HUNTER("Â§e", "Hunter", 75000, 100000),
+	MAGICIAN("Â§d", "Magician", 100000, 150000),
+	ESCAPIST("Â§3", "Escapist", 150000, 300000),
+	INVISIBLE("Â§9", "Invisible", 300000, 500000),
+	SHADOW("Â§5", "Shadow", 500000, 1000000),
+	//LOBBY("Â§2", "Lobby", 750000, 1000000),
+	HOUDINI("Â§bÂ§l", "Houdini", 1000000, 1750000),
+	NINJA("Â§8Â§l", "Ninja", 1750000, 2500000),
+	WALLY("Â§cÂ§l", "Wally", 2500000, 4000000),
+	GHOST("Â§fÂ§l", "Ghost", 4000000, 6000000),
+	SILOUHETTE("Â§3Â§l", "Siloihette", 6000000, 8000000),
+	PHANTOM("Â§5Â§l", "Phantom", 8000000, 10000000),
+	VANISHED("Â§1Â§l", "Vanished", 10000000, 1000000000),
+	MOD("Â§aÂ§l", "Master Â§eÂ§lof Â§bÂ§lDisguise", Integer.MAX_VALUE-1, Integer.MAX_VALUE),
+	CODEBREAKER("Â§0Â§l", "Code Breaker", 1000000000, Integer.MAX_VALUE-2);
 	
 	
 	private static HashMap<Integer, GameRanks> lookup1 = new HashMap<Integer, GameRanks>();
@@ -70,9 +70,10 @@ public enum GameRanks {
 	public String getName() {
 		return name;
 	}
+	@SuppressWarnings("deprecation")
 	public TextComponent getTextComponent() {
 		TextComponent t = new TextComponent(getChatColor() + getName());
-		t.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(getChatColor() + getName() + "§f[" + getMinPoints() + "-" + getMaxPoints() + "]").create()));
+		t.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(getChatColor() + getName() + "Â§f[" + getMinPoints() + "-" + getMaxPoints() + "]").create()));
 		return t;
 	}	
 	

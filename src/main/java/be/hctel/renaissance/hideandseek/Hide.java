@@ -4,24 +4,17 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.UUID;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.mvplugins.multiverse.core.MultiverseCore;
+import org.mvplugins.multiverse.core.world.WorldManager;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
-import com.mojang.authlib.GameProfile;
-import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.api.MVWorldManager;
 
 import be.hctel.api.bungee.BungeeCordMessenger;
-import be.hctel.api.fakeentities.FakePlayer;
-import be.hctel.api.runnables.ArgumentRunnable;
 import be.hctel.api.signs.Signer;
 import be.hctel.renaissance.cosmetics.CosmeticsManager;
 import be.hctel.renaissance.hideandseek.commands.DevCommands;
@@ -60,7 +53,7 @@ public class Hide extends JavaPlugin {
 	
 	public static Plugin plugin;
 	public static MultiverseCore core;
-	public static MVWorldManager worldManager;
+	public static WorldManager worldManager;
 	public static ProtocolManager protocolLibManager;
 	public static BungeeCordMessenger bm;
 	public static Signer signer;
@@ -81,7 +74,6 @@ public class Hide extends JavaPlugin {
 	public static BlockShop blockShop;
 	public static JoinMessageHandler joinMessageMenu;
 	
-	public static FakePlayer shopPlayer;
 	//Declaring SQL variables
 	
 	private String host, user, database, password;
@@ -96,7 +88,7 @@ public class Hide extends JavaPlugin {
 		//Enables external libraries
 		core = (MultiverseCore) Bukkit.getServer().getPluginManager().getPlugin("Multiverse-Core");
 		protocolLibManager = ProtocolLibrary.getProtocolManager();
-		worldManager = core.getMVWorldManager();
+		worldManager = core.getApi().getWorldManager();
 		
 		//Starts SQL connection
 		loadSQLCred();
@@ -116,21 +108,9 @@ public class Hide extends JavaPlugin {
 		joinMessageMenu = new JoinMessageHandler(this);
 		signer = new Signer(this);
 		
-		//Speaks bby itself
+		//Speaks by itself
 		registerListeners();
 		loadCommands();
-		shopPlayer = new FakePlayer(((CraftWorld) Bukkit.getWorld("HIDE_Lobby")).getHandle(), new GameProfile(UUID.fromString("fef039ef-e6cd-4987-9c84-26a3e6134277"), "§eShop"), new Location(Bukkit.getWorld("HIDE_Lobby"), -82.5, 90.01, 65.5, -135.0f, 0.0f), plugin);
-		//shopPlayer.setSkin(UUID.fromString("5a7e8a16-e191-4fb8-8c92-869434202089"));
-		shopPlayer.setSkin("https://namemc.com/texture/212dd1d9cafbb877.png");
-		shopPlayer.setOnRightClickTask(new ArgumentRunnable() {
-			@Override
-			public void run(Object o) {
-				if(o instanceof String) {
-					Player p = Bukkit.getPlayer((String) o);
-					blockShop.openInventory(p);
-				}
-			}
-		});
 		isServerStarting = false;
 		try {
 			con.createStatement().execute("UPDATE servers SET status = 'UP' WHERE name = '" + bm.getServerName() + "';");

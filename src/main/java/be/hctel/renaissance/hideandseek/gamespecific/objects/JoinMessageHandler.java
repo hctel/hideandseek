@@ -37,17 +37,17 @@ public class JoinMessageHandler {
 			lore.add(Hide.rankManager.getRankColor(player) + player.getName() + M.getMessage());
 			lore.add("");
 			if(owned.get(player).contains(M)) {
-				lore.add("§a§lYou already own this item.");
-				lore.add("§eClick to select");
+				lore.add("Â§aÂ§lYou already own this item.");
+				lore.add("Â§eClick to select");
 				if(Hide.stats.getJoinMessageIndex(player) == M.getStorageCode()) {
-					inv.addItem(getSimpflifiedItem(Material.EMERALD, true, "§b" + M.getMenuName() + " §a§l(SELECTED)", lore));
+					inv.addItem(getSimpflifiedItem(Material.EMERALD, true, "Â§b" + M.getMenuName() + " Â§aÂ§l(SELECTED)", lore));
 				} else {
-					inv.addItem(getSimpflifiedItem(Material.EMERALD, false, "§b" + M.getMenuName(), lore));
+					inv.addItem(getSimpflifiedItem(Material.EMERALD, false, "Â§b" + M.getMenuName(), lore));
 				}
 			} else {
-				lore.add("§7Click to buy this join message!");
+				lore.add("Â§7Click to buy this join message!");
 				lore.add("");
-				lore.add("§bPrice: §a" + "§b" + M.getPrice() + " Tokens");
+				lore.add("Â§bPrice: Â§a" + "Â§b" + M.getPrice() + " Tokens");
 				inv.addItem(getSimpflifiedItem(Material.COAL, false, M.getMenuName(), lore));
 			}
 		}
@@ -61,15 +61,15 @@ public class JoinMessageHandler {
 			JoinMessages m = JoinMessages.getFromStorageCode(e.getRawSlot());
 			if(item.getType() == Material.COAL) {
 				if(m.getPrice() > Hide.cosmeticManager.getTokens(p)) {
-					p.sendMessage(Hide.header + "§cYou don't have enough tokens to buy this join message.");
-					p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BASS, 1.0f, 0.5f);
+					p.sendMessage(Hide.header + "Â§cYou don't have enough tokens to buy this join message.");
+					p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1.0f, 0.5f);
 					e.setCancelled(true);
 					return;
 				} else {
 					owned.get(p).add(m);
 					Hide.stats.unlockJoinMessage(p, m);
 					Hide.cosmeticManager.addTokens(p, -m.getPrice());
-					p.sendMessage(Hide.header + "§aYou bought the " + m.getMenuName() + " join message!");
+					p.sendMessage(Hide.header + "Â§aYou bought the " + m.getMenuName() + " join message!");
 					p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 0.975f);
 					e.setCancelled(true);
 					p.closeInventory();
@@ -77,15 +77,15 @@ public class JoinMessageHandler {
 				}
 			} else if(item.getType() == Material.EMERALD) {
 				Hide.stats.setJoinMessage(p, m);
-				p.sendMessage(Hide.header + "§aSet your join message to " + Hide.rankManager.getRankColor(p) + p.getName() + m.getMessage() + "§a!");
+				p.sendMessage(Hide.header + "Â§aSet your join message to " + Hide.rankManager.getRankColor(p) + p.getName() + m.getMessage() + "Â§a!");
 				p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0f, 0.975f);
 				e.setCancelled(true);
 				p.closeInventory();
 				return;
 			}
 		} else {
-			p.sendMessage(Hide.header + "§cYou can't select this join message as it's already selected.");
-			p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BASS, 1.0f, 0.5f);
+			p.sendMessage(Hide.header + "Â§cYou can't select this join message as it's already selected.");
+			p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1.0f, 0.5f);
 			e.setCancelled(true);
 			return;
 		}

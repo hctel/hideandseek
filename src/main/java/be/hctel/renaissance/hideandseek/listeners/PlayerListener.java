@@ -28,9 +28,8 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
-import be.hctel.api.books.FakeBook;
 import be.hctel.renaissance.hideandseek.Hide;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.GameRanks;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.GameTeam;
@@ -50,7 +49,7 @@ public class PlayerListener implements Listener {
 		reportBug.addExtra(end);
 	}
 	
-	private static ItemStack rulesBook = new FakeBook("§b§lRules §7§l& §e§lInfo", "§d§lHide and Seek\n§7-=-=-=-=-=-=-=-=-\n\n§c§lRules\n\n§81: Do not cheat\n§82: Do not glitch\n§83: Clean chat\n§84: Respect others\n\n§8Full rules are\n§8available at hctel.net").getItemStack();	
+	// private static ItemStack rulesBook = new FakeBook("§b§lRules §7§l& §e§lInfo", "§d§lHide and Seek\n§7-=-=-=-=-=-=-=-=-\n\n§c§lRules\n\n§81: Do not cheat\n§82: Do not glitch\n§83: Clean chat\n§84: Respect others\n\n§8Full rules are\n§8available at hctel.net").getItemStack();	
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onLogin(PlayerLoginEvent a) {
@@ -99,17 +98,21 @@ public class PlayerListener implements Listener {
 		if(!Hide.preGameTimer.gameStarted) Hide.votesHandler.sendMapChoices(p);
 		Utils.sendHeaderFooter(p, "\n§6Renaissance §eProject\n§fBringing back good memories\n", "\n§aPlaying in §bHide §aAnd §eSeek.\n");
 		Hide.preGameTimer.loadPlayer(p);
-		Hide.shopPlayer.spawnFor(p);
 		p.sendMessage("");
 		p.sendMessage("");
 		Utils.sendCenteredMessage(e.getPlayer(), "§6Welcome on the HnS Alpha release v1!");
 		e.getPlayer().spigot().sendMessage(reportBug);
 		if(!Hide.preGameTimer.gameStarted) {
-			p.getInventory().setItem(0, rulesBook);
-			p.getInventory().setItem(1, Utils.createQuickItemStack(Material.DIAMOND, (short) 0, "§6§lView Vote Menu"));
-			p.getInventory().setItem(2, Utils.createQuickItemStack(Material.BOOK, (short) 0, "§r§lSeeker kill records"));
-			p.getInventory().setItem(7, Utils.createQuickItemStack(Material.REDSTONE_COMPARATOR, (short) 0, "§b§lJoin messages"));
-			p.getInventory().setItem(8, Utils.createQuickItemStack(Material.SLIME_BALL, (short) 0, "§c§lReturn to Hub"));
+			new BukkitRunnable() {
+				@Override
+				public void run() {
+					//p.getInventory().setItem(0, rulesBook);
+					p.getInventory().setItem(1, Utils.createQuickItemStack(Material.DIAMOND, (short) 0, "§6§lView Vote Menu"));
+					p.getInventory().setItem(2, Utils.createQuickItemStack(Material.BOOK, (short) 0, "§r§lSeeker kill records"));
+					p.getInventory().setItem(7, Utils.createQuickItemStack(Material.COMPARATOR, (short) 0, "§b§lJoin messages"));
+					p.getInventory().setItem(8, Utils.createQuickItemStack(Material.SLIME_BALL, (short) 0, "§c§lReturn to Hub"));
+				}
+			}.runTaskLater(Hide.plugin, 1L);
 		}
 		p.setPlayerListName(Hide.rankManager.getRankColor(p) + p.getName());
 	
@@ -138,6 +141,7 @@ public class PlayerListener implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onDamageByEntity(EntityDamageByEntityEvent e) {
 		if(e.getDamager() instanceof Player && e.getEntity() instanceof Player) {
+			Player damager = (Player) e.getDamager();
 			if(Hide.preGameTimer.gameStarted) {
 				if (Hide.gameEngine.areSameTeam((Player) e.getEntity(), (Player) e.getDamager()) || Hide.gameEngine.isGameFinished) {
 					e.setCancelled(true);
@@ -145,14 +149,24 @@ public class PlayerListener implements Listener {
 				else if(Hide.gameEngine.getTeam((Player) e.getDamager()) == GameTeam.SEEKER) {
 					((Player) e.getEntity()).playSound(e.getDamager().getLocation(), Sound.ENTITY_PLAYER_DEATH, 2.0f, 0.5f);
 					for(Player P : Bukkit.getOnlinePlayers()) P.playSound(e.getDamager().getLocation(), Sound.ENTITY_PLAYER_DEATH, 1.0f, 0.5f);
-					//Player damaged = (Player) e.getEntity();
-					e.setDamage(7);
+					Player i = (Player) e.getEntity();
+					if(i.getHealth() < 7) {
+						if(Hide.preGameTimer.gameStarted) {
+							i.getInventory().clear();
+							i.setHealth(20.0);
+							Hide.gameEngine.addKill(damager, i, Hide.gameEngine.isSeeker(damager));
+						}
+						return;
+					}
+					i.damage(7);
+					return;
 				} 				
-			} else e.setCancelled(true);
-		} else e.setCancelled(true);
+			}
+		}
+		e.setCancelled(true);
 	}
 	
-	@SuppressWarnings("deprecation")
+	@SuppressWarnings("removal")
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onBlockDamage(BlockDamageEvent e) {
 		Player p = e.getPlayer();
@@ -165,8 +179,16 @@ public class PlayerListener implements Listener {
 				if(Hide.gameEngine.disguises.get(i).getBlock().equals(b)) {
 					Hide.gameEngine.disguises.get(i).makeUnsolid();
 					onDamageByEntity(new EntityDamageByEntityEvent(p, i, DamageCause.ENTITY_ATTACK, 0));
+					if(i.getHealth() < 7) {
+						if(Hide.preGameTimer.gameStarted) {
+							i.getInventory().clear();
+							i.setHealth(20.0);
+							Hide.gameEngine.addKill(p, (Player) i, Hide.gameEngine.isSeeker(p));
+						}
+						return;
+					}
 					i.damage(7);
-					break;
+					return;
 				}
 			}
 		} else e.setCancelled(true);
@@ -194,10 +216,8 @@ public class PlayerListener implements Listener {
 	@EventHandler
 	public void onDeath(PlayerDeathEvent e) {
 		e.setDeathMessage(null);
-		//e.getEntity().spigot().respawn();
-		if(Hide.preGameTimer.gameStarted) {
-			Hide.gameEngine.addKill(e.getEntity().getKiller(), (Player) e.getEntity(), Hide.gameEngine.isSeeker(e.getEntity().getKiller()));
-		}
+		e.getEntity().spigot().respawn();
+		
 	}
  	
 	@EventHandler

@@ -14,7 +14,7 @@ public class SignCommands implements CommandExecutor {
 		if(sender instanceof Player) {
 			Player player = (Player) sender;
 			if(args.length < 1) {
-				player.sendMessage(Hide.header + "§cIncorrect command syntax!");
+				player.sendMessage(Hide.header + "Â§cIncorrect command syntax!");
 			} else {
 				StringBuilder brc = new StringBuilder();
 				for(String part : args) {

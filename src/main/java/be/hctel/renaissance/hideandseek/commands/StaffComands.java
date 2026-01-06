@@ -1,7 +1,5 @@
 package be.hctel.renaissance.hideandseek.commands;
 
-import java.io.InputStreamReader;
-import java.net.URL;
 import java.sql.SQLException;
 
 import org.bukkit.Bukkit;
@@ -9,21 +7,12 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
-
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.properties.Property;
 
 import be.hctel.renaissance.hideandseek.Hide;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.GameMap;
 import be.hctel.renaissance.hideandseek.nongame.utils.ChatMessages;
-import be.hctel.renaissance.hideandseek.nongame.utils.KADetector;
 import be.hctel.renaissance.hideandseek.nongame.utils.Utils;
-import net.minecraft.server.v1_12_R1.EntityPlayer;
 
 public class StaffComands implements CommandExecutor {
 	@Override
@@ -122,39 +111,10 @@ public class StaffComands implements CommandExecutor {
 					}
 				}
 				else if(cmd.getName().equalsIgnoreCase("getskin")) {
-					try {
-			            URL url = new URL("https://api.mojang.com/users/profiles/minecraft/" + player.getName());
-			            InputStreamReader reader = new InputStreamReader(url.openStream());
-			            String uuid = new JsonParser().parse(reader).getAsJsonObject().get("id").getAsString();
-
-			            URL url2 = new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid + "?unsigned=false");
-			            InputStreamReader reader2 = new InputStreamReader(url2.openStream());
-			            JsonObject property = new JsonParser().parse(reader2).getAsJsonObject().get("properties").getAsJsonArray().get(0).getAsJsonObject();
-			            String texture = property.get("value").getAsString();
-			            String signature = property.get("signature").getAsString();
-			            player.sendRawMessage("Skin Data inside console");
-			            Hide.plugin.getLogger().info("Skin data: " + texture + " signature: " + signature);
-			            
-			        } catch (Exception e) {
-			            EntityPlayer p = ((CraftPlayer) player).getHandle();
-			            GameProfile profile = p.getBukkitEntity().getProfile();
-			            Property property = profile.getProperties().get("textures").iterator().next();
-			            String texture = property.getValue();
-			            String signature = property.getSignature();
-			            Hide.plugin.getLogger().info("Skin data: " + texture + " signature: " + signature);
-			        }
-					return true;
+					return false;
 				}
 				else if(cmd.getName().equalsIgnoreCase("katest")) {
-					KADetector t = new KADetector(Bukkit.getPlayer(args[0]), Hide.plugin);
-					t.spawnAndDespawnPlayers();
-					player.sendMessage("§aRunning KATest on" + args[0]);
-					new BukkitRunnable() {
-						@Override
-						public void run() {
-							player.sendMessage("§aDetected hits: " + t.getPunchedEntities());
-						}
-					}.runTaskLater(Hide.plugin, 15L);
+					return false;
 				} else if(cmd.getName().equalsIgnoreCase("showhiders")) {
 					if(Hide.preGameTimer.gameStarted) {
 						Hide.gameEngine.showHiders(player);

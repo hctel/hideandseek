@@ -68,6 +68,7 @@ public class VotesHandler {
 		}.runTask(plugin);
 	}
 	
+	@SuppressWarnings("deprecation")
 	public void sendMapChoices() {
 		for(int i = 0; i < 5; i++) {
 			TextComponent message = new TextComponent(Hide.header + "§7§l" + (i+1) + ". §6" + currentGameMaps.get(i).getMapName() + getVoteAmountString(currentGameMaps.get(i)));
@@ -85,6 +86,7 @@ public class VotesHandler {
 			p.spigot().sendMessage(message);
 		}
 	}
+	@SuppressWarnings("deprecation")
 	public void sendMapChoices(Player player) {
 		player.sendMessage(Hide.header + "§e§lVote for a map! §7Use §f/v # §7or click.");
 		for(int i = 0; i < 5; i++) {
@@ -149,7 +151,7 @@ public class VotesHandler {
 				int index = 0;
 				max = Collections.max(votes.entrySet(), Comparator.comparingInt(Map.Entry::getValue)).getKey();
 				for(GameMap M : currentGameMaps) {
-					short lightData = (short) (M == max ? 5 : 0);
+					Material lightData = (M == max ? Material.LIME_STAINED_GLASS_PANE : Material.WHITE_STAINED_GLASS_PANE);
 					String mapName = "§r" + M.getMapName();
 					int mapVotes = votes.get(M);
 					double ratio = 0;
@@ -162,16 +164,16 @@ public class VotesHandler {
 					inv.setItem(index*9, Utils.createQuickItemStack(Material.MAP, (short) 1, mapName, "", "§7Vote for this option!", "", String.format("§6§l%d %s §7[%d%%]", mapVotes, (mapVotes == 1 ? "Vote" : "Votes"), percent), "", "§b▸ Click to Vote"));
 					if(playerVote.containsKey(player)) {
 						if(playerVote.get(player) == index) {
-							for(int i = 0; i < lightGlasses; i++) inv.setItem((index*9)+i+1, Utils.createQuickItemStack(Material.STAINED_GLASS_PANE, lightData, true, mapName, "", "§7Vote for this option!", "", String.format("§6§l%d %s §7[%d%%]", mapVotes, (mapVotes == 1 ? "Vote" : "Votes"), percent), "", "§b▸ Click to Vote"));
-							for(int i = 0; i < grayGlasses; i++) inv.setItem((index*9)+i+grayOffset, Utils.createQuickItemStack(Material.STAINED_GLASS_PANE, (short) 15, true, mapName, "", "§7Vote for this option!", "", String.format("§6§l%d %s §7[%d%%]", mapVotes, (mapVotes == 1 ? "Vote" : "Votes"), percent), "", "§b▸ Click to Vote"));
+							for(int i = 0; i < lightGlasses; i++) inv.setItem((index*9)+i+1, Utils.createQuickItemStack(lightData, true, mapName, "", "§7Vote for this option!", "", String.format("§6§l%d %s §7[%d%%]", mapVotes, (mapVotes == 1 ? "Vote" : "Votes"), percent), "", "§b▸ Click to Vote"));
+							for(int i = 0; i < grayGlasses; i++) inv.setItem((index*9)+i+grayOffset, Utils.createQuickItemStack(Material.GRAY_STAINED_GLASS_PANE, true, mapName, "", "§7Vote for this option!", "", String.format("§6§l%d %s §7[%d%%]", mapVotes, (mapVotes == 1 ? "Vote" : "Votes"), percent), "", "§b▸ Click to Vote"));
 						} else {
-							for(int i = 0; i < lightGlasses; i++) inv.setItem((index*9)+i+1, Utils.createQuickItemStack(Material.STAINED_GLASS_PANE, lightData, mapName, "", "§7Vote for this option!", "", String.format("§6§l%d %s §7[%d%%]", mapVotes, (mapVotes == 1 ? "Vote" : "Votes"), percent), "", "§b▸ Click to Vote"));
-							for(int i = 0; i < grayGlasses; i++) inv.setItem((index*9)+i+grayOffset, Utils.createQuickItemStack(Material.STAINED_GLASS_PANE, (short) 15, mapName, "", "§7Vote for this option!", "", String.format("§6§l%d %s §7[%d%%]", mapVotes, (mapVotes == 1 ? "Vote" : "Votes"), percent), "", "§b▸ Click to Vote"));
+							for(int i = 0; i < lightGlasses; i++) inv.setItem((index*9)+i+1, Utils.createQuickItemStack(lightData, false, mapName, "", "§7Vote for this option!", "", String.format("§6§l%d %s §7[%d%%]", mapVotes, (mapVotes == 1 ? "Vote" : "Votes"), percent), "", "§b▸ Click to Vote"));
+							for(int i = 0; i < grayGlasses; i++) inv.setItem((index*9)+i+grayOffset, Utils.createQuickItemStack(Material.GRAY_STAINED_GLASS_PANE, false, mapName, "", "§7Vote for this option!", "", String.format("§6§l%d %s §7[%d%%]", mapVotes, (mapVotes == 1 ? "Vote" : "Votes"), percent), "", "§b▸ Click to Vote"));
 						}
 					}
 					else {
-						for(int i = 0; i < lightGlasses; i++) inv.setItem((index*9)+i+1, Utils.createQuickItemStack(Material.STAINED_GLASS_PANE, lightData, mapName, "", "§7Vote for this option!", "", String.format("§6§l%d %s §7[%d%%]", mapVotes, (mapVotes == 1 ? "Vote" : "Votes"), percent), "", "§b▸ Click to Vote"));
-						for(int i = 0; i < grayGlasses; i++) inv.setItem((index*9)+i+grayOffset, Utils.createQuickItemStack(Material.STAINED_GLASS_PANE, (short) 15, mapName, "", "§7Vote for this option!", "", String.format("§6§l%d %s §7[%d%%]", mapVotes, (mapVotes == 1 ? "Vote" : "Votes"), percent), "", "§b▸ Click to Vote"));
+						for(int i = 0; i < lightGlasses; i++) inv.setItem((index*9)+i+1, Utils.createQuickItemStack(lightData, false, mapName, "", "§7Vote for this option!", "", String.format("§6§l%d %s §7[%d%%]", mapVotes, (mapVotes == 1 ? "Vote" : "Votes"), percent), "", "§b▸ Click to Vote"));
+						for(int i = 0; i < grayGlasses; i++) inv.setItem((index*9)+i+grayOffset, Utils.createQuickItemStack(Material.GRAY_STAINED_GLASS_PANE, false, mapName, "", "§7Vote for this option!", "", String.format("§6§l%d %s §7[%d%%]", mapVotes, (mapVotes == 1 ? "Vote" : "Votes"), percent), "", "§b▸ Click to Vote"));
 					}
 					
 					index++;
