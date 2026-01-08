@@ -256,15 +256,83 @@ public class Stats {
 		else {
 			ArrayList<Material> out = new ArrayList<Material>();
 			String[] l = json.getString("blocks").split(",");
+			boolean mustUpdate = false;
 			for(String f : l) {
 				if(f != "") {
+					Material detected = Material.matchMaterial(f);
+					if(detected == null) {
+						mustUpdate = true;
+						switch(Integer.parseInt(f)) {
+							case 18:
+								detected = Material.OAK_LEAVES;
+								break;
+							case 49:
+								detected = Material.OBSIDIAN;
+								break;
+							case 152:
+								detected = Material.REDSTONE_BLOCK;
+								break;
+							case 79:
+								detected = Material.ICE;
+								break;
+							case 86:
+								detected = Material.PUMPKIN;
+								break;
+							case 42:
+								detected = Material.IRON_BLOCK;
+								break;
+							case 46:
+								detected = Material.TNT;
+								break;
+							case 22:
+								detected = Material.LAPIS_BLOCK;
+								break;
+							case 153:
+								detected = Material.NETHER_QUARTZ_ORE;
+								break;
+							case 73:
+								detected = Material.REDSTONE_ORE;
+								break;
+							case 88:
+								detected = Material.SOUL_SAND;
+								break;
+							case 91:
+								detected = Material.JACK_O_LANTERN;
+								break;
+							case 84:
+								detected = Material.JUKEBOX;
+								break;
+							case 47:
+								detected = Material.BOOKSHELF;
+								break;
+							case 103:
+								detected = Material.MELON;
+								break;
+							case 123:
+								detected = Material.REDSTONE_LAMP;
+								break;
+							case 120:
+								detected = Material.END_PORTAL_FRAME;
+								break;
+							case 116:
+								detected = Material.ENCHANTING_TABLE;
+								break;
+							case 57:
+								detected = Material.DIAMOND_BLOCK;
+								break;
+							case 133:
+								detected = Material.EMERALD_BLOCK;
+								break;
+						}
+					}
 					try {
-					out.add(Material.matchMaterial(f));
+						out.add(Material.matchMaterial(f));
 					} catch (NumberFormatException e) {
 						System.out.println("bad number detected. Ignored.");
 					}
 				}
 			}
+			if(mustUpdate) updateUnlockedBlocks(player, out);
 			return out;
 		}
 	}
@@ -461,6 +529,17 @@ public class Stats {
 			String newValue = oldValue + "," + block.getType().toString();
 			json.put("blocks", newValue);
 		}
+	}
+	private void updateUnlockedBlocks(OfflinePlayer player, ArrayList<Material> blocks) {
+		String out = "";
+		for(Material M : blocks) {
+			out += M + ",";
+		}
+		if(out.endsWith(",")) {
+			out.substring(0, out.length()-1);
+		}
+		JSONObject json = jsonList.get(Utils.getUUID(player));
+		json.put("blocks", out);
 	}
 	public void addBlockExperience(OfflinePlayer player, int toAdd, ItemStack block) {
 		setBlockExperience(player, getRawBlockExperience(player, block)+toAdd, block);
