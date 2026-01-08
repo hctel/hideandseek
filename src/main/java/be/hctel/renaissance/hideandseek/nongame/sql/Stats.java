@@ -258,7 +258,7 @@ public class Stats {
 			String[] l = json.getString("blocks").split(",");
 			boolean mustUpdate = false;
 			for(String f : l) {
-				if(f != "") {
+				if(f != "" && f != null) {
 					Material detected = Material.matchMaterial(f);
 					if(detected == null) {
 						mustUpdate = true;
@@ -325,12 +325,11 @@ public class Stats {
 								break;
 						}
 					}
-					try {
-						out.add(Material.matchMaterial(f));
-					} catch (NumberFormatException e) {
-						System.out.println("bad number detected. Ignored.");
-					}
+					out.add(detected);
 				}
+			}
+			if(out.contains(null)) {
+				mustUpdate = false;
 			}
 			if(mustUpdate) updateUnlockedBlocks(player, out);
 			return out;
