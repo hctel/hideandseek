@@ -133,7 +133,8 @@ public class Taunt {
 			break;
 		case TNT_TOSS:
 			final Entity te1 = player.getWorld().spawnEntity(player.getLocation(),EntityType.TNT);
-			te1.setVelocity(this.a(player.getLocation(), 5));
+			te1.teleport(te1.getLocation().add(0, 1, 0));
+			te1.setVelocity(getLaunchVector(player.getLocation(), 5));
 			Bukkit.getScheduler().scheduleSyncDelayedTask(Hide.plugin, new Runnable() {
 				public void run() {
 					player.getWorld().spawnParticle(Particle.EXPLOSION, te1.getLocation(), 1);
@@ -147,7 +148,7 @@ public class Taunt {
 		return type.getCooldown();
 	}
 	
-	private Vector a(Location loc, int multiplier) {
+	private Vector getLaunchVector(Location loc, int multiplier) {
 		Vector initial = loc.getDirection();
 		return new Vector(initial.getX()*multiplier, initial.getY()*multiplier, initial.getZ()*multiplier);
 	}
