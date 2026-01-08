@@ -128,8 +128,7 @@ public enum GameMap {
 			toAdd.add(a);
 			ItemStack b = new ItemStack(Material.FLOWER_POT);
 			toAdd.add(b);
-			@SuppressWarnings("deprecation")
-			ItemStack c = new ItemStack(Material.PISTON, 1, (short) 0, (byte) 1);
+			ItemStack c = new ItemStack(Material.PISTON);
 			toAdd.add(c);
 			ItemStack d = new ItemStack(Material.CRAFTING_TABLE);
 			toAdd.add(d);
