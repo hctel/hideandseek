@@ -1,6 +1,5 @@
 package be.hctel.renaissance.hideandseek.listeners;
 
-import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntitySpawnEvent;
@@ -21,6 +20,19 @@ public class MiscListeners implements Listener {
 	
 	@EventHandler
 	public void onEntitySpawn(EntitySpawnEvent e) {
-		if(e.getEntityType() != EntityType.ITEM && e.getEntityType() != EntityType.FALLING_BLOCK && e.getEntityType() != EntityType.SHEEP && e.getEntityType() != EntityType.CREEPER && e.getEntityType() != EntityType.BAT) e.setCancelled(true);
+		switch(e.getEntityType()) {
+		case FALLING_BLOCK:
+		case SHEEP:
+		case CREEPER:
+		case BAT:
+		case TNT:
+		case EGG:
+		case FIREWORK_ROCKET:
+		case SPLASH_POTION:
+			break;
+		default:
+			e.setCancelled(true);
+			break;
+		}
 	}
 }
