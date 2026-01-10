@@ -103,4 +103,10 @@ public class TauntManager {
 			}
 		}
 	}
+	
+	
+	public int getCooldown(Player player) {
+		if(!nextTaunt.containsKey(player)) return -1;
+		return Math.max(0, seconds - nextTaunt.get(player));
+	}
 }

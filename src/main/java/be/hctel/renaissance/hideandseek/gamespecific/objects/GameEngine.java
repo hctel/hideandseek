@@ -92,20 +92,21 @@ public class GameEngine {
 			points.put(p,0);
 			deaths.put(p, 0);
 			sidebars.put(p, new DynamicScoreboard(Utils.randomString(16), "§b§lHide§a§lAnd§e§lSeek", Bukkit.getScoreboardManager()));
-			sidebars.get(p).setLine(14, "§e§lTime left");
-			sidebars.get(p).setLine(13, "§8Waiting...");
-			sidebars.get(p).setLine(12, "     ");
-			sidebars.get(p).setLine(11, "§bHiders");
-			sidebars.get(p).setLine(10, "§8Waiting...");
-			sidebars.get(p).setLine(9, "      ");
-			sidebars.get(p).setLine(8, "§aSeekers");
-			sidebars.get(p).setLine(7, "§8Waiting...");
-			sidebars.get(p).setLine(6, "       ");
-			sidebars.get(p).setLine(5, "§7Points: §f0");
-			sidebars.get(p).setLine(4, "§7Kills: §f0");
-			sidebars.get(p).setLine(3, "    ");
-			sidebars.get(p).setLine(2, "§7§m-------------------");
-			sidebars.get(p).setLine(1, "§bhctel§f.§anet         ");
+			sidebars.get(p).setLine(15, "§e§lTime left");
+			sidebars.get(p).setLine(14, "§8Waiting...");
+			sidebars.get(p).setLine(13, "     ");
+			sidebars.get(p).setLine(12, "§bHiders");
+			sidebars.get(p).setLine(11, "§8Waiting...");
+			sidebars.get(p).setLine(10, "      ");
+			sidebars.get(p).setLine(9, "§aSeekers");
+			sidebars.get(p).setLine(8, "§8Waiting...");
+			sidebars.get(p).setLine(7, "       ");
+			sidebars.get(p).setLine(6, "§7Points: §f0");
+			sidebars.get(p).setLine(5, "§7Kills: §f0");
+			sidebars.get(p).setLine(4, "    ");
+			sidebars.get(p).setLine(3, "   ");
+			sidebars.get(p).setLine(2, "§8§m          ");
+			sidebars.get(p).setLine(1, "§bhctel§f.§anet    ");
 			sidebars.get(p).addReceiver(p);
 			Utils.sendActionBarMessage(p, "");
 			Hide.stats.addGame(p);
@@ -183,6 +184,7 @@ public class GameEngine {
 							Bukkit.broadcastMessage(Hide.header + "§c§lReady or not, here they come!");
 							for(Player p : hiders) {
 								p.playSound(p.getLocation(), Sound.ENTITY_ENDER_DRAGON_GROWL, 1.0f, 1.0f);
+								p.setGameMode(GameMode.ADVENTURE);
 							}
 							for(Player p : seekers) {
 								p.teleport(hiderSpawn);
@@ -219,19 +221,21 @@ public class GameEngine {
 						}
 						if(warmup) {
 							for(Player p : sidebars.keySet()) {
-								sidebars.get(p).setLine(13, Utils.formatSeconds(timer-300));
-								sidebars.get(p).setLine(10, hiders.size() + " ");
-								sidebars.get(p).setLine(7, seekers.size() + "");
-								sidebars.get(p).setLine(5, "§7Points: §f" + points.get(p));
-								sidebars.get(p).setLine(4, "§7Kills: §f" + (seekerKills.get(p) + hiderKills.get(p)));
+								sidebars.get(p).setLine(14, Utils.formatSeconds(timer-300));
+								sidebars.get(p).setLine(11, hiders.size() + " ");
+								sidebars.get(p).setLine(8, seekers.size() + "");
+								sidebars.get(p).setLine(6, "§7Points: §f" + points.get(p));
+								sidebars.get(p).setLine(5, "§7Kills: §f" + (seekerKills.get(p) + hiderKills.get(p)));
+								sidebars.get(p).setLine(3, "   ");
 							}
 						} else {
 							for(Player p : sidebars.keySet()) {
-								sidebars.get(p).setLine(13, Utils.formatSeconds(timer));
-								sidebars.get(p).setLine(10, hiders.size() + " ");
-								sidebars.get(p).setLine(7, seekers.size() + "");
-								sidebars.get(p).setLine(5, "§7Points: §f" + points.get(p));
-								sidebars.get(p).setLine(4, "§7Kills: §f" + (seekerKills.get(p) + hiderKills.get(p)));
+								sidebars.get(p).setLine(14, Utils.formatSeconds(timer));
+								sidebars.get(p).setLine(11, hiders.size() + " ");
+								sidebars.get(p).setLine(8, seekers.size() + "");
+								sidebars.get(p).setLine(6, "§7Points: §f" + points.get(p));
+								sidebars.get(p).setLine(5, "§7Kills: §f" + (seekerKills.get(p) + hiderKills.get(p)));
+								sidebars.get(p).setLine(3, (hiders.contains(p) ? (tauntManager.getCooldown(p) > 0 ? String.format("§cTaunt Cooldown (%d)", tauntManager.getCooldown(p)) : "§aTaunt Available") : "   "));
 							}
 						}
 						for(Player P : durability.keySet()) {
