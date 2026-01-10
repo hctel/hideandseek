@@ -159,8 +159,8 @@ public class PlayerListener implements Listener {
 						return;
 					}
 					i.damage(7);
-					return;
-				} 				
+				}
+				return;
 			}
 		}
 		e.setCancelled(true);
