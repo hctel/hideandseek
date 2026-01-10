@@ -121,7 +121,6 @@ public class Taunt {
 			e2.setCustomName("Buzz Buzz I'm a beeee");
 			e2.setInvulnerable(true);
 			e2.setAI(false);
-			e2.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 60, 1, false, false));
 			e2.getLocation().getWorld().playSound(e2.getLocation(), Sound.ENTITY_SHEEP_AMBIENT, 1.0f, 1.0f);
 			Bukkit.getScheduler().scheduleSyncDelayedTask(Hide.plugin, new Runnable() {
 				public void run() {
