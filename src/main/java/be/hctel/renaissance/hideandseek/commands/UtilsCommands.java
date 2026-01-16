@@ -15,8 +15,8 @@ public class UtilsCommands implements CommandExecutor {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String msg, String[] args) {
 		if(sender instanceof Player) {
+			Player player = (Player) sender;
 			if(cmd.getName().equalsIgnoreCase("ping")) {
-				Player player = (Player) sender;
 				ArrayList<Integer> pings = new ArrayList<>();
 				player.sendMessage(Hide.header + "§aPong. Calculating your ping. Un momento per favor...");
 				new BukkitRunnable() {
@@ -34,6 +34,9 @@ public class UtilsCommands implements CommandExecutor {
 					}
 					
 				}.runTaskTimerAsynchronously(Hide.plugin, 0L, 20L);
+			}
+			if(cmd.getName().equalsIgnoreCase("blockshop")) {
+				Hide.blockShop.openInventory(player);
 			}
 		}
 		if(cmd.getName().equalsIgnoreCase("whereami")) {

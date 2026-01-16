@@ -93,6 +93,7 @@ public class PlayerListener implements Listener {
 		Hide.stats.load(p);
 		Hide.rankManager.load(p);
 		Hide.cosmeticManager.loadPlayer(p);
+		Hide.shopPlayer.spawnFor(p);
 		p.setDisplayName(Hide.rankManager.getRankColor(p) + p.getName());
 		e.setJoinMessage(Hide.rankManager.getRankColor(p) + p.getName() + JoinMessages.getFromStorageCode(Hide.stats.getJoinMessageIndex(p)).getMessage());
 		if(!Hide.preGameTimer.gameStarted) Hide.votesHandler.sendMapChoices(p);
@@ -130,37 +131,58 @@ public class PlayerListener implements Listener {
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onDamage(EntityDamageEvent e) {
-		if(e.getCause().equals(DamageCause.FALL)) {
-			e.getEntity().setFallDistance(0);
-			e.setDamage(0);
-			e.setCancelled(true);
-			return;
-		}
+		if(e.getEntity() instanceof Player) {
+			Player player = (Player) e.getEntity();
+			System.out.printf("Damage to %s by other", player.getName());
+			if(Hide.preGameTimer.gameStarted) {
+				if(e.getDamage() > player.getHealth()) {
+					e.setDamage(0);
+					player.setHealth(20);
+					player.getInventory().clear();
+					Hide.gameEngine.addKill(null, player, Hide.gameEngine.isHider(player));
+				} else if(e.getCause().equals(DamageCause.FALL)) {
+					player.setFallDistance(0);
+					e.setDamage(0);
+				} else {
+					return;
+				}
+			}
+		} e.setCancelled(true);
 	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onDamageByEntity(EntityDamageByEntityEvent e) {
 		if(e.getDamager() instanceof Player && e.getEntity() instanceof Player) {
+			Player damaged = (Player) e.getEntity();
 			Player damager = (Player) e.getDamager();
+			System.out.printf("Damage to %s by %s", damaged.getName(), damager.getName());
 			if(Hide.preGameTimer.gameStarted) {
 				if (Hide.gameEngine.areSameTeam((Player) e.getEntity(), (Player) e.getDamager()) || Hide.gameEngine.isGameFinished) {
 					e.setCancelled(true);
 				}
-				else if(Hide.gameEngine.getTeam((Player) e.getDamager()) == GameTeam.SEEKER) {
-					((Player) e.getEntity()).playSound(e.getDamager().getLocation(), Sound.ENTITY_PLAYER_DEATH, 2.0f, 0.5f);
-					for(Player P : Bukkit.getOnlinePlayers()) P.playSound(e.getDamager().getLocation(), Sound.ENTITY_PLAYER_DEATH, 1.0f, 0.5f);
-					Player i = (Player) e.getEntity();
-					if(i.getHealth() < 7) {
-						if(Hide.preGameTimer.gameStarted) {
-							i.getInventory().clear();
-							i.setHealth(20.0);
-							Hide.gameEngine.addKill(damager, i, Hide.gameEngine.isSeeker(damager));
+				else {
+					
+					if(Hide.gameEngine.getTeam((Player) e.getDamager()) == GameTeam.SEEKER && Hide.gameEngine.getTeam(damaged) == GameTeam.HIDER) {
+						damaged.playSound(e.getDamager().getLocation(), Sound.ENTITY_PLAYER_DEATH, 2.0f, 0.5f);
+						for(Player P : Bukkit.getOnlinePlayers()) P.playSound(e.getDamager().getLocation(), Sound.ENTITY_PLAYER_DEATH, 1.0f, 0.5f);
+						if(damaged.getHealth() < 7) {
+							damaged.setHealth(20.0);
+							damaged.getInventory().clear();
+							Hide.gameEngine.addKill(damager, damaged, true);
+							return;
+						}
+						damaged.damage(7);
+						return;
+					} else if(Hide.gameEngine.getTeam(damager) == GameTeam.HIDER && Hide.gameEngine.getTeam(damaged) == GameTeam.SEEKER) {
+						if(e.getDamage() > damaged.getHealth()) {
+							e.setDamage(0);
+							damaged.setHealth(20);
+							damaged.getInventory().clear();
+							Hide.gameEngine.addKill(damager, damaged, false);
 						}
 						return;
 					}
-					i.damage(7);
 				}
-				return;
 			}
 		}
 		e.setCancelled(true);

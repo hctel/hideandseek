@@ -4,18 +4,26 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.mvplugins.multiverse.core.MultiverseCore;
 import org.mvplugins.multiverse.core.world.WorldManager;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.github.retrooper.packetevents.PacketEvents;
+import com.mojang.authlib.GameProfile;
 
 import be.hctel.api.bungee.BungeeCordMessenger;
+import be.hctel.api.fakeentities.FakePlayer;
+import be.hctel.api.runnables.ArgumentRunnable;
 import be.hctel.api.signs.Signer;
 import be.hctel.renaissance.cosmetics.CosmeticsManager;
 import be.hctel.renaissance.hideandseek.commands.DevCommands;
@@ -45,6 +53,20 @@ import io.github.retrooper.packetevents.factory.spigot.SpigotPacketEventsBuilder
 public class Hide extends JavaPlugin {
 	public static String version = "b1.25.7";
 	
+	public volatile static HashMap<Player, String> runCommandSync = new HashMap<Player, String>();
+	private BukkitRunnable commandRunner = new BukkitRunnable() {
+
+		@Override
+		public void run() {
+			if(!runCommandSync.isEmpty()) {
+				for(Player P : runCommandSync.keySet()) {
+					P.performCommand(runCommandSync.get(P));
+					runCommandSync.remove(P);
+				}
+			}
+		}
+		
+	};
 	
 	public static boolean testServer = false;
 	public static boolean isServerStarting = true;
@@ -76,6 +98,7 @@ public class Hide extends JavaPlugin {
 	public static BlockShop blockShop;
 	public static JoinMessageHandler joinMessageMenu;
 	
+	public static FakePlayer shopPlayer;	
 	//Declaring SQL variables
 	
 	private String host, user, database, password;
@@ -116,10 +139,24 @@ public class Hide extends JavaPlugin {
 		blockShop = new BlockShop(this);
 		joinMessageMenu = new JoinMessageHandler(this);
 		signer = new Signer(this);
+		commandRunner.runTaskTimer(plugin, 0L, 1L);
 		
 		//Speaks by itself
 		registerListeners();
 		loadCommands();
+		
+		shopPlayer = new FakePlayer(new Location(Bukkit.getWorld("HIDE_Lobby"), -82.5, 90.01, 65.5, -135.0f, 0.0f),plugin , new GameProfile(UUID.randomUUID(), "§e§lBlock Shop"));
+		shopPlayer.setOnRightClickTask(new ArgumentRunnable() {
+			@Override
+			public void run(Object o) {
+				if(o instanceof Player) {
+					runCommandSync.put((Player) o, "blockshop");
+				}
+			}
+		});
+		
+		
+		
 		isServerStarting = false;
 		try {
 			con.createStatement().execute("UPDATE servers SET status = 'UP' WHERE name = '" + bm.getServerName() + "';");
@@ -134,6 +171,7 @@ public class Hide extends JavaPlugin {
 	public void onDisable() {
 		try {
 			//Disable clean-up and data save
+			commandRunner.cancel();
 			signer.onDisable();
 			mapLoader.deleteTempWorld();
 			cosmeticManager.saveAll();
@@ -155,6 +193,7 @@ public class Hide extends JavaPlugin {
 		getCommand("updateprofile").setTabCompleter(new StaffCommandsTabCompleter());
 		getCommand("gotoworld").setExecutor(new StaffComands());
 		getCommand("gotoworld").setTabCompleter(new StaffCommandsTabCompleter());
+		getCommand("blockshop").setExecutor(new UtilsCommands());
 		getCommand("vote").setExecutor(new VoteCommand());
 		getCommand("v").setExecutor(new VoteCommand());
 		getCommand("taunt").setExecutor(new TauntCommand());

@@ -22,6 +22,10 @@ commands:
     usage: /updateprofile <player> <category> <value>
     permission: hide.admin
     description: update a player's stats
+  blockshop:
+    usage: /blockshop
+    permission: hide.default
+    description: Opens block shop
   vote:
     usage: /vote <#>
     permission: hide.default
