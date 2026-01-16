@@ -326,14 +326,14 @@ public class GameEngine {
 					points.replace(p, points.get(p)+(int) (aliveTime*0.6));
 					Hide.cosmeticManager.addTokens(p, (int) (aliveTime*0.15));
 				}
-				p.teleport(seekerSpawn);
-				p.getInventory().clear();
-				p.getInventory().setItem(0, new ItemStack(Material.DIAMOND_SWORD));
-				p.getInventory().setHelmet(new ItemStack(Material.IRON_HELMET));
-				p.getInventory().setChestplate(new ItemStack(Material.IRON_CHESTPLATE));
-				p.getInventory().setLeggings(new ItemStack(Material.IRON_LEGGINGS));
-				p.getInventory().setBoots(new ItemStack(Material.IRON_BOOTS));
-				p.setGameMode(GameMode.SURVIVAL);
+				killed.teleport(seekerSpawn);
+				killed.getInventory().clear();
+				killed.getInventory().setItem(0, new ItemStack(Material.DIAMOND_SWORD));
+				killed.getInventory().setHelmet(new ItemStack(Material.IRON_HELMET));
+				killed.getInventory().setChestplate(new ItemStack(Material.IRON_CHESTPLATE));
+				killed.getInventory().setLeggings(new ItemStack(Material.IRON_LEGGINGS));
+				killed.getInventory().setBoots(new ItemStack(Material.IRON_BOOTS));
+				killed.setGameMode(GameMode.SURVIVAL);
 				new BukkitRunnable() {
 					@Override
 					public void run() {
@@ -348,6 +348,13 @@ public class GameEngine {
 				deaths.replace(killed, deaths.get(killed)+1);
 				Bukkit.broadcastMessage(Hide.header + "§6Seeker " + Hide.rankManager.getRankColor(killed) + killed.getName() + " §6has died.");
 				killed.teleport(hiderSpawn);
+				killed.getInventory().clear();
+				killed.getInventory().setItem(0, new ItemStack(Material.DIAMOND_SWORD));
+				killed.getInventory().setHelmet(new ItemStack(Material.IRON_HELMET));
+				killed.getInventory().setChestplate(new ItemStack(Material.IRON_CHESTPLATE));
+				killed.getInventory().setLeggings(new ItemStack(Material.IRON_LEGGINGS));
+				killed.getInventory().setBoots(new ItemStack(Material.IRON_BOOTS));
+				killed.setGameMode(GameMode.SURVIVAL);
 			}
 		} else {
 			addPoints(player, 30);
@@ -480,7 +487,7 @@ public class GameEngine {
 			hiders.remove(offlinePlayer);
 		} else if(seekers.contains(offlinePlayer)) {
 			seekers.remove(offlinePlayer);
-			if(seekers.size() == 0) {
+			if(seekers.size() == 0 && isPlaying) {
 				Player o = getNewSeeker();
 				o.sendMessage(Hide.header + "§7you have been picked to be a seeker as all the previous seekers left");
 				addKill(null, o, true);
