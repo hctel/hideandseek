@@ -440,8 +440,11 @@ public class Utils {
 	
 	public static CraftFallingBlock spawnFakeBlockEntity(Player player, Location location, Material material) {
 		CraftFallingBlock block = (CraftFallingBlock) player.getWorld().spawnFallingBlock(location.add(0.0, 0.01, 0.0), material.createBlockData());
-		block.setGravity(false);
 		block.setInvulnerable(true);
+		block.setGravity(false);
+		block.setDropItem(false);
+		block.setCancelDrop(true);
+		block.setTicksLived(1);
 		PacketPlayOutEntityDestroy ed = new PacketPlayOutEntityDestroy(block.getEntityId());
 		for(Player P : Bukkit.getOnlinePlayers()) if(P != player) ((CraftPlayer) P).getHandle().g.sendPacket(ed);
 		return block;

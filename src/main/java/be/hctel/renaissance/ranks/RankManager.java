@@ -6,12 +6,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.scoreboard.Team;
 
 import be.hctel.renaissance.hideandseek.Hide;
 import be.hctel.renaissance.hideandseek.nongame.utils.ChatMessages;
@@ -24,16 +22,9 @@ import be.hctel.renaissance.hideandseek.nongame.utils.Utils;
 public class RankManager {
 	Connection con;
 	HashMap<String, Ranks> cache = new HashMap<String, Ranks>();
-	HashMap<String, Integer> hideCache = new HashMap<String, Integer >(); 
-	HashMap<Ranks, Team> teams = new HashMap<Ranks, Team>();
-	String[] n = {"o", "n", "m", "l", "k", "j", "i", "h", "g", "f", "e", "d", "c", "b", "a"};
+	HashMap<String, Integer> hideCache = new HashMap<String, Integer >();
 	public RankManager(Connection con, Plugin plugin) {
 		this.con = con;
-		for(Ranks R : Ranks.values()) {
-			Team team = Bukkit.getScoreboardManager().getNewScoreboard().registerNewTeam(n[R.getIndex()-1]);
-			team.setColor(R.getColor());
-			teams.put(R, team);
-		}
 	}
 
 	/**
@@ -49,7 +40,6 @@ public class RankManager {
 				if(rs.next()) {
 					cache.put(Utils.getUUID(player), Ranks.getRank(rs.getInt("rankID")));
 					hideCache.put(Utils.getUUID(player), rs.getInt("hiddenRank"));
-					teams.get(Ranks.getFromChatColor(getRankColor(player))).addEntry(player.getName());
 				} else {
 					st.execute("INSERT INTO RANKS (UUID) VALUES ('" + Utils.getUUID(player) + "');");
 				}

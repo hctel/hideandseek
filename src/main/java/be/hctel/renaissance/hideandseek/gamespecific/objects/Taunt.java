@@ -12,8 +12,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Sheep;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 import be.hctel.renaissance.hideandseek.Hide;
@@ -101,7 +99,8 @@ public class Taunt {
 			e1.setPowered(true);
 			e1.setGravity(false);
 			e1.setVelocity(new Vector(0, 2, 0));
-			e1.setCustomName("Buzz Buzz I'm a beeee");
+			e1.setCustomName("§aBuzz Buzz I'm a beeee");
+			e1.setCustomNameVisible(true);
 			e1.setInvulnerable(true);
 			e1.setSilent(true);
 			e1.setAI(false);
@@ -118,14 +117,15 @@ public class Taunt {
 			e2.setColor(DyeColor.YELLOW);
 			e2.setGravity(false);
 			e2.setVelocity(new Vector(0, 2, 0));
-			e2.setCustomName("Buzz Buzz I'm a beeee");
+			e2.setCustomName("§eBuzz Buzz I'm a beeee");
+			e2.setCustomNameVisible(true);
 			e2.setInvulnerable(true);
 			e2.setAI(false);
 			e2.getLocation().getWorld().playSound(e2.getLocation(), Sound.ENTITY_SHEEP_AMBIENT, 1.0f, 1.0f);
 			Bukkit.getScheduler().scheduleSyncDelayedTask(Hide.plugin, new Runnable() {
 				public void run() {
 					e2.getWorld().playSound(e2.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1.0f, 1.0f);
-					e2.getWorld().spawnParticle(Particle.EXPLOSION, e2.getLocation(), 1, 1.5, 1.5, 1.5);
+					e2.getWorld().spawnParticle(Particle.EXPLOSION, e2.getLocation(), 0, 0.1, 0.1, 0.1);
 					e2.remove();
 				}
 			}, 60L);

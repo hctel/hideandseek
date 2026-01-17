@@ -31,7 +31,7 @@ public class JoinMessageHandler {
 		Inventory inv = Bukkit.createInventory(null, 9, "Join messages menu");
 		ArrayList<String> lore = new ArrayList<String>();
 		for(JoinMessages M : JoinMessages.values()) {
-			if(M == JoinMessages.RONAN) continue;
+			if(M == JoinMessages.RONAN || M == JoinMessages.PARVA) continue;
 			lore.clear();
 			lore.add("");
 			lore.add(Hide.rankManager.getRankColor(player) + player.getName() + M.getMessage());

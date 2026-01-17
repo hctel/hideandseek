@@ -46,6 +46,7 @@ public class DisguiseBlockManager {
 			@Override
 			public void run() {
 				if(isSolid && isAlive) for(Player P : Bukkit.getOnlinePlayers()) if(P != player) P.sendBlockChange(solidLocation, block.getType().createBlockData());
+				if(solidPlayerBlock != null) solidPlayerBlock.setTicksLived(1);
 			}
 		};
 		run.runTaskTimer(plugin, 0L, 20L);
@@ -111,6 +112,7 @@ public class DisguiseBlockManager {
 		}
 		startDisguise();
 		solidPlayerBlock.remove();
+		solidPlayerBlock = null;
 	}
 	
 	private void startDisguise() {
