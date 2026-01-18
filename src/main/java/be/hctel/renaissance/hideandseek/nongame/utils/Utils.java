@@ -21,7 +21,6 @@ import java.util.Random;
 import java.util.concurrent.RecursiveTask;
 
 import org.apache.commons.lang.StringUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Location;
@@ -31,8 +30,10 @@ import org.bukkit.craftbukkit.v1_21_R6.entity.CraftFallingBlock;
 import org.bukkit.craftbukkit.v1_21_R6.entity.CraftPlayer;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityRemoveEvent.Cause;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
@@ -42,14 +43,19 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
 
+import be.hctel.api.protocol.NMSBridge;
+import be.hctel.api.protocol.adapters.AdapterPacketPlayOutSpawnEntity;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.minecraft.network.chat.IChatBaseComponent;
 import net.minecraft.network.protocol.game.PacketPlayOutEntityDestroy;
 import net.minecraft.network.protocol.game.PacketPlayOutPlayerListHeaderFooter;
+import net.minecraft.world.entity.item.EntityFallingBlock;
 
 /*
  * This file is a part of the Renaissance Project API
@@ -270,7 +276,7 @@ public class Utils {
 	}
 	/**
 	 * Generates a random string
-	 * @param lenght the lenght of the string
+	 * @param lenght the length of the string
 	 * @return a random string
 	 */
 	public static String randomString(int lenght) {
@@ -296,17 +302,33 @@ public class Utils {
 	public static boolean locationComparator(Location a, Location b) {
 		return (a.getBlockX() == b.getBlockX() && a.getBlockZ() == b.getBlockZ() && (a.getBlockY() - b.getBlockY()) < 4);
 	}
-		
-	public static CraftFallingBlock spawnFakeBlockEntity(Player player, Location location, Material material) {
-		CraftFallingBlock block = (CraftFallingBlock) player.getWorld().spawnFallingBlock(location.add(0.0, 0.01, 0.0), material.createBlockData());
-		block.setInvulnerable(true);
-		block.setGravity(false);
-		block.setDropItem(false);
-		block.setCancelDrop(true);
-		block.setTicksLived(1);
-		PacketPlayOutEntityDestroy ed = new PacketPlayOutEntityDestroy(block.getEntityId());
-		for(Player P : Bukkit.getOnlinePlayers()) if(P != player) ((CraftPlayer) P).getHandle().g.sendPacket(ed);
-		return block;
+	
+	public static Location locationFlattener(Location sourceLoc) {
+		return new Location(sourceLoc.getWorld(), sourceLoc.getBlockX()+0.5, sourceLoc.getY(), sourceLoc.getBlockZ()+0.5);
+	}
+	
+	public static int sendFakeFallingBlock(Player player, Location location, Material material) {
+		Location blockLoc = locationFlattener(location);
+		EntityFallingBlock eFallingBlock = EntityFallingBlock.a(NMSBridge.getWorld(location.getWorld()), NMSBridge.getBlockPosition(locationFlattener(blockLoc)), NMSBridge.getIBlockData(material));
+		CraftFallingBlock cFallingBlock = (CraftFallingBlock) eFallingBlock.getBukkitEntity();
+		cFallingBlock.setCancelDrop(true);
+		cFallingBlock.setGravity(true);
+		AdapterPacketPlayOutSpawnEntity pck = new AdapterPacketPlayOutSpawnEntity(ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.SPAWN_ENTITY));
+		pck.setEntityId(cFallingBlock.getEntityId());
+		pck.setUniqueId(eFallingBlock.cT());
+		pck.setEntityType(EntityType.FALLING_BLOCK);
+		pck.setEntityData(NMSBridge.getDataInt(material));
+		pck.setX(blockLoc.getX());
+		pck.setY(blockLoc.getY()+0.1);
+		pck.setZ(blockLoc.getZ());
+		eFallingBlock.discard(Cause.DESPAWN);
+		NMSBridge.getPlayerConnection(player).sendPacket(pck.getHandle());
+		return cFallingBlock.getEntityId();
+	}
+	
+	public static void sendEntityDestroyPacket(Player player, int entityId) {
+		PacketPlayOutEntityDestroy packet = new PacketPlayOutEntityDestroy(entityId);
+		NMSBridge.getPlayerConnection(player).sendPacket(packet);
 	}
 	
 	public static Location locationFlattenner(Location loc) {

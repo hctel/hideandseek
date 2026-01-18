@@ -1,10 +1,12 @@
 package be.hctel.renaissance.hideandseek.gamespecific.objects;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Particle;
+import org.bukkit.Particle.DustOptions;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_21_R6.entity.CraftFallingBlock;
 import org.bukkit.craftbukkit.v1_21_R6.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -34,7 +36,6 @@ public class DisguiseBlockManager {
 	private boolean sentMessage = false;
 	int fakeEntityId = 0;
 	BukkitRunnable run;
-	CraftFallingBlock solidPlayerBlock;
 
 	public DisguiseBlockManager(Player player, ItemStack block, Plugin plugin) {
 		this.player = player;
@@ -46,7 +47,6 @@ public class DisguiseBlockManager {
 			@Override
 			public void run() {
 				if(isSolid && isAlive) for(Player P : Bukkit.getOnlinePlayers()) if(P != player) P.sendBlockChange(solidLocation, block.getType().createBlockData());
-				if(solidPlayerBlock != null) solidPlayerBlock.setTicksLived(1);
 			}
 		};
 		run.runTaskTimer(plugin, 0L, 20L);
@@ -87,13 +87,13 @@ public class DisguiseBlockManager {
 			player.sendTitle("§aYou are now solid", "", 5, 60, 20);
 			player.getInventory().setItem(4, ItemsManager.tauntButton);
 			solidLocation = Utils.locationFlattenner(lastLocation);
-			// player.getWorld().playEffect(player.getLocation(), Effect.COLOURED_DUST, 0, 2);
+			player.getWorld().spawnParticle(Particle.DUST, solidLocation, 10, 0.5, 0.5, 0.5, new DustOptions(Color.AQUA, 1));
 			player.sendMessage(Hide.header + "§6You are now §ahidden");
 			b = solidLocation.getBlock();
 			plugin.getLogger().info(player.getName() + " went solid at " + solidLocation.getBlockX() + ", " + solidLocation.getBlockY() + ", " + solidLocation.getBlockZ() + " as a " + block.getType().toString());
 			PacketPlayOutEntityDestroy ed = new PacketPlayOutEntityDestroy(player.getEntityId());
 			for(Player P : Bukkit.getOnlinePlayers()) if(P != player) ((CraftPlayer) P).getHandle().g.sendPacket(ed);
-			solidPlayerBlock = Utils.spawnFakeBlockEntity(player, solidLocation.add(0.5, 0, 0.5), block.getType());
+			fakeEntityId = Utils.sendFakeFallingBlock(player, player.getLocation(), block.getType());
 			sentMessage = false;
 			timesWentSolid++;
 		} else if(!sentMessage) {
@@ -111,8 +111,7 @@ public class DisguiseBlockManager {
 			p.sendBlockChange(solidLocation, Material.AIR.createBlockData());
 		}
 		startDisguise();
-		solidPlayerBlock.remove();
-		solidPlayerBlock = null;
+		Utils.sendEntityDestroyPacket(player, fakeEntityId);
 	}
 	
 	private void startDisguise() {
@@ -165,7 +164,5 @@ public class DisguiseBlockManager {
 	
 	public boolean isAllowedBlock() {
 		return lastLocation.getBlock().getType().toString().contains("AIR") || lastLocation.getBlock().getType().toString().contains("FENCE") || lastLocation.getBlock().getType().equals(Material.WATER) || lastLocation.getBlock().getType().equals(Material.LAVA);
-	}
-	
-	
+	}	
 }
