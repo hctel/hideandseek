@@ -7,8 +7,6 @@ import java.util.logging.Level;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.data.BlockData;
-import org.bukkit.craftbukkit.v1_21_R6.CraftWorld;
-import org.bukkit.craftbukkit.v1_21_R6.block.CraftBlock;
 import org.bukkit.craftbukkit.v1_21_R6.block.data.CraftBlockData;
 import org.bukkit.craftbukkit.v1_21_R6.entity.CraftFallingBlock;
 import org.bukkit.entity.EntityType;
@@ -163,7 +161,7 @@ public class FallingBlockDisguise implements Listener {
 		if(sendTo.equals(player)) {
 			throw new IllegalArgumentException(String.format("Cannot send a disguise to the disguised player (%s -> %s)", player.getName(), sendTo.getName()));
 		}
-		EntityFallingBlock eFallingBlock = EntityFallingBlock.a(((CraftWorld) player.getWorld()).getHandle(), ((CraftBlock) player.getLocation().getBlock()).getPosition(), getIBlockData(hideAs));
+		EntityFallingBlock eFallingBlock = EntityFallingBlock.a(NMSBridge.getWorld(player.getWorld()), NMSBridge.getBlockPosition(player.getLocation()), getIBlockData(hideAs));
 		CraftFallingBlock cFallingBlock = (CraftFallingBlock) eFallingBlock.getBukkitEntity();
 		cFallingBlock.setCancelDrop(true);
 		cFallingBlock.setGravity(false);
