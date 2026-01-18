@@ -3,7 +3,7 @@ author: hctel
 version: beta1.1
 api-version: 1.21.10
 main: be.hctel.renaissance.hideandseek.Hide
-depend: ['Multiverse-Core', 'ProtocolLib', 'packetevents']
+depend: ['Multiverse-Core', 'ProtocolLib', 'packetevents', 'ViaVersion', 'ViaBackwards', 'ViaRewind', 'LuckPerms']
 load: POSTWORLD
 commands: 
   stats:

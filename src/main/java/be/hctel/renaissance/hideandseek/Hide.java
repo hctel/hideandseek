@@ -13,6 +13,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scoreboard.Team;
+import org.bukkit.scoreboard.Team.Option;
+import org.bukkit.scoreboard.Team.OptionStatus;
 import org.mvplugins.multiverse.core.MultiverseCore;
 import org.mvplugins.multiverse.core.world.WorldManager;
 
@@ -157,6 +160,9 @@ public class Hide extends JavaPlugin {
 		
 		
 		
+		for(Team T : plugin.getServer().getScoreboardManager().getMainScoreboard().getTeams()) {
+			T.setOption(Option.COLLISION_RULE, OptionStatus.NEVER);
+		}
 		isServerStarting = false;
 		try {
 			con.createStatement().execute("UPDATE servers SET status = 'UP' WHERE name = '" + bm.getServerName() + "';");
@@ -178,6 +184,9 @@ public class Hide extends JavaPlugin {
 			rankManager.saveAll();
 			stats.saveAll();
 			PacketEvents.getAPI().terminate();
+			for(Team T : plugin.getServer().getScoreboardManager().getMainScoreboard().getTeams()) {
+				T.unregister();
+			}
 			plugin = null;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

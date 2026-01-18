@@ -1,6 +1,7 @@
 package be.hctel.renaissance.hideandseek.listeners;
 
 import java.sql.SQLException;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -30,11 +31,21 @@ import org.bukkit.event.player.PlayerLoginEvent.Result;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import com.github.retrooper.packetevents.PacketEvents;
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerTeams;
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerTeams.CollisionRule;
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerTeams.NameTagVisibility;
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerTeams.OptionData;
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerTeams.ScoreBoardTeamInfo;
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerTeams.TeamMode;
+
 import be.hctel.renaissance.hideandseek.Hide;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.GameRanks;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.GameTeam;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.JoinMessages;
 import be.hctel.renaissance.hideandseek.nongame.utils.Utils;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 
@@ -116,7 +127,11 @@ public class PlayerListener implements Listener {
 			}.runTaskLater(Hide.plugin, 1L);
 		}
 		p.setPlayerListName(Hide.rankManager.getRankColor(p) + p.getName());
-	
+		p.setCollidable(false);
+		p.getCollidableExemptions().clear();
+		ScoreBoardTeamInfo ti = new ScoreBoardTeamInfo(Component.empty(), Component.empty(), Component.empty(), NameTagVisibility.ALWAYS, CollisionRule.NEVER, NamedTextColor.WHITE, OptionData.NONE);
+		WrapperPlayServerTeams t = new WrapperPlayServerTeams(UUID.randomUUID().toString(), TeamMode.CREATE, ti, p.getName());
+		PacketEvents.getAPI().getPlayerManager().sendPacket(p, t);
 	}
 	@EventHandler
 	public void onDisconnect(PlayerQuitEvent e) throws SQLException {
