@@ -92,43 +92,6 @@ public class FallingBlockDisguise implements Listener {
 				}
 			}
 		});
-//		pm.addPacketListener(new PacketAdapter(plugin, ListenerPriority.HIGHEST, PacketType.Play.Server.ENTITY_POSITION_SYNC) {
-//			@Override
-//			public void onPacketSending(PacketEvent e) {
-//				if(!test) {
-//					int entityId = e.getPacket().getIntegers().getValues().get(0);
-//					if(playerEntityId == entityId && isDisguised() && !bypassList.contains(e.getPlayer())) {
-//						ClientboundEntityPositionSyncPacket pck = (ClientboundEntityPositionSyncPacket) e.getPacket().getHandle();
-//						PositionMoveRotation nmsPos = pck.e();
-////						new ClientboundEntityPositionSyncPacket(entityId, new PositionMoveRotation(nmsPos.a(), new Vec3D(player.getVelocity().getX(), player.getVelocity().getY(), player.getVelocity().getZ()), nmsPos.c(), nmsPos.d()), pck.f());
-////						e.setPacket(new PacketContainer(PacketType.Play.Server.ENTITY_POSITION_SYNC, pck));
-//						Vec3D toSendInstead = new Vec3D((player.isSprinting() ? 0 : player.getVelocity().getX()), 0, (player.isSprinting() ? 0 : player.getVelocity().getZ()));
-//						PositionMoveRotation newNmsPos = new PositionMoveRotation(nmsPos.a(), toSendInstead, nmsPos.c(), nmsPos.d());
-//						ClientboundEntityPositionSyncPacket newPck = new ClientboundEntityPositionSyncPacket(pck.b(), newNmsPos, true);
-//						e.setPacket(PacketContainer.fromPacket(newPck));
-////						System.out.printf("Packet: (%f, %f, %f), ", newPck.e().b().g, newPck.e().b().h, newPck.e().b().i);
-////						System.out.printf("Player: (%f, %f, %f)\n", player.getVelocity().getX(), player.getVelocity().getY(), player.getVelocity().getZ());
-//					}
-//				}
-//			}
-//		});
-//		pm.addPacketListener(new PacketAdapter(plugin, ListenerPriority.HIGHEST, PacketType.Play.Server.ENTITY_VELOCITY) {
-//			@Override
-//			public void onPacketSending(PacketEvent e) {
-//				if(!test) {
-//					int entityId = e.getPacket().getIntegers().getValues().get(0);
-//					if(playerEntityId == entityId && isDisguised() && !bypassList.contains(e.getPlayer())) {
-//						PacketPlayOutEntityVelocity pck = (PacketPlayOutEntityVelocity) e.getPacket().getHandle();
-////						Vec3D vel = pck.e();
-//						Vec3D toSendInstead = new Vec3D((player.isSprinting() ? 0 : player.getVelocity().getX()), 0, (player.isSprinting() ? 0 : player.getVelocity().getZ()));
-//						PacketPlayOutEntityVelocity newPck = new PacketPlayOutEntityVelocity(pck.b(), toSendInstead);
-//						e.setPacket(PacketContainer.fromPacket(newPck));
-////						System.out.printf("Velocity Packet: (%f, %f, %f), ", vel.g, vel.h, vel.i);
-////						System.out.printf("Velocity Player: (%f, %f, %f)\n", player.getVelocity().getX(), player.getVelocity().getY(), player.getVelocity().getZ());
-//					}
-//				}
-//			}
-//		});
 		eachTickRun = new BukkitRunnable() {
 			
 			@Override
