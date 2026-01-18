@@ -74,7 +74,7 @@ public class MapLoader {
 			Bukkit.getWorld("TEMPWORLD" + i).setGameRule(GameRule.LOCATOR_BAR, false);
 			Bukkit.getWorld("TEMPWORLD" + i).setDifficulty(Difficulty.PEACEFUL);
 		}
-		System.out.println("ALL WORLDS LOADED");
+		plugin.getLogger().info("ALL WORLDS LOADED");
 	}
 	
 	public void deleteTempWorld() {
