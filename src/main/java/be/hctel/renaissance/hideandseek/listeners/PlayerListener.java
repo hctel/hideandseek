@@ -144,11 +144,30 @@ public class PlayerListener implements Listener {
 		if(Hide.preGameTimer.gameStarted) Hide.gameEngine.disconnect((OfflinePlayer) e.getPlayer());
 	}
 	
-	@EventHandler(priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.HIGH)
 	public void onDamage(EntityDamageEvent e) {
+		if(e.getCause() == DamageCause.CUSTOM) {
+			return;
+		}
+		if(e.getCause() == DamageCause.ENTITY_ATTACK) {
+			if(e.getEntity() instanceof Player && e.getDamageSource() instanceof Player) {
+				Player player = (Player) e.getEntity();
+				Player damager = (Player) e.getDamageSource();
+				if(Hide.preGameTimer.gameStarted) {
+					if(e.getDamage() > player.getHealth()) {
+						e.setDamage(0);
+						player.setHealth(20);
+						player.getInventory().clear();
+						Hide.gameEngine.addKill(damager, player, Hide.gameEngine.isHider(player));
+					}
+				}
+				return;
+			}
+			e.setCancelled(true);
+			return;
+		}
 		if(e.getEntity() instanceof Player) {
 			Player player = (Player) e.getEntity();
-			System.out.printf("Damage to %s by other", player.getName());
 			if(Hide.preGameTimer.gameStarted) {
 				if(e.getDamage() > player.getHealth()) {
 					e.setDamage(0);
@@ -170,7 +189,6 @@ public class PlayerListener implements Listener {
 		if(e.getDamager() instanceof Player && e.getEntity() instanceof Player) {
 			Player damaged = (Player) e.getEntity();
 			Player damager = (Player) e.getDamager();
-			System.out.printf("Damage to %s by %s", damaged.getName(), damager.getName());
 			if(Hide.preGameTimer.gameStarted) {
 				if (Hide.gameEngine.areSameTeam((Player) e.getEntity(), (Player) e.getDamager()) || Hide.gameEngine.isGameFinished) {
 					e.setCancelled(true);
