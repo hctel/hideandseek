@@ -259,7 +259,6 @@ public class FallingBlockDisguise implements Listener {
 		if(e.getEntity() instanceof Player && isDisguised()) {
 			Player p = (Player) e.getEntity();
 			if(p.equals(player)) {
-				System.out.println("Triggered entity pickup");
 				e.setCancelled(true);
 				ItemStack item = e.getItem().getItemStack();
 				e.getItem().remove();
