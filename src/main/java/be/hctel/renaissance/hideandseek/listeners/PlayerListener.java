@@ -150,9 +150,9 @@ public class PlayerListener implements Listener {
 			return;
 		}
 		if(e.getCause() == DamageCause.ENTITY_ATTACK) {
-			if(e.getEntity() instanceof Player && e.getDamageSource() instanceof Player) {
+			if(e.getEntity() instanceof Player && e.getDamageSource().getCausingEntity() instanceof Player) {
 				Player player = (Player) e.getEntity();
-				Player damager = (Player) e.getDamageSource();
+				Player damager = (Player) e.getDamageSource().getCausingEntity();
 				if(Hide.preGameTimer.gameStarted) {
 					if(e.getDamage() > player.getHealth()) {
 						e.setDamage(0);
@@ -181,7 +181,8 @@ public class PlayerListener implements Listener {
 					return;
 				}
 			}
-		} e.setCancelled(true);
+		} 
+		e.setCancelled(true);
 	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
@@ -194,7 +195,6 @@ public class PlayerListener implements Listener {
 					e.setCancelled(true);
 				}
 				else {
-					
 					if(Hide.gameEngine.getTeam((Player) e.getDamager()) == GameTeam.SEEKER && Hide.gameEngine.getTeam(damaged) == GameTeam.HIDER) {
 						damaged.playSound(e.getDamager().getLocation(), Sound.ENTITY_PLAYER_DEATH, 2.0f, 0.5f);
 						for(Player P : Bukkit.getOnlinePlayers()) P.playSound(e.getDamager().getLocation(), Sound.ENTITY_PLAYER_DEATH, 1.0f, 0.5f);

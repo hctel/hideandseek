@@ -134,11 +134,11 @@ public class GameEngine {
 				plugin.getLogger().severe(String.format("Had to replace a null block for %s as stone", p.getName()));
 				Hide.blockPicker.playerBlock.put(p, new ItemStack(Material.STONE));
 			}
-			Utils.sendCenteredMessage(p, "§6§m--------------------------------");
+			Utils.sendCenteredMessage(p, "§6§m                                ");
 			Utils.sendCenteredMessage(p, "§b§lYou are a §f§lHIDER! (" + Utils.getUserItemName(Hide.blockPicker.playerBlock.get(p)) + ")");
 			Utils.sendCenteredMessage(p, "§aFind a hiding spot before the seeker's released!");
 			Utils.sendCenteredMessage(p, "§cThe seeker will be released in §l30 seconds!");
-			Utils.sendCenteredMessage(p, "§6§m--------------------------------");
+			Utils.sendCenteredMessage(p, "§6§m                                ");
 			disguises.put(p, new DisguiseBlockManager(p, Hide.blockPicker.playerBlock.get(p), plugin));
 			blocksLeft.put(Hide.blockPicker.playerItem.get(p), blocksLeft.get(Hide.blockPicker.playerItem.get(p))+1);
 		}
@@ -150,11 +150,11 @@ public class GameEngine {
 			p.getInventory().setChestplate(new ItemStack(Material.IRON_CHESTPLATE));
 			p.getInventory().setLeggings(new ItemStack(Material.IRON_LEGGINGS));
 			p.getInventory().setBoots(new ItemStack(Material.IRON_BOOTS));
-			Utils.sendCenteredMessage(p, "§c§m---------------------------------------------------");
+			Utils.sendCenteredMessage(p, "§c§m                                                   ");
 			Utils.sendCenteredMessage(p, "§6§lYou are a §c§lSEEKER!");
 			Utils.sendCenteredMessage(p, "§eIt's your job to find hidden block and KILL THEM!");
 			Utils.sendCenteredMessage(p, "You will be released in §l30 seconds!");
-			Utils.sendCenteredMessage(p, "§c§m---------------------------------------------------");
+			Utils.sendCenteredMessage(p, "§c§m                                                   ");
 			durability.put(p, 20);
 		}
 		
@@ -439,11 +439,11 @@ public class GameEngine {
 					break;
 				}
 				
-				Utils.sendCenteredMessage(p, "§c§m---------------------------------------------------");
+				Utils.sendCenteredMessage(p, "§c§m                                                   ");
 				Utils.sendCenteredMessage(p, "§6§lYou are a §c§lSEEKER!");
 				Utils.sendCenteredMessage(p, "§eIt's your job to find hidden block and KILL THEM!");
 				Utils.sendCenteredMessage(p, "You will be released in §l10 seconds!");
-				Utils.sendCenteredMessage(p, "§c§m---------------------------------------------------");
+				Utils.sendCenteredMessage(p, "§c§m                                                   ");
 				durability.put(p, 20);
 				new BukkitRunnable() {
 					@Override
@@ -533,7 +533,7 @@ public class GameEngine {
 					for(Player p : Bukkit.getOnlinePlayers()) {
 						p.playSound(p.getLocation(), Sound.ENTITY_SPIDER_DEATH, 1.0f, 1.0f);
 						p.sendTitle("§c§l<< GAME OVER >>", "§eThe Hiders won the game.", 0, 25, 70);
-						Utils.sendCenteredMessage(p,"§a§m-------------------------------");
+						Utils.sendCenteredMessage(p,"§a§m                               ");
 						p.sendMessage("");
 						Utils.sendCenteredMessage(p, "§c§lGAME OVER! §eHiders WIN!");
 						p.sendMessage("");
@@ -557,7 +557,7 @@ public class GameEngine {
 						Utils.sendCenteredMessage(p, "§lTop Seekers by Kills");
 						Utils.sendCenteredMessage(p, worker);
 						p.sendMessage("");
-						Utils.sendCenteredMessage(p,"§a§m-------------------------------");
+						Utils.sendCenteredMessage(p,"§a§m                               ");
 						p.sendMessage(Hide.header + "§3You will be sent to hub in 10 seconds.");
 					}
 				}
@@ -584,7 +584,7 @@ public class GameEngine {
 					for(Player p : Bukkit.getOnlinePlayers()) {
 						p.playSound(p.getLocation(), Sound.ENTITY_SPIDER_DEATH, 1.0f, 1.0f);
 						p.sendTitle("§c§l<< GAME OVER >>", "§eThe Seekers won the game.", 0, 25, 70);
-						Utils.sendCenteredMessage(p,"§a§m-------------------------------");
+						Utils.sendCenteredMessage(p,"§a§m                               ");
 						p.sendMessage("");
 						Utils.sendCenteredMessage(p, "§c§lGAME OVER! §cSeekers WIN!");
 						p.sendMessage("");
@@ -612,7 +612,7 @@ public class GameEngine {
 						worker = worker.substring(0, worker.length()-2);
 						Utils.sendCenteredMessage(p, worker);
 						p.sendMessage("");
-						Utils.sendCenteredMessage(p,"§a§m-------------------------------");
+						Utils.sendCenteredMessage(p,"§a§m                               ");
 						p.sendMessage(Hide.header + "§3You will be sent to hub in 10 seconds.");
 						try {
 							Hide.stats.saveAll();
@@ -700,14 +700,14 @@ public class GameEngine {
 				return false;
 			}			
 		}
-		Utils.sendCenteredMessage(player, "§e§m---------------------------------------------------");
+		Utils.sendCenteredMessage(player, "§e§m                                                   ");
 		player.sendMessage("");
 		Utils.sendCenteredMessage(player, "§lAchievement Unlocked!");
 		player.sendMessage("");
 		Utils.sendCenteredMessage(player, "§6§l" + achievement.getName());
 		Utils.sendCenteredMessage(player, "§7" + achievement.getDescription());
 		player.sendMessage("");
-		Utils.sendCenteredMessage(player, "§e§m---------------------------------------------------");
+		Utils.sendCenteredMessage(player, "§e§m                                                   ");
 		player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
 		Hide.stats.completeAchievement(player, achievement);
 		return true;
