@@ -12,6 +12,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Sheep;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import be.hctel.renaissance.hideandseek.Hide;
@@ -98,16 +99,23 @@ public class Taunt {
 			final Creeper e1 = (Creeper) player.getWorld().spawnEntity(player.getLocation(), EntityType.CREEPER);
 			e1.setPowered(true);
 			e1.setGravity(false);
-			e1.setVelocity(new Vector(0, 2, 0));
+			e1.setVelocity(new Vector(0, 0.1, 0));
 			e1.setCustomName("§aBuzz Buzz I'm a beeee");
 			e1.setCustomNameVisible(true);
 			e1.setInvulnerable(true);
 			e1.setSilent(true);
-			e1.setAI(false);
+			BukkitRunnable run = new BukkitRunnable() {
+				@Override
+				public void run() {
+					e1.setFuseTicks(0);
+				}
+			};
+			run.runTaskTimer(Hide.plugin, 0L, 1L);
 			Bukkit.getScheduler().scheduleSyncDelayedTask(Hide.plugin, new Runnable() {
 				public void run() {
 					e1.getWorld().playSound(e1.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1.0f, 1.0f);
 					e1.getWorld().spawnParticle(Particle.EXPLOSION, e1.getLocation(), 1);
+					run.cancel();
 					e1.remove();
 				}
 			}, 60L);
@@ -116,11 +124,10 @@ public class Taunt {
 			final Sheep e2 = (Sheep) player.getWorld().spawnEntity(player.getLocation(), EntityType.SHEEP);
 			e2.setColor(DyeColor.YELLOW);
 			e2.setGravity(false);
-			e2.setVelocity(new Vector(0, 2, 0));
+			e2.setVelocity(new Vector(0, 0.1, 0));
 			e2.setCustomName("§eBuzz Buzz I'm a beeee");
 			e2.setCustomNameVisible(true);
 			e2.setInvulnerable(true);
-			e2.setAI(false);
 			e2.getLocation().getWorld().playSound(e2.getLocation(), Sound.ENTITY_SHEEP_AMBIENT, 1.0f, 1.0f);
 			Bukkit.getScheduler().scheduleSyncDelayedTask(Hide.plugin, new Runnable() {
 				public void run() {
