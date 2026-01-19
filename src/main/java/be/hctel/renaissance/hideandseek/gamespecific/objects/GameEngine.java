@@ -106,7 +106,7 @@ public class GameEngine {
 			sidebars.get(p).setLine(4, "    ");
 			sidebars.get(p).setLine(3, "   ");
 			sidebars.get(p).setLine(2, "§8§m          ");
-			sidebars.get(p).setLine(1, "§bhctel§f.§anet    ");
+			sidebars.get(p).setLine(1, "§bhctel§f.§anet         ");
 			sidebars.get(p).addReceiver(p);
 			Utils.sendActionBarMessage(p, "");
 			Hide.stats.addGame(p);
