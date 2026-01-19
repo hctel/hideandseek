@@ -466,6 +466,13 @@ public class GameEngine {
 				deaths.replace(killed, deaths.get(killed)+1);
 				Bukkit.broadcastMessage(Hide.header + "§6Seeker " + Hide.rankManager.getRankColor(killed) + killed.getName() + " §6was killed by " + Hide.rankManager.getRankColor(player) + player.getName());
 				killed.teleport(hiderSpawn);
+				killed.getInventory().clear();
+				killed.getInventory().setItem(0, new ItemStack(Material.DIAMOND_SWORD));
+				killed.getInventory().setHelmet(new ItemStack(Material.IRON_HELMET));
+				killed.getInventory().setChestplate(new ItemStack(Material.IRON_CHESTPLATE));
+				killed.getInventory().setLeggings(new ItemStack(Material.IRON_LEGGINGS));
+				killed.getInventory().setBoots(new ItemStack(Material.IRON_BOOTS));
+				killed.setGameMode(GameMode.SURVIVAL);
 				sidebars.get(player).setLine(4, "§7Kills: §f" + hiderKills.get(player));
 				switch(Hide.stats.getKilledSeekers(player)) {
 				case 1:
