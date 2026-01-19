@@ -54,7 +54,7 @@ import be.hctel.renaissance.ranks.RankManager;
 import io.github.retrooper.packetevents.factory.spigot.SpigotPacketEventsBuilder;
 
 public class Hide extends JavaPlugin {
-	public static String version = "b1.25.7";
+	public static String version = "pre-1.0a";
 	
 	public volatile static HashMap<Player, String> runCommandSync = new HashMap<Player, String>();
 	private BukkitRunnable commandRunner = new BukkitRunnable() {
