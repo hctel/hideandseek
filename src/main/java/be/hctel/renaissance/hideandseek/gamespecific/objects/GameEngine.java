@@ -503,10 +503,12 @@ public class GameEngine {
 		}
 	}
 	private Player getNewSeeker() {
-		if(queuedSeekers.size() < 2) {
-			return hiders.get(r.nextInt(hiders.size()));
+		if(queuedSeekers.size() > 0) {
+			Player picked = queuedSeekers.get(r.nextInt(queuedSeekers.size()));
+			queuedSeekers.remove(picked);
+			return picked;
 		} else {
-			return queuedSeekers.get(r.nextInt(queuedSeekers.size()));
+			return hiders.get(r.nextInt(hiders.size()));			
 		}
 	}
 	
