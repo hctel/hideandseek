@@ -9,7 +9,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
-import be.hctel.renaissance.hideandseek.gamespecific.enums.GameMap;
+import be.hctel.renaissance.hideandseek.Hide;
+import be.hctel.renaissance.hideandseek.gamespecific.objects.HideGameMap;
 
 public class StaffCommandsTabCompleter implements TabCompleter {
 	ArrayList<String> out = new ArrayList<String>();
@@ -35,8 +36,8 @@ public class StaffCommandsTabCompleter implements TabCompleter {
 		}
 		else if(command.getName().equalsIgnoreCase("gotoworld")) {
 			if(args.length == 1) {
-				for(GameMap M : GameMap.values()) {
-					out.add(M.getSystemName());
+				for(HideGameMap M : Hide.mapManager.getMaps()) {
+					out.add(M.getName());
 				}
 			}
 			return out;

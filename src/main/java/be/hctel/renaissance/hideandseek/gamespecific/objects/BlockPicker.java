@@ -17,19 +17,18 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 
 import be.hctel.renaissance.hideandseek.Hide;
-import be.hctel.renaissance.hideandseek.gamespecific.enums.GameMap;
 import be.hctel.renaissance.hideandseek.nongame.sql.Stats;
 import be.hctel.renaissance.hideandseek.nongame.utils.Utils;
 
 public class BlockPicker {
-	GameMap map;
+	HideGameMap map;
 	Stats stats;
 	HashMap<Player, ItemStack> playerBlock = new HashMap<Player, ItemStack>();
 	HashMap<Player, Inventory> playerBlockSelector = new HashMap<Player, Inventory>();
 	HashMap<Player, Material> playerItem = new HashMap<Player, Material>();
 	private Plugin plugin;
 	
-	public BlockPicker(GameMap map, Stats stats, Plugin plugin) {
+	public BlockPicker(HideGameMap map, Stats stats, Plugin plugin) {
 		this.map = map;
 		this.stats = stats;
 		this.plugin = plugin;
@@ -37,10 +36,10 @@ public class BlockPicker {
 	
 	public void buildBlockSelector(Player player) {
 		Random r = new Random();
-		ArrayList<ItemStack> def = map.getDefaultBlocks();
+		ArrayList<ItemStack> def = map.getDefaultBlocksItem();
 		ArrayList<ItemStack> cus = new ArrayList<ItemStack>();
 		for(Material M : stats.getUnlockedBlocks(player)) cus.add(new ItemStack(M));
-		ArrayList<ItemStack> dis = map.getDisabledBlocks();
+		ArrayList<ItemStack> dis = map.getDisabledBlocksItem();
 		for(int o = 0; o < cus.size(); o++) {
 			ItemStack i = cus.get(o);
 			if(dis.contains(i)) cus.remove(i);

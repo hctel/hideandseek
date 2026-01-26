@@ -15,7 +15,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import be.hctel.api.disguises.FallingBlockDisguise;
 import be.hctel.renaissance.hideandseek.Hide;
-import be.hctel.renaissance.hideandseek.gamespecific.enums.GameAchievement;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.ItemsManager;
 import be.hctel.renaissance.hideandseek.nongame.utils.Utils;
 import net.minecraft.network.protocol.game.PacketPlayOutEntityDestroy;
@@ -157,7 +156,7 @@ public class DisguiseBlockManager {
 	
 	public void endGameChecks() {
 		if(timesWentSolid == 1) {
-			Hide.gameEngine.unlockAch(player, GameAchievement.SETINPLACE);
+			Hide.gameEngine.unlockAch(player, HideGameAchievement.SETINPLACE);
 		}
 		kill();
 	}

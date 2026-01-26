@@ -12,7 +12,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 import be.hctel.api.books.FakeBook;
 import be.hctel.renaissance.hideandseek.Hide;
-import be.hctel.renaissance.hideandseek.gamespecific.enums.GameMap;
+import be.hctel.renaissance.hideandseek.gamespecific.objects.HideGameMap;
 
 public class InventoryListener implements Listener {
 	@EventHandler
@@ -77,13 +77,13 @@ public class InventoryListener implements Listener {
 				int counter = 1;
 				String currentPage = "§3Your map kills\n";
 				ArrayList<String> pages = new ArrayList<>();
-				for(GameMap M : GameMap.values()) {
+				for(HideGameMap M : Hide.mapManager.getMaps()) {
 					if(counter == 14) {
 						counter = 0;
 						pages.add(currentPage);
 						currentPage = "";
 					}
-					currentPage += String.format("§1%s: §2%d\n", M.getMapName(), Hide.stats.getKilledOnMap(p, M));
+					currentPage += String.format("§1%s: §2%d\n", M.getName(), Hide.stats.getKilledOnMap(p, M));
 					counter++;
 				}
 				pages.add(currentPage);

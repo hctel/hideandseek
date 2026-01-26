@@ -15,7 +15,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import be.hctel.renaissance.hideandseek.Hide;
-import be.hctel.renaissance.hideandseek.gamespecific.enums.GameMap;
+import be.hctel.renaissance.hideandseek.gamespecific.objects.HideGameMap;
 import be.hctel.renaissance.hideandseek.nongame.utils.ChatMessages;
 import be.hctel.renaissance.hideandseek.nongame.utils.Utils;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -25,24 +25,24 @@ import net.md_5.bungee.api.chat.TextComponent;
 
 public class VotesHandler {
 	Plugin plugin;
-	ArrayList<GameMap> maps = new ArrayList<GameMap>();
-	HashMap<GameMap, Integer> votes = new HashMap<GameMap, Integer>();
+	ArrayList<HideGameMap> maps = new ArrayList<HideGameMap>();
+	HashMap<HideGameMap, Integer> votes = new HashMap<HideGameMap, Integer>();
 	HashMap<Player, Integer> playerVote = new HashMap<Player, Integer>();
 	HashMap<Player, BukkitRunnable> voteMenuRunnables = new HashMap<>();
-	public ArrayList<GameMap> currentGameMaps = new ArrayList<GameMap>();
+	public ArrayList<HideGameMap> currentGameMaps = new ArrayList<HideGameMap>();
 	boolean acceptingVotes = true;
-	GameMap max;
+	HideGameMap max;
 	public int voted;
 	private int totalVotes;
 	public VotesHandler(Plugin plugin) {
 		this.plugin = plugin;
-		for(GameMap map : GameMap.values()) {
+		for(HideGameMap map : Hide.mapManager.getMaps()) {
 			maps.add(map);
 		}
-		ArrayList<GameMap> a = new ArrayList<GameMap>();
+		ArrayList<HideGameMap> a = new ArrayList<HideGameMap>();
 		Random r = new Random();
 		for(int i = 0; i < 6; i++) {
-			GameMap b = maps.get(r.nextInt(maps.size()));
+			HideGameMap b = maps.get(r.nextInt(maps.size()));
 			while(a.contains(b)) {
 				b = maps.get(r.nextInt(maps.size()));
 			}
@@ -71,9 +71,9 @@ public class VotesHandler {
 	@SuppressWarnings("deprecation")
 	public void sendMapChoices() {
 		for(int i = 0; i < 5; i++) {
-			TextComponent message = new TextComponent(Hide.header + "§7§l" + (i+1) + ". §6" + currentGameMaps.get(i).getMapName() + getVoteAmountString(currentGameMaps.get(i)));
+			TextComponent message = new TextComponent(Hide.header + "§7§l" + (i+1) + ". §6" + currentGameMaps.get(i).getName() + getVoteAmountString(currentGameMaps.get(i)));
 			message.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/v " + (i+1)));
-			message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("§aClick to vote for §6" + currentGameMaps.get(i).getMapName()).create()));
+			message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("§aClick to vote for §6" + currentGameMaps.get(i).getName()).create()));
 			for(Player p : Bukkit.getOnlinePlayers()) {
 				p.spigot().sendMessage(message);
 			}
@@ -90,8 +90,8 @@ public class VotesHandler {
 	public void sendMapChoices(Player player) {
 		player.sendMessage(Hide.header + "§e§lVote for a map! §7Use §f/v # §7or click.");
 		for(int i = 0; i < 5; i++) {
-			TextComponent message = new TextComponent(Hide.header + "§7§l" + (i+1) + ". §6" + currentGameMaps.get(i).getMapName() + getVoteAmountString(currentGameMaps.get(i)));
-			message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("§aClick to vote for §6" + currentGameMaps.get(i).getMapName()).create()));
+			TextComponent message = new TextComponent(Hide.header + "§7§l" + (i+1) + ". §6" + currentGameMaps.get(i).getName() + getVoteAmountString(currentGameMaps.get(i)));
+			message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("§aClick to vote for §6" + currentGameMaps.get(i).getName()).create()));
 			message.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/v " + (i+1)));
 			player.spigot().sendMessage(message);
 		}
@@ -123,7 +123,7 @@ public class VotesHandler {
 					if(in == 5) {
 						player.sendMessage(Hide.header + ChatMessages.VOTEREGISTERED.toText() + "§cRandom Map" + getVoteAmountString(currentGameMaps.get(in)) + ".");
 					} else {
-						player.sendMessage(Hide.header + ChatMessages.VOTEREGISTERED.toText() + currentGameMaps.get(in).getMapName() + getVoteAmountString(currentGameMaps.get(in)) + ".");
+						player.sendMessage(Hide.header + ChatMessages.VOTEREGISTERED.toText() + currentGameMaps.get(in).getName() + getVoteAmountString(currentGameMaps.get(in)) + ".");
 					}
 				}
 			} else {
@@ -134,7 +134,7 @@ public class VotesHandler {
 				if(in == 5) {
 					player.sendMessage(Hide.header + ChatMessages.VOTEREGISTERED.toText() + "§cRandom Map" + getVoteAmountString(currentGameMaps.get(in)) + ".");
 				} else {
-					player.sendMessage(Hide.header + ChatMessages.VOTEREGISTERED.toText() + currentGameMaps.get(in).getMapName() + getVoteAmountString(currentGameMaps.get(in)) + ".");
+					player.sendMessage(Hide.header + ChatMessages.VOTEREGISTERED.toText() + currentGameMaps.get(in).getName() + getVoteAmountString(currentGameMaps.get(in)) + ".");
 				}
 			}
 		} else {
@@ -150,9 +150,9 @@ public class VotesHandler {
 				
 				int index = 0;
 				max = Collections.max(votes.entrySet(), Comparator.comparingInt(Map.Entry::getValue)).getKey();
-				for(GameMap M : currentGameMaps) {
+				for(HideGameMap M : currentGameMaps) {
 					Material lightData = (M == max ? Material.LIME_STAINED_GLASS_PANE : Material.WHITE_STAINED_GLASS_PANE);
-					String mapName = "§r" + M.getMapName();
+					String mapName = "§r" + M.getName();
 					int mapVotes = votes.get(M);
 					double ratio = 0;
 					if(totalVotes != 0) ratio= ((double) mapVotes) / ((double) totalVotes);
@@ -199,11 +199,11 @@ public class VotesHandler {
 	
 	public int endVotes() {
 		acceptingVotes = false;
-		GameMap voted = Collections.max(votes.entrySet(), Comparator.comparingInt(Map.Entry::getValue)).getKey();
+		HideGameMap voted = Collections.max(votes.entrySet(), Comparator.comparingInt(Map.Entry::getValue)).getKey();
 		this.voted = currentGameMaps.indexOf(voted);
 		return currentGameMaps.indexOf(voted);
 	}
-	private String getVoteAmountString(GameMap map) {
+	private String getVoteAmountString(HideGameMap map) {
 		int n = votes.get(map);
 		String color = "§7";
 		max = Collections.max(votes.entrySet(), Comparator.comparingInt(Map.Entry::getValue)).getKey();
