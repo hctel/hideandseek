@@ -68,6 +68,8 @@ public class Hide extends JavaPlugin implements RenaissancePlugin {
 	@Override
 	public void onEnable() {
 		getLogger().info("Enabling HideAndSeek...");
+		saveDefaultConfig();
+		saveResource("example_maps.json", false);
 		plugin = this;
 		PacketEvents.getAPI().init();
 		//Enables external libraries
@@ -76,7 +78,11 @@ public class Hide extends JavaPlugin implements RenaissancePlugin {
 		worldManager = core.getApi().getWorldManager();
 		
 		//Creating every helpers
-		mapManager = new MapManager<HideGameMap>(this, HideGameMap.class);
+		try {
+			mapManager = new MapManager<HideGameMap>(this, HideGameMap.class);
+		} catch (Exception e) {
+			this.setEnabled(false);
+		}
 		mapLoader = new MapLoader(this);
 		mapLoader.loadMaps();
 		preGameTimer = new PreGameTimer(this);

@@ -29,11 +29,11 @@ public class MapManager<T extends GameMap> {
 	private ArrayList<T> gameMaps = new ArrayList<>();
 	private HashMap<World, T> gameMapsPerWorld = new HashMap<>();
 	
-	public MapManager(@NotNull RenaissancePlugin plugin, @NotNull Class<T> mapTypeClass) {
+	public MapManager(@NotNull RenaissancePlugin plugin, @NotNull Class<T> mapTypeClass) throws Exception {
 		this(plugin, mapTypeClass, "maps.json");
 	}
 	
-	public MapManager(@NotNull RenaissancePlugin plugin, @NotNull Class<T> mapTypeClass, @NotNull String fileName) {
+	public MapManager(@NotNull RenaissancePlugin plugin, @NotNull Class<T> mapTypeClass, @NotNull String fileName) throws Exception {
 		this.rPlugin = plugin;
 		this.plugin = this.rPlugin.getPlugin();
 		try {
@@ -41,6 +41,16 @@ public class MapManager<T extends GameMap> {
 			this.mapConfig = new Config(this.plugin, fileName);
 		} catch (Exception e) {
 			e.printStackTrace();
+			plugin.getPlugin().getLogger().severe("");
+			plugin.getPlugin().getLogger().severe("Couldn't load maps.json!!");
+			plugin.getPlugin().getLogger().severe("");
+			throw new Exception("Couldn't load maps.json!!");
+		}
+		if(mapConfig.getConfig().length() == 0) {
+			plugin.getPlugin().getLogger().severe("");
+			plugin.getPlugin().getLogger().severe("maps.json MUST at least contain one map!!");
+			plugin.getPlugin().getLogger().severe("");
+			throw new Exception("maps.json MUST at least contain one map!!");
 		}
 		for(World W : Bukkit.getWorlds()) {
 			W.setGameRule(GameRule.RANDOM_TICK_SPEED, 0);
