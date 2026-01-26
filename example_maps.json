@@ -1,0 +1,56 @@
+{
+  "World folder name": {
+    "seekerSpawn": {
+      "world": "World Folder Name",
+      "x": 1,
+      "y": 2,
+      "z": 3.4,
+      "pitch": 3.14159265,
+      "yaw": 2.7182818
+    },
+    "spawn": {
+      "world": "HIDE_Teitaku",
+      "x": 9.123456789,
+      "y": 8.987654321,
+      "z": 7,
+      "pitch": 123.456,
+      "yaw": 45.045656
+    },
+    "achievement": "Not used here :p",
+    "blocks": [
+      "CRAFTING_TABLE",
+      "BOOKSHELF",
+      "ANVIL",
+      "JUKEBOX",
+      "BEACON",
+      "FLOWER_POT"
+    ],
+    "name": "Map name (the name players will see)",
+    "disabledBlocks": ["REDSTONE_ORE"]
+  },
+  "HIDE_Hotel": {
+    "seekerSpawn": {
+      "world": "HIDE_Hotel",
+      "x": -1.5,
+      "y": 34.5,
+      "z": 29.5,
+      "pitch": 0.1,
+      "yaw": 180.1
+    },
+    "spawn": {
+      "world": "HIDE_Hotel",
+      "x": -15.5,
+      "y": 27.5,
+      "z": -12.5,
+      "pitch": 0.1,
+      "yaw": 0.1
+    },
+    "achievement": "",
+    "blocks": [
+      "QUARTZ_STAIRS",
+      "BEACON"
+    ],
+    "name": "Hotel",
+    "disabledBlocks": []
+  },
+}
