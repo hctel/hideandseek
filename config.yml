@@ -6,3 +6,10 @@ SQL:
   database: "testdb"
   port: 3306
   host: "localhost"
+spawn:
+  world: "HIDE_Lobby"
+  x: -79.5
+  y: 90.5
+  z: 61.5
+  yaw: 0
+  pitch: 0

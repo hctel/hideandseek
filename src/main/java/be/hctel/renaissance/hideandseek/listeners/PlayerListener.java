@@ -5,7 +5,6 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
@@ -96,7 +95,7 @@ public class PlayerListener implements Listener {
 		Player p = e.getPlayer();
 		//p.sendTitle("§c§lDEV MODE", "§eIf you're not involved in testing, please disconnect!", 10, 120, 20);
 		if(!Hide.preGameTimer.gameStarted) {
-			p.teleport(new Location(Bukkit.getWorld("HIDE_Lobby"), -79.5, 90.5, 61.5, 0.1f, 0.1f));
+			p.teleport(Hide.spawnLocation);
 			p.setGameMode(GameMode.ADVENTURE);
 		}
 		p.getInventory().clear();
