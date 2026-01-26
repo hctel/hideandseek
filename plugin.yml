@@ -1,6 +1,6 @@
 name: HideAndSeek
 author: hctel
-version: pre-1.0a
+version: 1.0
 api-version: 1.21.10
 main: be.hctel.renaissance.hideandseek.Hide
 depend: ['Multiverse-Core', 'ProtocolLib', 'packetevents']

@@ -2,6 +2,7 @@ package be.hctel.renaissance.hideandseek;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.Team;
@@ -34,9 +35,8 @@ import be.hctel.renaissance.hideandseek.nongame.utils.MapLoader;
 import io.github.retrooper.packetevents.factory.spigot.SpigotPacketEventsBuilder;
 
 public class Hide extends JavaPlugin implements RenaissancePlugin {
-	public static String version = "pre-1.0a";
+	public static String version = "1.0";
 		
-	public static boolean testServer = false;
 	public static boolean isServerStarting = true;
 	
 	public static String header = "§8▍ §bHide§aAnd§eSeek§8 ▏ ";
@@ -76,6 +76,7 @@ public class Hide extends JavaPlugin implements RenaissancePlugin {
 		worldManager = core.getApi().getWorldManager();
 		
 		//Creating every helpers
+		mapManager = new MapManager<HideGameMap>(this, HideGameMap.class);
 		mapLoader = new MapLoader(this);
 		mapLoader.loadMaps();
 		preGameTimer = new PreGameTimer(this);
@@ -97,6 +98,7 @@ public class Hide extends JavaPlugin implements RenaissancePlugin {
 	@Override
 	public void onDisable() {
 		//Disable clean-up and data save
+		Bukkit.getOnlinePlayers().forEach((Player p) -> p.kickPlayer("Server closed"));
 		mapLoader.deleteTempWorld();
 		mapManager.onDisable();
 		PacketEvents.getAPI().terminate();

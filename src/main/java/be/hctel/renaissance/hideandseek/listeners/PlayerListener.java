@@ -43,22 +43,9 @@ import be.hctel.renaissance.hideandseek.gamespecific.enums.GameTeam;
 import be.hctel.renaissance.hideandseek.nongame.utils.Utils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.TextComponent;
 
 public class PlayerListener implements Listener {
-	
-	private static TextComponent reportBug = new TextComponent (" §eIf there's any error, click ");
-	static {
-		TextComponent url = new TextComponent("§9§nthis link");
-		url.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://forms.gle/rcj97SFdc4pBQbeT7"));
-		TextComponent end = new TextComponent(" §e to report an issue.");
-		reportBug.addExtra(url);
-		reportBug.addExtra(end);
-	}
-	
-	// private static ItemStack rulesBook = new FakeBook("§b§lRules §7§l& §e§lInfo", "§d§lHide and Seek\n§7-=-=-=-=-=-=-=-=-\n\n§c§lRules\n\n§81: Do not cheat\n§82: Do not glitch\n§83: Clean chat\n§84: Respect others\n\n§8Full rules are\n§8available at hctel.net").getItemStack();	
-	
+		
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onLogin(PlayerLoginEvent a) {
 		if(Hide.preGameTimer.choosingBlock && !Hide.preGameTimer.gameStarted) {
@@ -74,13 +61,13 @@ public class PlayerListener implements Listener {
 				a.disallow(Result.KICK_FULL, "§This server is full.");
 			}
 		}
-		/*else if(Hide.preGameTimer.gameStarted) {
-			if(!(a.getPlayer().hasPermission("hide.spectate"))) a.getPlayer().kickPlayer("Only staff members are allowed to spectate in Hide and Seek.");
-		}*/
 	}
 	
 	@EventHandler
 	public void onJoin(PlayerJoinEvent e) throws SQLException {
+		e.getPlayer().setHealth(20);
+		e.getPlayer().setFoodLevel(20);
+		e.getPlayer().setSaturation(20);
 		if(Hide.preGameTimer.choosingBlock && !Hide.preGameTimer.gameStarted) {
 			e.getPlayer().kickPlayer("§ePlease do not rejoin games when block picking is active.");
 			return;
@@ -91,7 +78,6 @@ public class PlayerListener implements Listener {
 			e.getPlayer().setGameMode(GameMode.SPECTATOR);
 		}
 		Player p = e.getPlayer();
-		//p.sendTitle("§c§lDEV MODE", "§eIf you're not involved in testing, please disconnect!", 10, 120, 20);
 		if(!Hide.preGameTimer.gameStarted) {
 			p.teleport(Hide.spawnLocation);
 			p.setGameMode(GameMode.ADVENTURE);
@@ -99,19 +85,13 @@ public class PlayerListener implements Listener {
 		p.getInventory().clear();
 		e.setJoinMessage(p.getName() + " §7wants to hide!");
 		if(!Hide.preGameTimer.gameStarted) Hide.votesHandler.sendMapChoices(p);
-		Utils.sendHeaderFooter(p, "\n§6Renaissance §eProject\n§fBringing back good memories\n", "\n§aPlaying in §bHide §aAnd §eSeek.\n");
 		p.sendMessage("");
 		p.sendMessage("");
-		Utils.sendCenteredMessage(e.getPlayer(), "§6Welcome on the HnS Alpha release v1!");
-		e.getPlayer().spigot().sendMessage(reportBug);
 		if(!Hide.preGameTimer.gameStarted) {
 			new BukkitRunnable() {
 				@Override
 				public void run() {
-					//p.getInventory().setItem(0, rulesBook);
 					p.getInventory().setItem(1, Utils.createQuickItemStack(Material.DIAMOND, (short) 0, "§6§lView Vote Menu"));
-					p.getInventory().setItem(2, Utils.createQuickItemStack(Material.BOOK, (short) 0, "§r§lSeeker kill records"));
-					p.getInventory().setItem(7, Utils.createQuickItemStack(Material.COMPARATOR, (short) 0, "§b§lJoin messages"));
 					p.getInventory().setItem(8, Utils.createQuickItemStack(Material.SLIME_BALL, (short) 0, "§c§lReturn to Hub"));
 				}
 			}.runTaskLater(Hide.plugin, 1L);
@@ -285,5 +265,6 @@ public class PlayerListener implements Listener {
 	@EventHandler
 	public void onFood(FoodLevelChangeEvent e) {
 		e.setCancelled(true);
+		e.getEntity().setFoodLevel(20);
 	}
 }

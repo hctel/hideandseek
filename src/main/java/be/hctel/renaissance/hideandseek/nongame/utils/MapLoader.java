@@ -81,8 +81,9 @@ public class MapLoader {
 		for(int i = 0; i < 6; i++) {
 			plugin.getLogger().info(String.format("Deleting TEMPWORLD%d", i));
 			Attempt<String, DeleteFailureReason> result = Hide.worldManager.deleteWorld(DeleteWorldOptions.world(Hide.worldManager.getWorld("TEMPWORLD" + i).get()));
-			if(!result.isSuccess()) {
+			while(!result.isSuccess()) {
 				plugin.getLogger().log(Level.WARNING, String.format("Could not delete world: %s (%s)", result.getFailureReason(), result.getFailureMessage().formatted()));
+				result = Hide.worldManager.deleteWorld(DeleteWorldOptions.world(Hide.worldManager.getWorld("TEMPWORLD" + i).get()));
 			}			
 		}
 	}	

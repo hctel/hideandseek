@@ -529,7 +529,7 @@ public class GameEngine {
 			public void run() {
 				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "stop");
 			}
-		}.runTaskLater(plugin, 250L);
+		}.runTaskLater(plugin, 190L);
 	}
 	
 	public TauntManager getTauntManager() {
