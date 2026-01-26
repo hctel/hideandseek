@@ -165,7 +165,7 @@ public class Signer implements Listener {
 	public void onDisable(){
 		plugin.getLogger().info("Saving signs...");
 		try {
-			config.save(jsonConfig);
+			config.save();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
