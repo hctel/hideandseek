@@ -3,29 +3,9 @@ author: hctel
 version: pre-1.0a
 api-version: 1.21.10
 main: be.hctel.renaissance.hideandseek.Hide
-depend: ['Multiverse-Core', 'ProtocolLib', 'packetevents', 'ViaVersion', 'ViaBackwards', 'ViaRewind', 'LuckPerms']
+depend: ['Multiverse-Core', 'ProtocolLib', 'packetevents']
 load: POSTWORLD
 commands: 
-  stats:
-    usage: /stats [player]
-    permission: hide.default
-    description: Check the stats of a player
-  setrank:
-    usage: /setrank <0-9>
-    permission: hide.rank
-    description: Disguise your rank as another rank
-  togglerank:
-    usage: /togglerank
-    permission: hide.rank
-    description: Toggles your rank visibility
-  updateprofile:
-    usage: /updateprofile <player> <category> <value>
-    permission: hide.admin
-    description: update a player's stats
-  blockshop:
-    usage: /blockshop
-    permission: hide.default
-    description: Opens block shop
   vote:
     usage: /vote <#>
     permission: hide.default
@@ -42,35 +22,11 @@ commands:
     usage: /taunt <taunt type>
     permission: hide.default
     description: Taunt!
-  s:
-    usage: /s
-    permission: hide.admin
-    description: Stops the server and sends everyone to the lobby
-  katest:
-    usage: /katest <player>
-    permission: hide.admin
-    description: test command do not use
   ping:
     usage: /ping
     permission: hide.default
     description: Calculates your ping
-  signer:
-    usage: /signer <operation>
-    permission: hide.admin
-    description: Signer system
-  dev:
-    usage: /dev <subcommand>
-    permission: hide.hctel
-    description: Versatile command to test miscellaneous things
   showhiders:
     usage: /showhiders
     permission: hide.admin
     description: Display hiders
-  whereami:
-    usage: /whereami
-    permission: hide.default
-    decription: Tells you which server you are on
-  getskin:
-    usage: /getskin
-    permission: hide.admin
-    
