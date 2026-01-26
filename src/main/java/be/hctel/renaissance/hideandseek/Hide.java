@@ -29,6 +29,8 @@ import be.hctel.api.fakeentities.FakePlayer;
 import be.hctel.api.runnables.ArgumentRunnable;
 import be.hctel.api.signs.Signer;
 import be.hctel.renaissance.cosmetics.CosmeticsManager;
+import be.hctel.renaissance.framework.RenaissancePlugin;
+import be.hctel.renaissance.global.mapmanager.MapManager;
 import be.hctel.renaissance.hideandseek.commands.DevCommands;
 import be.hctel.renaissance.hideandseek.commands.RankCommands;
 import be.hctel.renaissance.hideandseek.commands.SignCommands;
@@ -43,6 +45,7 @@ import be.hctel.renaissance.hideandseek.commonclass.VotesHandler;
 import be.hctel.renaissance.hideandseek.gamespecific.objects.BlockPicker;
 import be.hctel.renaissance.hideandseek.gamespecific.objects.BlockShop;
 import be.hctel.renaissance.hideandseek.gamespecific.objects.GameEngine;
+import be.hctel.renaissance.hideandseek.gamespecific.objects.HideGameMap;
 import be.hctel.renaissance.hideandseek.gamespecific.objects.JoinMessageHandler;
 import be.hctel.renaissance.hideandseek.gamespecific.objects.PreGameTimer;
 import be.hctel.renaissance.hideandseek.listeners.InventoryListener;
@@ -53,7 +56,7 @@ import be.hctel.renaissance.hideandseek.nongame.utils.MapLoader;
 import be.hctel.renaissance.ranks.RankManager;
 import io.github.retrooper.packetevents.factory.spigot.SpigotPacketEventsBuilder;
 
-public class Hide extends JavaPlugin {
+public class Hide extends JavaPlugin implements RenaissancePlugin {
 	public static String version = "pre-1.0a";
 	
 	public volatile static HashMap<Player, String> runCommandSync = new HashMap<Player, String>();
@@ -93,6 +96,7 @@ public class Hide extends JavaPlugin {
 	
 	//Declaring every project variables
 	
+	public static MapManager<HideGameMap> mapManager;
 	public static MapLoader mapLoader;
 	public static VotesHandler votesHandler;
 	public static BlockPicker blockPicker;
@@ -133,6 +137,7 @@ public class Hide extends JavaPlugin {
 		stats = new Stats(con, this);
 		rankManager = new RankManager(con, this);
 		cosmeticManager = new CosmeticsManager(con, this);
+		mapManager = new MapManager<HideGameMap>(this, HideGameMap.class);
 		mapLoader = new MapLoader(this);
 		mapLoader.loadMaps();
 		preGameTimer = new PreGameTimer(this);
@@ -180,6 +185,7 @@ public class Hide extends JavaPlugin {
 			commandRunner.cancel();
 			signer.onDisable();
 			mapLoader.deleteTempWorld();
+			mapManager.onDisable();
 			cosmeticManager.saveAll();
 			rankManager.saveAll();
 			stats.saveAll();
@@ -279,5 +285,15 @@ public class Hide extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(new PlayerListener(), this);
 		getServer().getPluginManager().registerEvents(new InventoryListener(), this);
 		getServer().getPluginManager().registerEvents(new MiscListeners(), this);
+	}
+
+	@Override
+	public String getHeader() {
+		return header;
+	}
+	
+	@Override
+	public Plugin getPlugin() {
+		return this;
 	}
 }

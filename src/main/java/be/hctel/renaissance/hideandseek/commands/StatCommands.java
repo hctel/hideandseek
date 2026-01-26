@@ -10,7 +10,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import be.hctel.renaissance.hideandseek.Hide;
-import be.hctel.renaissance.hideandseek.gamespecific.enums.GameAchievement;
+import be.hctel.renaissance.hideandseek.gamespecific.objects.HideGameAchievement;
 import be.hctel.renaissance.hideandseek.nongame.utils.Utils;
 
 public class StatCommands implements CommandExecutor {
@@ -28,7 +28,7 @@ public class StatCommands implements CommandExecutor {
 					player.sendMessage(" §3Total Deaths: §b" + Hide.stats.getDeaths(player));
 					player.sendMessage(" §3Kills as Seeker: §b" + Hide.stats.getKilledHiders(player));
 					player.sendMessage(" §3Kills as Hider: §b" + Hide.stats.getKilledSeekers(player));
-					player.sendMessage(" §3Achievements: §b" + Hide.stats.getCompletedAchievements(player).size() + "/" + GameAchievement.values().length);
+					player.sendMessage(" §3Achievements: §b" + Hide.stats.getCompletedAchievements(player).size() + "/" + HideGameAchievement.values().size());
 					player.sendMessage(" §6Gold Medals: §e" + Hide.cosmeticManager.getGoldMedals(player));
 					Utils.sendCenteredMessage(player, "§6§m---------------------------");
 					
@@ -52,7 +52,7 @@ public class StatCommands implements CommandExecutor {
 						player.sendMessage(" §3Total Deaths: §b" + Hide.stats.getDeaths(ot));
 						player.sendMessage(" §3Kills as Seeker: §b" + Hide.stats.getKilledHiders(ot));
 						player.sendMessage(" §3Kills as Hider: §b" + Hide.stats.getKilledSeekers(ot));
-						player.sendMessage(" §3Achievements: §b" + Hide.stats.getCompletedAchievements(ot).size() + "/" + GameAchievement.values().length);
+						player.sendMessage(" §3Achievements: §b" + Hide.stats.getCompletedAchievements(ot).size() + "/" + HideGameAchievement.values().size());
 						player.sendMessage(" §6Gold Medals: §e" + Hide.cosmeticManager.getGoldMedals(ot));
 						Utils.sendCenteredMessage(player, "§6§m---------------------------");
 					} else {
@@ -64,7 +64,7 @@ public class StatCommands implements CommandExecutor {
 						player.sendMessage(" §3Total Deaths: §b" + Hide.stats.getDeaths(t));
 						player.sendMessage(" §3Kills as Seeker: §b" + Hide.stats.getKilledHiders(t));
 						player.sendMessage(" §3Kills as Hider: §b" + Hide.stats.getKilledSeekers(t));
-						player.sendMessage(" §3Achievements: §b" + Hide.stats.getCompletedAchievements(t).size() + "/" + GameAchievement.values().length);
+						player.sendMessage(" §3Achievements: §b" + Hide.stats.getCompletedAchievements(t).size() + "/" + HideGameAchievement.values().size());
 						player.sendMessage(" §6Gold Medals: §e" + Hide.cosmeticManager.getGoldMedals(player));
 						Utils.sendCenteredMessage(player, "§6§m---------------------------");
 					}

@@ -11,7 +11,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import be.hctel.renaissance.hideandseek.Hide;
-import be.hctel.renaissance.hideandseek.gamespecific.enums.GameMap;
 import be.hctel.renaissance.hideandseek.nongame.utils.ChatMessages;
 import be.hctel.renaissance.hideandseek.nongame.utils.Utils;
 
@@ -107,7 +106,7 @@ public class StaffComands implements CommandExecutor {
 					if(args.length == 1) {
 							if(args[0] != "TEMPWORLD") {
 								if(!args[0].startsWith("HIDE_")) args[0] = "HIDE_" + args[0];
-								player.teleport(GameMap.getFromSystemName(args[0]).getHiderStart());
+								player.teleport(Hide.mapManager.getMap(Bukkit.getWorld(args[0])).getSpawn());
 						}
 					}
 				}

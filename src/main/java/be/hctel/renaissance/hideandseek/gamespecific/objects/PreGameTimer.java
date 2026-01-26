@@ -105,9 +105,9 @@ public class PreGameTimer {
 						} else if(timer <= 21 && timer > 16) {
 							if(timer == 21) {
 								Hide.votesHandler.endVotes();
-								Hide.bm.send("ServerMapVoted", Hide.votesHandler.currentGameMaps.get(Hide.votesHandler.voted).getMapName());
-								Hide.bm.sendForward("MapVoted", Hide.votesHandler.currentGameMaps.get(Hide.votesHandler.voted).getMapName());
-								Bukkit.broadcastMessage(Hide.header + "§3Voting has ended. §bThe map §f" + Hide.votesHandler.currentGameMaps.get(Hide.votesHandler.voted).getMapName() + " §bhas won.");
+								Hide.bm.send("ServerMapVoted", Hide.votesHandler.currentGameMaps.get(Hide.votesHandler.voted).getName());
+								Hide.bm.sendForward("MapVoted", Hide.votesHandler.currentGameMaps.get(Hide.votesHandler.voted).getName());
+								Bukkit.broadcastMessage(Hide.header + "§3Voting has ended. §bThe map §f" + Hide.votesHandler.currentGameMaps.get(Hide.votesHandler.voted).getName() + " §bhas won.");
 								
 								Bukkit.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
 									public void run() {

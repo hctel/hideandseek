@@ -18,7 +18,7 @@ import org.mvplugins.multiverse.core.world.options.DeleteWorldOptions;
 import org.mvplugins.multiverse.core.world.reasons.DeleteFailureReason;
 
 import be.hctel.renaissance.hideandseek.Hide;
-import be.hctel.renaissance.hideandseek.gamespecific.enums.GameMap;
+import be.hctel.renaissance.hideandseek.gamespecific.objects.HideGameMap;
 
 /*
  * This file is a part of the Renaissance Project API
@@ -33,8 +33,8 @@ public class MapLoader {
 	Plugin plugin;
 	public MapLoader(Plugin plugin) {
 		this.plugin = plugin;
-		for(GameMap map : GameMap.values()) {
-			worldNames.add(map.getSystemName());
+		for(HideGameMap map : Hide.mapManager.getMaps()) {
+			worldNames.add(map.getWorld().getName());
 		}
 	}
 	public void loadMaps() {
@@ -55,10 +55,10 @@ public class MapLoader {
 			Hide.worldManager.loadWorld(name);
 		}
 	}
-	public void loadWorldsToTempWorld(ArrayList<GameMap> map) {
+	public void loadWorldsToTempWorld(ArrayList<HideGameMap> map) {
 		for(int i = 0; i < 6; i++) {
-			plugin.getLogger().info(String.format("Cloning %s", map.get(i).getSystemName()));
-			MultiverseWorld mvworld = Hide.worldManager.getWorld(plugin.getServer().getWorld(map.get(i).getSystemName())).get();
+			plugin.getLogger().info(String.format("Cloning %s", map.get(i).getWorld().getName()));
+			MultiverseWorld mvworld = Hide.worldManager.getWorld(map.get(i).getWorld()).get();
 			LoadedMultiverseWorld world = (Hide.worldManager.isLoadedWorld(mvworld) ? Hide.worldManager.getLoadedWorld(mvworld).get() : Hide.worldManager.loadWorld(mvworld).get());
 			CloneWorldOptions option = CloneWorldOptions.fromTo(world, "TEMPWORLD" + i);
 			Hide.worldManager.cloneWorld(option);

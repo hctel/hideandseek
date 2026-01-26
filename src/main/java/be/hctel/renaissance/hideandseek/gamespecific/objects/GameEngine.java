@@ -23,8 +23,6 @@ import org.bukkit.scheduler.BukkitTask;
 
 import be.hctel.api.scoreboard.DynamicScoreboard;
 import be.hctel.renaissance.hideandseek.Hide;
-import be.hctel.renaissance.hideandseek.gamespecific.enums.GameAchievement;
-import be.hctel.renaissance.hideandseek.gamespecific.enums.GameMap;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.GameTeam;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.ItemsManager;
 import be.hctel.renaissance.hideandseek.nongame.utils.Utils;
@@ -32,7 +30,7 @@ import be.hctel.renaissance.hideandseek.nongame.utils.Utils;
 public class GameEngine {
 	private Plugin plugin;
 	private Random r = new Random();
-	private GameMap map;
+	private HideGameMap map;
 	private int index;
 	private Location seekerSpawn;
 	private Location hiderSpawn;
@@ -73,7 +71,7 @@ public class GameEngine {
 	BukkitTask everySecondTask;
 	BukkitTask everyTickTask;
 	
-	public GameEngine(Plugin plugin, GameMap map) {
+	public GameEngine(Plugin plugin, HideGameMap map) {
 		this.plugin = plugin;
 		this.map = map;
 		index = Hide.votesHandler.currentGameMaps.indexOf(map);
@@ -81,8 +79,8 @@ public class GameEngine {
 	
 	public void start() {
 		this.queuedSeekers = Hide.preGameTimer.seekerQueue;
-		this.hiderSpawn = new Location(Bukkit.getWorld("TEMPWORLD" + index), map.getHiderStart().getX(), map.getHiderStart().getY(), map.getHiderStart().getZ(), map.getHiderStart().getYaw(), map.getHiderStart().getPitch());
-		this.seekerSpawn = new Location(Bukkit.getWorld("TEMPWORLD" + index), map.getSeekerStart().getX(), map.getSeekerStart().getY(), map.getSeekerStart().getZ(), map.getSeekerStart().getYaw(), map.getSeekerStart().getPitch());
+		this.hiderSpawn = new Location(Bukkit.getWorld("TEMPWORLD" + index), map.getSpawn().getX(), map.getSpawn().getY(), map.getSpawn().getZ(), map.getSpawn().getYaw(), map.getSpawn().getPitch());
+		this.seekerSpawn = new Location(Bukkit.getWorld("TEMPWORLD" + index), map.getSeekerSpawn().getX(), map.getSeekerSpawn().getY(), map.getSeekerSpawn().getZ(), map.getSeekerSpawn().getYaw(), map.getSeekerSpawn().getPitch());
 		isPlaying = true;
 		blocksLeft.put(Material.STONE, 0);
 		this.tauntManager = new TauntManager(plugin);
@@ -123,7 +121,7 @@ public class GameEngine {
 		hiders.remove(firstSeeker);
 		seekers.add(firstSeeker);
 		
-		unlockAch(firstSeeker, GameAchievement.THECHOSENONE);
+		unlockAch(firstSeeker, HideGameAchievement.THECHOSENONE);
 		for(Material M : Material.values()) {
 			blocksLeft.put(M, 0);
 		}
@@ -316,7 +314,7 @@ public class GameEngine {
 				seekers.add(killed);
 				disguises.get(killed).kill();
 				disguises.remove(killed);
-				killed.teleport(Hide.votesHandler.currentGameMaps.get(Hide.votesHandler.voted).getSeekerStart());
+				killed.teleport(Hide.votesHandler.currentGameMaps.get(Hide.votesHandler.voted).getSeekerSpawn());
 				Player p = killed;
 				int aliveTime = 300-timer;
 				secondsAlive.put(p, aliveTime);
@@ -362,25 +360,25 @@ public class GameEngine {
 				try {
 					switch(disguises.get(killed).getHideAs().getType()) {
 					case FURNACE:
-						unlockAch(player, GameAchievement.FURNACE);
+						unlockAch(player, HideGameAchievement.FURNACE);
 						break;
 					case ICE:
-						unlockAch(player, GameAchievement.ICE);
+						unlockAch(player, HideGameAchievement.ICE);
 						break;
 					case FLOWER_POT:
-						unlockAch(player, GameAchievement.PLANT);
+						unlockAch(player, HideGameAchievement.PLANT);
 						break;
 					case OAK_LEAVES:
-						unlockAch(player, GameAchievement.LEAF);
+						unlockAch(player, HideGameAchievement.LEAF);
 						break;
 					case ANVIL:
-						unlockAch(player, GameAchievement.ANVIL);
+						unlockAch(player, HideGameAchievement.ANVIL);
 						break;
 					case BEACON:
-						unlockAch(player, GameAchievement.BEACON);
+						unlockAch(player, HideGameAchievement.BEACON);
 						break;
 					case SNOW:
-						unlockAch(player, GameAchievement.SNOW);
+						unlockAch(player, HideGameAchievement.SNOW);
 						break;
 					default:
 						break;
@@ -389,7 +387,7 @@ public class GameEngine {
 				} catch (NullPointerException e) {
 					plugin.getLogger().warning("Error in switch: getBlock().getType() == null!!");
 				}
-				if(seekers.size() == 1) unlockAch(killed, GameAchievement.PEEKABOO);
+				if(seekers.size() == 1) unlockAch(killed, HideGameAchievement.PEEKABOO);
 				//heartbeat.remove(killed);
 				seekerKills.replace(player, seekerKills.get(player)+1);
 				Hide.stats.addKilledHider(player);
@@ -403,7 +401,7 @@ public class GameEngine {
 				seekers.add(killed);
 				disguises.get(killed).kill();
 				disguises.remove(killed);
-				killed.teleport(Hide.votesHandler.currentGameMaps.get(Hide.votesHandler.voted).getSeekerStart());
+				killed.teleport(Hide.votesHandler.currentGameMaps.get(Hide.votesHandler.voted).getSeekerSpawn());
 				sidebars.get(player).setLine(4, "§7Kills: §f" + seekerKills.get(player));
 				Player p = killed;
 				int aliveTime = 300-timer;
@@ -420,22 +418,22 @@ public class GameEngine {
 				p.getInventory().setChestplate(new ItemStack(Material.IRON_CHESTPLATE));
 				p.getInventory().setLeggings(new ItemStack(Material.IRON_LEGGINGS));
 				p.getInventory().setBoots(new ItemStack(Material.IRON_BOOTS));
-				if(seekerKills.get(player) == 10) unlockAch(player, GameAchievement.DAREALMVP);
+				if(seekerKills.get(player) == 10) unlockAch(player, HideGameAchievement.DAREALMVP);
 				switch(Hide.stats.getKilledHiders(player)) {
 				case 1:
-					unlockAch(player, GameAchievement.HIDER1);
+					unlockAch(player, HideGameAchievement.HIDER1);
 					break;
 				case 50:
-					unlockAch(player, GameAchievement.HIDER50);
+					unlockAch(player, HideGameAchievement.HIDER50);
 					break;
 				case 250:
-					unlockAch(player, GameAchievement.HIDER250);
+					unlockAch(player, HideGameAchievement.HIDER250);
 					break;
 				case 500:
-					unlockAch(player, GameAchievement.HIDER500);
+					unlockAch(player, HideGameAchievement.HIDER500);
 					break;
 				case 1000:
-					unlockAch(player, GameAchievement.HIDER1000);
+					unlockAch(player, HideGameAchievement.HIDER1000);
 					break;
 				}
 				
@@ -476,10 +474,10 @@ public class GameEngine {
 				sidebars.get(player).setLine(4, "§7Kills: §f" + hiderKills.get(player));
 				switch(Hide.stats.getKilledSeekers(player)) {
 				case 1:
-					unlockAch(player, GameAchievement.SEEKER1);
+					unlockAch(player, HideGameAchievement.SEEKER1);
 					break;
 				case 25:
-					unlockAch(player, GameAchievement.SEEKER25);
+					unlockAch(player, HideGameAchievement.SEEKER25);
 					break;
 				}
 			}
@@ -522,7 +520,7 @@ public class GameEngine {
 	public void addSpectator(Player player) {
 		spectators.add(player);
 		player.setGameMode(GameMode.SPECTATOR);
-		player.teleport(map.getHiderStart());	
+		player.teleport(map.getSpawn());	
 	}
 	
 	private void endGame(GameTeam winners) {
@@ -581,7 +579,7 @@ public class GameEngine {
 			}
 			if(hiders.size() == 1) {
 				for(Player S : seekers) {
-					unlockAch(S, GameAchievement.SOCLOSEYETSOFAR);
+					unlockAch(S, HideGameAchievement.SOCLOSEYETSOFAR);
 				}
 			}
 		} else if(winners == GameTeam.SEEKER) {
@@ -703,9 +701,9 @@ public class GameEngine {
 	 * @param achievement
 	 * @return true if the achievement was added, false if the player already unlocked the achievement
 	 */
-	public boolean unlockAch(Player player, GameAchievement achievement) {
+	public boolean unlockAch(Player player, HideGameAchievement achievement) {
 		if(Hide.stats.getAchievements(player).contains(achievement)) {
-			if(Hide.stats.getAchievementProgress(player, achievement) == achievement.getUnlockProgress()) {
+			if(Hide.stats.getAchievementProgress(player, achievement) == achievement.getUnlockLevel()) {
 				return false;
 			}			
 		}

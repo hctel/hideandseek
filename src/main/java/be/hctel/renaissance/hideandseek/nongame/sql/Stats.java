@@ -19,9 +19,9 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import be.hctel.renaissance.hideandseek.Hide;
-import be.hctel.renaissance.hideandseek.gamespecific.enums.GameAchievement;
-import be.hctel.renaissance.hideandseek.gamespecific.enums.GameMap;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.JoinMessages;
+import be.hctel.renaissance.hideandseek.gamespecific.objects.HideGameAchievement;
+import be.hctel.renaissance.hideandseek.gamespecific.objects.HideGameMap;
 import be.hctel.renaissance.hideandseek.nongame.utils.Utils;
 
 
@@ -150,22 +150,22 @@ public class Stats {
 		return jsonList.get(Utils.getUUID(player)).getInt("deaths");
 	}
 	
-	public ArrayList<GameAchievement> getAchievements(OfflinePlayer player) {
+	public ArrayList<HideGameAchievement> getAchievements(OfflinePlayer player) {
 		if(jsonList.get(Utils.getUUID(player)).get("achievements") == null) {
-			return new ArrayList<GameAchievement>();
+			return new ArrayList<HideGameAchievement>();
 		}
 		JSONObject ach = jsonList.get(Utils.getUUID(player)).getJSONObject("achievements");
-		ArrayList<GameAchievement> list = new ArrayList<GameAchievement>();
+		ArrayList<HideGameAchievement> list = new ArrayList<HideGameAchievement>();
 		for(String k : ach.keySet()) {
-			if(GameAchievement.getFromJSON(k) != null) list.add(GameAchievement.getFromJSON(k));
+			if(HideGameAchievement.getAchievementFromStorageName(k) != null) list.add(HideGameAchievement.getAchievementFromStorageName(k));
 		}
 		return list;
 	}
 	
-	public int getAchievementProgress(OfflinePlayer player, GameAchievement achievement) {
+	public int getAchievementProgress(OfflinePlayer player, HideGameAchievement achievement) {
 		JSONObject ach = jsonList.get(Utils.getUUID(player)).getJSONObject("achievements");
-		if(ach.has(achievement.getJsonCode())) {
-			return ach.getJSONObject(achievement.getJsonCode()).getInt("progress");
+		if(ach.has(achievement.getStorageCode())) {
+			return ach.getJSONObject(achievement.getStorageCode()).getInt("progress");
 		} else return 0;
 	}
 	
@@ -175,50 +175,50 @@ public class Stats {
 	 * @param achievement
 	 * @return
 	 */
-	public long getAchievementUnlockDate(OfflinePlayer player, GameAchievement achievement) {
+	public long getAchievementUnlockDate(OfflinePlayer player, HideGameAchievement achievement) {
 		JSONObject ach = jsonList.get(Utils.getUUID(player)).getJSONObject("achievements");
-		if(ach.has(achievement.getJsonCode())) {
-			if(getAchievementProgress(player, achievement) < achievement.getUnlockProgress()) return -1;
+		if(ach.has(achievement.getStorageCode())) {
+			if(getAchievementProgress(player, achievement) < achievement.getUnlockLevel()) return -1;
 			else {
-				return ach.getJSONObject(achievement.getJsonCode()).getLong("unlockedAt");
+				return ach.getJSONObject(achievement.getStorageCode()).getLong("unlockedAt");
 			}
 		} else return -1;
 		
 	} 
 	
-	public ArrayList<GameAchievement> getCompletedAchievements(OfflinePlayer player) {
+	public ArrayList<HideGameAchievement> getCompletedAchievements(OfflinePlayer player) {
 		if(jsonList.get(Utils.getUUID(player)).get("achievements") == null) {
-			//ArrayList<GameAchievement> out = new ArrayList<GameAchievement>();
+			//ArrayList<HideGameAchievement> out = new ArrayList<HideGameAchievement>();
 			if(jsonList.get(Utils.getUUID(player)).get("achievements") == null) {
-				return new ArrayList<GameAchievement>();
+				return new ArrayList<HideGameAchievement>();
 			}
 		}
 		JSONObject ach = jsonList.get(Utils.getUUID(player)).getJSONObject("achievements");
-		ArrayList<GameAchievement> list = new ArrayList<GameAchievement>();
+		ArrayList<HideGameAchievement> list = new ArrayList<HideGameAchievement>();
 		for(String k : ach.keySet()) {
-			if(GameAchievement.getFromJSON(k) != null) {
-				if(getAchievementProgress(player, GameAchievement.getFromJSON(k)) >= GameAchievement.getFromJSON(k).getUnlockProgress()) {
-					list.add(GameAchievement.getFromJSON(k));
+			if(HideGameAchievement.getAchievementFromStorageName(k) != null) {
+				if(getAchievementProgress(player, HideGameAchievement.getAchievementFromStorageName(k)) >= HideGameAchievement.getAchievementFromStorageName(k).getUnlockLevel()) {
+					list.add(HideGameAchievement.getAchievementFromStorageName(k));
 				}
 			}
 		}
 		return list;
 	}
 	
-	public ArrayList<GameAchievement> getUncompletedAchievements(OfflinePlayer player) {
+	public ArrayList<HideGameAchievement> getUncompletedAchievements(OfflinePlayer player) {
 		if(jsonList.get(Utils.getUUID(player)).get("achievements") == null) {
-			ArrayList<GameAchievement> out = new ArrayList<GameAchievement>();
-			for (GameAchievement a : GameAchievement.values()) {
+			ArrayList<HideGameAchievement> out = new ArrayList<HideGameAchievement>();
+			for (HideGameAchievement a : HideGameAchievement.values()) {
 				out.add(a);
 			}
 			return out;
 		}
 		JSONObject ach = jsonList.get(Utils.getUUID(player)).getJSONObject("achievements");
-		ArrayList<GameAchievement> list = new ArrayList<GameAchievement>();
+		ArrayList<HideGameAchievement> list = new ArrayList<HideGameAchievement>();
 		for(String k : ach.keySet()) {
-			if(GameAchievement.getFromJSON(k) != null) {
-				if(getAchievementProgress(player, GameAchievement.getFromJSON(k)) < GameAchievement.getFromJSON(k).getUnlockProgress()) {
-					list.add(GameAchievement.getFromJSON(k));
+			if(HideGameAchievement.getAchievementFromStorageName(k) != null) {
+				if(getAchievementProgress(player, HideGameAchievement.getAchievementFromStorageName(k)) < HideGameAchievement.getAchievementFromStorageName(k).getUnlockLevel()) {
+					list.add(HideGameAchievement.getAchievementFromStorageName(k));
 				}
 			}
 		}
@@ -234,18 +234,18 @@ public class Stats {
 		return jsonList.get(Utils.getUUID(player)).getInt("seekerkills");
 	}
 	
-	public int getKilledOnMap(OfflinePlayer player, GameMap map) {
+	public int getKilledOnMap(OfflinePlayer player, HideGameMap map) {
 		JSONObject js = jsonList.get(Utils.getUUID(player)).getJSONObject("mapkills");
-		if(js.has(map.getSystemName())) {
-			return js.getInt(map.getSystemName());
+		if(js.has(map.getWorld().getName())) {
+			return js.getInt(map.getWorld().getName());
 		} 
 		return 0;
 		
 	}
 	
-	public void updateKilledOnMap(OfflinePlayer player, GameMap map, int qty) {
+	public void updateKilledOnMap(OfflinePlayer player, HideGameMap map, int qty) {
 		if(qty > 0 && qty > getKilledOnMap(player, map)) {
-			jsonList.get(Utils.getUUID(player)).getJSONObject("mapkills").put(map.getSystemName(), qty);
+			jsonList.get(Utils.getUUID(player)).getJSONObject("mapkills").put(map.getWorld().getName(), qty);
 		}
 	}
 	
@@ -466,17 +466,17 @@ public class Stats {
 		int oldValue = getDeaths(player);
 		jsonList.get(Utils.getUUID(player)).put("deaths", oldValue + 1);
 	}
-	public void completeAchievement(OfflinePlayer player, GameAchievement achievement) {
+	public void completeAchievement(OfflinePlayer player, HideGameAchievement achievement) {
 		JSONObject ach = jsonList.get(Utils.getUUID(player)).getJSONObject("achievements");
 		JSONObject e = new JSONObject();
-		e.put("progress", achievement.getUnlockProgress());
+		e.put("progress", achievement.getUnlockLevel());
 		e.put("unlockedAt", System.currentTimeMillis());
-		ach.put(achievement.getJsonCode(), e);
+		ach.put(achievement.getStorageCode(), e);
 	}
-	public void addAchievementProgress(OfflinePlayer player, GameAchievement achievement, int toAdd) {
+	public void addAchievementProgress(OfflinePlayer player, HideGameAchievement achievement, int toAdd) {
 		int oldValue = getAchievementProgress(player, achievement);
 		JSONObject ach = jsonList.get(Utils.getUUID(player)).getJSONObject("achievements");
-		JSONObject e = ach.getJSONObject(achievement.getJsonCode());
+		JSONObject e = ach.getJSONObject(achievement.getStorageCode());
 		e.put("progress", oldValue + toAdd);
 		e.put("unlockedAt", -1);
 	}
@@ -565,10 +565,10 @@ public class Stats {
 					Utils.sendCenteredMessage(p, "§e§m------------------------------------");
 					p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
 					if(lvl == 25) {
-						Hide.gameEngine.unlockAch(p, GameAchievement.LEVELHALF);
+						Hide.gameEngine.unlockAch(p, HideGameAchievement.LEVELHALF);
 					}
 					if(lvl == 50) {
-						Hide.gameEngine.unlockAch(p, GameAchievement.LEVELTOP);
+						Hide.gameEngine.unlockAch(p, HideGameAchievement.LEVELTOP);
 					}
 				}
 			}
