@@ -1,3 +1,4 @@
+min-players: 2
 spawn:
   world: "HIDE_Lobby"
   x: -79.5

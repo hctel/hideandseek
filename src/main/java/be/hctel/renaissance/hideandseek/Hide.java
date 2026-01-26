@@ -41,6 +41,7 @@ public class Hide extends JavaPlugin implements RenaissancePlugin {
 	
 	public static String header = "§8▍ §bHide§aAnd§eSeek§8 ▏ ";
 	public static Location spawnLocation;
+	public static int minPlayers;
 	
 	//Declaring every core variables
 	
@@ -93,6 +94,7 @@ public class Hide extends JavaPlugin implements RenaissancePlugin {
 		loadCommands();
 	
 		spawnLocation = new Location(getServer().getWorld(getConfig().getString("spawn.world")), getConfig().getDouble("spawn.x"), getConfig().getDouble("spawn.y"), getConfig().getDouble("spawn.z"), (float) getConfig().getDouble("spawn.yaw"), (float) getConfig().getDouble("spawn.pitch"));
+		minPlayers = getConfig().getInt("min-players");		
 		
 		for(Team T : plugin.getServer().getScoreboardManager().getMainScoreboard().getTeams()) {
 			T.setOption(Option.COLLISION_RULE, OptionStatus.NEVER);

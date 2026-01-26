@@ -57,7 +57,7 @@ public class PlayerListener implements Listener {
 			return;
 		}
 		if(!Hide.preGameTimer.gameStarted) {
-			if(Bukkit.getOnlinePlayers().size() > 23) {
+			if(Bukkit.getOnlinePlayers().size() > Bukkit.getServer().getMaxPlayers()-1) {
 				a.disallow(Result.KICK_FULL, "§This server is full.");
 			}
 		}

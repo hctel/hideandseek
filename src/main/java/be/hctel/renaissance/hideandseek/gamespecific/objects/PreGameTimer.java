@@ -22,7 +22,7 @@ import be.hctel.renaissance.hideandseek.nongame.utils.Utils;
 
 public class PreGameTimer {
 	Plugin plugin;
-	int minPlayers = 2;
+	int minPlayers = Hide.minPlayers;
 	int timer = 36;
 	BukkitScheduler scheduler;
 	FakePlayer seekerQueueNPC;
@@ -147,5 +147,9 @@ public class PreGameTimer {
 				
 			}
 		}, 0L, 20L);
+	}
+	
+	public void loadPlayer(Player player) {
+		seekerQueueNPC.spawnFor(player);
 	}
 }
