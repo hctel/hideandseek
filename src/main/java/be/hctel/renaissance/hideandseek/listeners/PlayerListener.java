@@ -39,9 +39,7 @@ import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerTe
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerTeams.TeamMode;
 
 import be.hctel.renaissance.hideandseek.Hide;
-import be.hctel.renaissance.hideandseek.gamespecific.enums.GameRanks;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.GameTeam;
-import be.hctel.renaissance.hideandseek.gamespecific.enums.JoinMessages;
 import be.hctel.renaissance.hideandseek.nongame.utils.Utils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -99,16 +97,9 @@ public class PlayerListener implements Listener {
 			p.setGameMode(GameMode.ADVENTURE);
 		}
 		p.getInventory().clear();
-		Hide.bm.sendForward("PlayerJoin", Hide.plugin.getServer().getOnlinePlayers().size()+"");
-		Hide.stats.load(p);
-		Hide.rankManager.load(p);
-		Hide.cosmeticManager.loadPlayer(p);
-		Hide.shopPlayer.spawnFor(p);
-		p.setDisplayName(Hide.rankManager.getRankColor(p) + p.getName());
-		e.setJoinMessage(Hide.rankManager.getRankColor(p) + p.getName() + JoinMessages.getFromStorageCode(Hide.stats.getJoinMessageIndex(p)).getMessage());
+		e.setJoinMessage(p.getName() + " §7wants to hide!");
 		if(!Hide.preGameTimer.gameStarted) Hide.votesHandler.sendMapChoices(p);
 		Utils.sendHeaderFooter(p, "\n§6Renaissance §eProject\n§fBringing back good memories\n", "\n§aPlaying in §bHide §aAnd §eSeek.\n");
-		Hide.preGameTimer.loadPlayer(p);
 		p.sendMessage("");
 		p.sendMessage("");
 		Utils.sendCenteredMessage(e.getPlayer(), "§6Welcome on the HnS Alpha release v1!");
@@ -125,7 +116,6 @@ public class PlayerListener implements Listener {
 				}
 			}.runTaskLater(Hide.plugin, 1L);
 		}
-		p.setPlayerListName(Hide.rankManager.getRankColor(p) + p.getName());
 		p.setCollidable(false);
 		p.getCollidableExemptions().clear();
 		ScoreBoardTeamInfo ti = new ScoreBoardTeamInfo(Component.empty(), Component.empty(), Component.empty(), NameTagVisibility.ALWAYS, CollisionRule.NEVER, NamedTextColor.WHITE, OptionData.NONE);
@@ -135,11 +125,7 @@ public class PlayerListener implements Listener {
 	@EventHandler
 	public void onDisconnect(PlayerQuitEvent e) throws SQLException {
 		e.setQuitMessage(null);
-		Hide.votesHandler.registerPlayerVote(e.getPlayer(), 0, Hide.rankManager.getRank(e.getPlayer()).getVotes());
-		Hide.rankManager.unLoad(e.getPlayer());
-		Hide.cosmeticManager.unloadPlayer(e.getPlayer());
-		Hide.stats.saveOfflinePlayer((OfflinePlayer) e.getPlayer());
-		if(Hide.preGameTimer.gameStarted && Bukkit.getOnlinePlayers().size()-1 == 0) Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "s");
+		Hide.votesHandler.registerPlayerVote(e.getPlayer(), 0, 1);
 		if(Hide.preGameTimer.gameStarted) Hide.gameEngine.disconnect((OfflinePlayer) e.getPlayer());
 	}
 	
@@ -276,44 +262,23 @@ public class PlayerListener implements Listener {
  	
 	@EventHandler
 	public void onChat(AsyncPlayerChatEvent e) {
-		if(Utils.getUUID(e.getPlayer()).equals(Hide.stats.getTopRankOfflinePlayer())) {
-			if(Hide.preGameTimer.gameStarted) {
-				if(Hide.gameEngine.getTeam(e.getPlayer()).equals(GameTeam.SPECTATOR)) {
-					String msg = e.getMessage();
-					e.setCancelled(true);
-					Player player = e.getPlayer();
-				  	Bukkit.broadcastMessage("§4SPEC §8▍ " + GameRanks.MOD.getChatColor() + GameRanks.MOD.getName() +" " + Hide.rankManager.getRankColor(player) + player.getName() + " §8» §f" + msg);
-				} else {
-					String msg = e.getMessage();
-					e.setCancelled(true);
-					Player player = e.getPlayer();
-				  	Bukkit.broadcastMessage(GameRanks.MOD.getChatColor() + GameRanks.MOD.getName() +" " + Hide.rankManager.getRankColor(player) + player.getName() + " §8» §f" + msg);
-				}	 			
-			 } else {
-				String msg = e.getMessage();
-				e.setCancelled(true);
-				Player player = e.getPlayer();
-				Bukkit.broadcastMessage("§e" + Hide.stats.getPoints(player) + " §8▍ "+ GameRanks.MOD.getChatColor() + GameRanks.MOD.getName() +" " + Hide.rankManager.getRankColor(player) + player.getName() + " §8» §f" + msg);
-			}
-		} else {
 		if(Hide.preGameTimer.gameStarted) {
 			if(Hide.gameEngine.getTeam(e.getPlayer()).equals(GameTeam.SPECTATOR)) {
 				String msg = e.getMessage();
 				e.setCancelled(true);
 				Player player = e.getPlayer();
-			  	Bukkit.broadcastMessage("§4SPEC §8▍ " + GameRanks.getMatchingRank(Hide.stats.getPoints(player)).getChatColor() + GameRanks.getMatchingRank(Hide.stats.getPoints(player)).getName() +" " + Hide.rankManager.getRankColor(player) + player.getName() + " §8» §f" + msg);
+			  	Bukkit.broadcastMessage("§4SPEC §8▍ " + player.getName() + " §8» §f" + msg);
 			} else {
 				String msg = e.getMessage();
 				e.setCancelled(true);
 				Player player = e.getPlayer();
-			  	Bukkit.broadcastMessage(GameRanks.getMatchingRank(Hide.stats.getPoints(player)).getChatColor() + GameRanks.getMatchingRank(Hide.stats.getPoints(player)).getName() +" " + Hide.rankManager.getRankColor(player) + player.getName() + " §8» §f" + msg);
+			  	Bukkit.broadcastMessage(player.getName() + " §8» §f" + msg);
 			} 			
 		 } else {
 			String msg = e.getMessage();
 			e.setCancelled(true);
 			Player player = e.getPlayer();
-			Bukkit.broadcastMessage("§e" + Hide.stats.getPoints(player) + " §8▍ "+ GameRanks.getMatchingRank(Hide.stats.getPoints(player)).getChatColor() + GameRanks.getMatchingRank(Hide.stats.getPoints(player)).getName() +" " + Hide.rankManager.getRankColor(player) + player.getName() + " §8» §f" + msg);
-		}
+			Bukkit.broadcastMessage(player.getName() + " §8» §f" + msg);
 		}
 	}
 	

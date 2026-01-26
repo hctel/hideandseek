@@ -1,6 +1,5 @@
 package be.hctel.renaissance.hideandseek.gamespecific.objects;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -107,7 +106,6 @@ public class GameEngine {
 			sidebars.get(p).setLine(1, "§bhctel§f.§anet         ");
 			sidebars.get(p).addReceiver(p);
 			Utils.sendActionBarMessage(p, "");
-			Hide.stats.addGame(p);
 			hiders.add(p);
 			p.setGameMode(GameMode.ADVENTURE);
 			p.getInventory().clear();
@@ -120,8 +118,6 @@ public class GameEngine {
 //		}
 		hiders.remove(firstSeeker);
 		seekers.add(firstSeeker);
-		
-		unlockAch(firstSeeker, HideGameAchievement.THECHOSENONE);
 		for(Material M : Material.values()) {
 			blocksLeft.put(M, 0);
 		}
@@ -163,7 +159,6 @@ public class GameEngine {
 				if(isPlaying) {
 					if(timer > 0) {
 						for(Player P : hiders) {
-							Utils.sendActionBarMessage(P, Hide.stats.getBigLevelProgressBar(P, Hide.blockPicker.playerBlock.get(P)));
 							if(Utils.doubleContains(P.getNearbyEntities(5.0, 5.0, 5.0), seekers)) {
 								heartbeat.add(P);
 								//Utils.sendRedVignette(P);
@@ -197,7 +192,7 @@ public class GameEngine {
 								while(seekers.contains(p)) p = getNewSeeker(); //INFINITE LOOP HERE
 								addKill(null, p, true);
 								p.sendMessage(Hide.header + "§6You have been selected to help out the first seeker.");
-								Bukkit.broadcastMessage(Hide.header + Hide.rankManager.getRankColor(p) + p.getName() + " §6has been selected to help out the first seeker §8§o[Seeker Struggling]");
+								Bukkit.broadcastMessage(Hide.header + p.getName() + " §6has been selected to help out the first seeker §8§o[Seeker Struggling]");
 							}
 						}
 						if(timer == 230) {
@@ -306,10 +301,8 @@ public class GameEngine {
 		if(player == null) {
 			if(seekerKill) {
 				//heartbeat.remove(killed);
-				Hide.stats.addDeath(killed);
-				Hide.cosmeticManager.addTokens(player, 15);
 				deaths.replace(killed, deaths.get(killed)+1);
-				Bukkit.broadcastMessage(Hide.header + Hide.stats.getBlockLevelString(killed, Hide.blockPicker.playerBlock.get(killed)) + "§6 " + Utils.getUserItemName(disguises.get(killed).block.getType()) + " " + Hide.rankManager.getRankColor(killed) + killed.getName() + " §6has died");
+				Bukkit.broadcastMessage(Hide.header + "§6 " + Utils.getUserItemName(disguises.get(killed).block.getType()) + " " +killed.getName() + " §6has died");
 				hiders.remove(killed);
 				seekers.add(killed);
 				disguises.get(killed).kill();
@@ -318,12 +311,6 @@ public class GameEngine {
 				Player p = killed;
 				int aliveTime = 300-timer;
 				secondsAlive.put(p, aliveTime);
-				if(timer < 300) {
-					p.sendMessage(Hide.header + String.format("§aYou gained §r%d points §aand §b%d tokens §a for surviving §e%d seconds", (int) (aliveTime*0.6), (int) (aliveTime*0.15), aliveTime));
-					Hide.stats.addPoints(p, (int) (aliveTime*0.6));
-					points.replace(p, points.get(p)+(int) (aliveTime*0.6));
-					Hide.cosmeticManager.addTokens(p, (int) (aliveTime*0.15));
-				}
 				killed.teleport(seekerSpawn);
 				killed.getInventory().clear();
 				killed.getInventory().setItem(0, new ItemStack(Material.DIAMOND_SWORD));
@@ -342,9 +329,8 @@ public class GameEngine {
 				}.runTaskLater(plugin, 10*20L);
 				blocksLeft.put(Hide.blockPicker.playerItem.get(killed), blocksLeft.get(Hide.blockPicker.playerItem.get(killed))-1);
 			} else {
-				Hide.stats.addDeath(killed);
 				deaths.replace(killed, deaths.get(killed)+1);
-				Bukkit.broadcastMessage(Hide.header + "§6Seeker " + Hide.rankManager.getRankColor(killed) + killed.getName() + " §6has died.");
+				Bukkit.broadcastMessage(Hide.header + "§6Seeker " + killed.getName() + " §6has died.");
 				killed.teleport(hiderSpawn);
 				killed.getInventory().clear();
 				killed.getInventory().setItem(0, new ItemStack(Material.DIAMOND_SWORD));
@@ -357,46 +343,10 @@ public class GameEngine {
 		} else {
 			addPoints(player, 30);
 			if(seekerKill) {
-				try {
-					switch(disguises.get(killed).getHideAs().getType()) {
-					case FURNACE:
-						unlockAch(player, HideGameAchievement.FURNACE);
-						break;
-					case ICE:
-						unlockAch(player, HideGameAchievement.ICE);
-						break;
-					case FLOWER_POT:
-						unlockAch(player, HideGameAchievement.PLANT);
-						break;
-					case OAK_LEAVES:
-						unlockAch(player, HideGameAchievement.LEAF);
-						break;
-					case ANVIL:
-						unlockAch(player, HideGameAchievement.ANVIL);
-						break;
-					case BEACON:
-						unlockAch(player, HideGameAchievement.BEACON);
-						break;
-					case SNOW:
-						unlockAch(player, HideGameAchievement.SNOW);
-						break;
-					default:
-						break;
-					
-					}
-				} catch (NullPointerException e) {
-					plugin.getLogger().warning("Error in switch: getBlock().getType() == null!!");
-				}
-				if(seekers.size() == 1) unlockAch(killed, HideGameAchievement.PEEKABOO);
 				//heartbeat.remove(killed);
 				seekerKills.replace(player, seekerKills.get(player)+1);
-				Hide.stats.addKilledHider(player);
-				Hide.stats.addPoints(player, 30);
-				Hide.stats.addDeath(killed);
-				Hide.cosmeticManager.addTokens(player, 15);
-				player.sendMessage(Hide.header + "§6You gained §b30 points §6and §a15 Tokens §6for killing " + Hide.rankManager.getRankColor(killed) + killed.getName() + "§6.");
 				deaths.replace(killed, deaths.get(killed)+1);
-				Bukkit.broadcastMessage(Hide.header + Hide.stats.getBlockLevelString(killed, Hide.blockPicker.playerBlock.get(killed)) + "§6 " + Utils.getUserItemName(disguises.get(killed).block.getType()) + " " + Hide.rankManager.getRankColor(killed) + killed.getName() + " §6was killed by " + Hide.rankManager.getRankColor(player) + player.getName());
+				Bukkit.broadcastMessage(Hide.header + "§6 " + Utils.getUserItemName(disguises.get(killed).block.getType()) + " " + killed.getName() + " §6was killed by " + player.getName());
 				hiders.remove(killed);
 				seekers.add(killed);
 				disguises.get(killed).kill();
@@ -406,37 +356,13 @@ public class GameEngine {
 				Player p = killed;
 				int aliveTime = 300-timer;
 				secondsAlive.put(p, aliveTime);
-				if(timer < 300) {
-					p.sendMessage(Hide.header + String.format("§aYou gained §r%d points §aand §b%d tokens §a for surviving §e%d seconds", (int) (aliveTime*0.6), (int) (aliveTime*0.15), aliveTime));
-					Hide.stats.addPoints(p, (int) (aliveTime*0.6));
-					Hide.cosmeticManager.addTokens(p, (int) (aliveTime*0.15));
-				}
 				p.teleport(seekerSpawn);
 				p.getInventory().clear();
 				p.getInventory().setItem(0, new ItemStack(Material.DIAMOND_SWORD));
 				p.getInventory().setHelmet(new ItemStack(Material.IRON_HELMET));
 				p.getInventory().setChestplate(new ItemStack(Material.IRON_CHESTPLATE));
 				p.getInventory().setLeggings(new ItemStack(Material.IRON_LEGGINGS));
-				p.getInventory().setBoots(new ItemStack(Material.IRON_BOOTS));
-				if(seekerKills.get(player) == 10) unlockAch(player, HideGameAchievement.DAREALMVP);
-				switch(Hide.stats.getKilledHiders(player)) {
-				case 1:
-					unlockAch(player, HideGameAchievement.HIDER1);
-					break;
-				case 50:
-					unlockAch(player, HideGameAchievement.HIDER50);
-					break;
-				case 250:
-					unlockAch(player, HideGameAchievement.HIDER250);
-					break;
-				case 500:
-					unlockAch(player, HideGameAchievement.HIDER500);
-					break;
-				case 1000:
-					unlockAch(player, HideGameAchievement.HIDER1000);
-					break;
-				}
-				
+				p.getInventory().setBoots(new ItemStack(Material.IRON_BOOTS));							
 				Utils.sendCenteredMessage(p, "§c§m                                                   ");
 				Utils.sendCenteredMessage(p, "§6§lYou are a §c§lSEEKER!");
 				Utils.sendCenteredMessage(p, "§eIt's your job to find hidden block and KILL THEM!");
@@ -454,15 +380,9 @@ public class GameEngine {
 				}.runTaskLater(plugin, 10*20L);
 				blocksLeft.put(Hide.blockPicker.playerItem.get(killed), blocksLeft.get(Hide.blockPicker.playerItem.get(killed))-1);
 			} else {
-				Hide.stats.addKilledSeeker(player);
-				Hide.stats.addPoints(player, 30);
-				Hide.stats.addDeath(killed);
-				Hide.stats.addBlockExperience(player, 30, Hide.blockPicker.playerBlock.get(player));
-				Hide.cosmeticManager.addTokens(player, 15);
-				player.sendMessage(Hide.header + "§6You gained §b30 points §6and §a15 Tokens §6for killing " + Hide.rankManager.getRankColor(killed) + killed.getName() + "§6.");
 				hiderKills.replace(player, hiderKills.get(player)+1);
 				deaths.replace(killed, deaths.get(killed)+1);
-				Bukkit.broadcastMessage(Hide.header + "§6Seeker " + Hide.rankManager.getRankColor(killed) + killed.getName() + " §6was killed by " + Hide.rankManager.getRankColor(player) + player.getName());
+				Bukkit.broadcastMessage(Hide.header + "§6Seeker " + " §6was killed by " + player.getName());
 				killed.teleport(hiderSpawn);
 				killed.getInventory().clear();
 				killed.getInventory().setItem(0, new ItemStack(Material.DIAMOND_SWORD));
@@ -472,14 +392,6 @@ public class GameEngine {
 				killed.getInventory().setBoots(new ItemStack(Material.IRON_BOOTS));
 				killed.setGameMode(GameMode.SURVIVAL);
 				sidebars.get(player).setLine(4, "§7Kills: §f" + hiderKills.get(player));
-				switch(Hide.stats.getKilledSeekers(player)) {
-				case 1:
-					unlockAch(player, HideGameAchievement.SEEKER1);
-					break;
-				case 25:
-					unlockAch(player, HideGameAchievement.SEEKER25);
-					break;
-				}
 			}
 		}
 		
@@ -488,7 +400,7 @@ public class GameEngine {
 		if(hiders.contains(offlinePlayer)) {
 			disguises.get(offlinePlayer).kill();
 			disguises.remove(offlinePlayer);
-			if(!isGameFinished) Bukkit.broadcastMessage(Hide.header + "§6Hider " + Hide.rankManager.getRankColor(offlinePlayer) + offlinePlayer.getName() + " §6has died.");
+			if(!isGameFinished) Bukkit.broadcastMessage(Hide.header + "§6Hider " + offlinePlayer.getName() + " §6has died.");
 			hiders.remove(offlinePlayer);
 		} else if(seekers.contains(offlinePlayer)) {
 			seekers.remove(offlinePlayer);
@@ -497,7 +409,7 @@ public class GameEngine {
 				o.sendMessage(Hide.header + "§7you have been picked to be a seeker as all the previous seekers left");
 				addKill(null, o, true);
 			}
-			if(!isGameFinished) Bukkit.broadcastMessage(Hide.header + "§6Seeker " + Hide.rankManager.getRankColor(offlinePlayer) + offlinePlayer.getName() + " §6has left.");
+			if(!isGameFinished) Bukkit.broadcastMessage(Hide.header + "§6Seeker " + offlinePlayer.getName() + " §6has left.");
 		}
 	}
 	private Player getNewSeeker() {
@@ -548,7 +460,7 @@ public class GameEngine {
 						for(Player H : hiders) {
 							DisguiseBlockManager mgr = disguises.get(H);
 							ItemStack block = mgr.block;
-							Utils.sendCenteredMessage(p, String.format("%s%s §7(%s §7%s)", Hide.rankManager.getRankColor(H), H.getName(), Hide.stats.getBlockLevelString(H, block), Utils.getUserItemName(block)));
+							Utils.sendCenteredMessage(p, String.format("%s §7(§7%s)", H.getName(), Utils.getUserItemName(block)));
 							mgr.endGameChecks();
 							disguises.remove(H);
 						}
@@ -558,7 +470,7 @@ public class GameEngine {
 							Entry<Player, Integer> entry = seekersByKillsDesc.get(i);
 							Player player = entry.getKey();
 							int amount = entry.getValue();
-							worker += Hide.rankManager.getRankColor(player) + player.getName() + String.format("§6 (%d)§7, ", amount);
+							worker += player.getName() + String.format("§6 (%d)§7, ", amount);
 						}
 						worker = worker.substring(0, worker.length()-2);
 						Utils.sendCenteredMessage(p, "§lTop Seekers by Kills");
@@ -569,19 +481,6 @@ public class GameEngine {
 					}
 				}
 			}.runTask(plugin);
-			for(Player p : hiders) {
-				Hide.stats.addVictory(p);
-				Hide.cosmeticManager.addGoldMedal(p);
-				p.sendMessage(Hide.header + "§6You have gained §e50 points§6 and §b30 tokens§6 for winning as a Hider!");
-				p.sendMessage(Hide.header + "§e✯ §6Won as hider! §eGold Medal Awarded! §8[" + Hide.cosmeticManager.getGoldMedals(p) + " Total]");
-				Hide.stats.addPoints(p, 50);
-				Hide.cosmeticManager.addTokens(p, 30);
-			}
-			if(hiders.size() == 1) {
-				for(Player S : seekers) {
-					unlockAch(S, HideGameAchievement.SOCLOSEYETSOFAR);
-				}
-			}
 		} else if(winners == GameTeam.SEEKER) {
 			List<Entry<Player, Integer>> seekersByKillsDesc = Utils.entriesSortedByValues(seekerKills);
 			List<Entry<Player, Integer>> hidersByHideTime = Utils.entriesSortedByValues(secondsAlive);
@@ -595,15 +494,14 @@ public class GameEngine {
 						p.sendMessage("");
 						Utils.sendCenteredMessage(p, "§c§lGAME OVER! §cSeekers WIN!");
 						p.sendMessage("");
-						Utils.sendCenteredMessage(p, "§lTop Seekers by Kills");
-						Hide.stats.updateKilledOnMap(p, map, seekerKills.get(p));						
+						Utils.sendCenteredMessage(p, "§lTop Seekers by Kills");					
 						String worker = "";
 						for(int i = 0; i < seekersByKillsDesc.size(); i++) {
 							if(i == 3) break;
 							Entry<Player, Integer> entry = seekersByKillsDesc.get(i);
 							Player player = entry.getKey();
 							int amount = entry.getValue();
-							worker += Hide.rankManager.getRankColor(player) + player.getName() + String.format("§6 (%d)§7, ", amount);
+							worker += player.getName() + String.format("§6 (%d)§7, ", amount);
 						}
 						worker = worker.substring(0, worker.length()-2);
 						Utils.sendCenteredMessage(p, worker);
@@ -614,52 +512,17 @@ public class GameEngine {
 							Entry<Player, Integer> entry = hidersByHideTime.get(i);
 							Player player = entry.getKey();
 							int amount = entry.getValue();
-							worker += Hide.rankManager.getRankColor(player) + player.getName() + String.format("§6 (%d)§7, ", amount);
+							worker += player.getName() + String.format("§6 (%d)§7, ", amount);
 						}
 						worker = worker.substring(0, worker.length()-2);
 						Utils.sendCenteredMessage(p, worker);
 						p.sendMessage("");
 						Utils.sendCenteredMessage(p,"§a§m                               ");
-						p.sendMessage(Hide.header + "§3You will be sent to hub in 10 seconds.");
-						try {
-							Hide.stats.saveAll();
-							Hide.cosmeticManager.saveAll();
-						} catch (SQLException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
 					}
 				}
 			}.runTask(plugin);
-			Player topSeeker = seekersByKillsDesc.get(0).getKey();
-			for(Player p : seekers) {
-				Hide.stats.addVictory(p);
-				if(p == topSeeker) Hide.cosmeticManager.addGoldMedal(p);
-				p.sendMessage(Hide.header + "§6You have gained §e50 points§6 and §b30 tokens§6 for winning as a Seeker!");
-				if(p == topSeeker) p.sendMessage(Hide.header + "§e✯ §6Top seeker! §eGold Medal Awarded! §8[" + Hide.cosmeticManager.getGoldMedals(p) + " Total]");
-				Hide.stats.addPoints(p, 50);
-				Hide.cosmeticManager.addTokens(p, 30);
-			}
 		}
 		for(Player P : sidebars.keySet()) sidebars.get(P).removeReceiver(P);
-		new BukkitRunnable() {
-			
-			@Override
-			public void run() {
-				Hide.bm.send("ServerClose");
-				Hide.bm.sendForward("Close");
-				for(Player P : Bukkit.getOnlinePlayers()) {
-					Hide.bm.sendToServer(P, "HUB01");
-				}
-				// Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "stop");
-				try {
-					Hide.stats.saveAll();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}.runTaskLater(plugin, 195L);
 		new BukkitRunnable() {
 			
 			@Override
@@ -694,30 +557,6 @@ public class GameEngine {
 				P.updateInventory();
 			}
 		}
-	}
-	/**
-	 * 
-	 * @param player
-	 * @param achievement
-	 * @return true if the achievement was added, false if the player already unlocked the achievement
-	 */
-	public boolean unlockAch(Player player, HideGameAchievement achievement) {
-		if(Hide.stats.getAchievements(player).contains(achievement)) {
-			if(Hide.stats.getAchievementProgress(player, achievement) == achievement.getUnlockLevel()) {
-				return false;
-			}			
-		}
-		Utils.sendCenteredMessage(player, "§e§m                                                   ");
-		player.sendMessage("");
-		Utils.sendCenteredMessage(player, "§lAchievement Unlocked!");
-		player.sendMessage("");
-		Utils.sendCenteredMessage(player, "§6§l" + achievement.getName());
-		Utils.sendCenteredMessage(player, "§7" + achievement.getDescription());
-		player.sendMessage("");
-		Utils.sendCenteredMessage(player, "§e§m                                                   ");
-		player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
-		Hide.stats.completeAchievement(player, achievement);
-		return true;
 	}
 	
 	public void addPoints(Player player, int points) {

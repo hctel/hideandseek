@@ -35,12 +35,6 @@ public class UtilsCommands implements CommandExecutor {
 					
 				}.runTaskTimerAsynchronously(Hide.plugin, 0L, 20L);
 			}
-			if(cmd.getName().equalsIgnoreCase("blockshop")) {
-				Hide.blockShop.openInventory(player);
-			}
-		}
-		if(cmd.getName().equalsIgnoreCase("whereami")) {
-			sender.sendMessage(Hide.header + "§6You are currently playing on §a" + Hide.bm.getServerName());
 		}
 		return true;
 	}

@@ -20,7 +20,7 @@ public class VoteCommand implements CommandExecutor {
 			} else {
 				try {
 					int a = Utils.convertToInt(args[0]);
-					Hide.votesHandler.registerPlayerVote(player, a, Hide.rankManager.getRank(player).getVotes());
+					Hide.votesHandler.registerPlayerVote(player, a, 1);
 				} catch (NumberFormatException e) {
 					player.sendMessage(ChatMessages.NAN.toText() + " (1-6).");
 				}

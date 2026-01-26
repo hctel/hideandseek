@@ -1,7 +1,6 @@
 package be.hctel.renaissance.hideandseek.gamespecific.objects;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -16,7 +15,6 @@ import com.mojang.authlib.GameProfile;
 
 import be.hctel.api.fakeentities.FakePlayer;
 import be.hctel.api.runnables.ArgumentRunnable;
-import be.hctel.api.scoreboard.DynamicScoreboard;
 import be.hctel.renaissance.hideandseek.Hide;
 import be.hctel.renaissance.hideandseek.gamespecific.enums.ItemsManager;
 import be.hctel.renaissance.hideandseek.nongame.utils.ChatMessages;
@@ -33,7 +31,6 @@ public class PreGameTimer {
 	public boolean gameStarted = false;
 	public boolean choosingBlock = false;
 	
-	private HashMap<Player, DynamicScoreboard> sidebars = new HashMap<Player, DynamicScoreboard>();
 	public final ArrayList<Player> seekerQueue = new ArrayList<Player>();
 	
 	public PreGameTimer(Plugin plugin) {
@@ -105,15 +102,13 @@ public class PreGameTimer {
 						} else if(timer <= 21 && timer > 16) {
 							if(timer == 21) {
 								Hide.votesHandler.endVotes();
-								Hide.bm.send("ServerMapVoted", Hide.votesHandler.currentGameMaps.get(Hide.votesHandler.voted).getName());
-								Hide.bm.sendForward("MapVoted", Hide.votesHandler.currentGameMaps.get(Hide.votesHandler.voted).getName());
 								Bukkit.broadcastMessage(Hide.header + "§3Voting has ended. §bThe map §f" + Hide.votesHandler.currentGameMaps.get(Hide.votesHandler.voted).getName() + " §bhas won.");
 								
 								Bukkit.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
 									public void run() {
 									}
 								});
-								Hide.blockPicker = new BlockPicker(Hide.votesHandler.currentGameMaps.get(Hide.votesHandler.voted), Hide.stats, plugin);
+								Hide.blockPicker = new BlockPicker(Hide.votesHandler.currentGameMaps.get(Hide.votesHandler.voted), plugin);
 							}
 							for(Player p : Bukkit.getOnlinePlayers()) {
 								Utils.sendActionBarMessage(p, "§aStarting in §c§l" + (timer - 16));
@@ -121,8 +116,6 @@ public class PreGameTimer {
 							}
 						} else if(timer <= 16 && timer > 5) {
 							if(timer == 16) {
-								Hide.bm.send("ServerGameStarted");
-								Hide.bm.sendForward("GameStarted");
 								choosingBlock = true;
 								for(Player p : Bukkit.getOnlinePlayers()) {
 									p.playSound(p.getLocation(), Sound.ENTITY_ENDER_DRAGON_GROWL, 1.0f, 1.0f);
@@ -143,7 +136,6 @@ public class PreGameTimer {
 								p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1.0f, 1.0f);
 							}
 						} else if(timer == 0) {
-							for(Player p : sidebars.keySet()) sidebars.get(p).removeReceiver(p);
 							gameStarted = true;
 							Hide.gameEngine.start();
 						}
@@ -155,30 +147,5 @@ public class PreGameTimer {
 				
 			}
 		}, 0L, 20L);
-	}
-	public void loadPlayer(Player player) {
-		sidebars.put(player, new DynamicScoreboard(player.getName(), "§eYour HIDE stats", Bukkit.getScoreboardManager()));
-		sidebars.get(player).setLine(Hide.stats.getPoints(player), "§bPoints", false);
-		sidebars.get(player).setLine(Hide.cosmeticManager.getTokens(player), "§aTokens", false);
-		sidebars.get(player).setLine(Hide.stats.getGamesPlayed(player), "§bGames Played", false);
-		sidebars.get(player).setLine(Hide.stats.getDeaths(player), "§bTotal Deaths", false);
-		sidebars.get(player).setLine(Hide.stats.getKills(player), "§bTotal Kills", false);
-		sidebars.get(player).setLine(Hide.stats.getKilledHiders(player), "§bKills as Seeker", false);
-		sidebars.get(player).setLine(Hide.stats.getVictories(player), "§bVictories", false);
-		sidebars.get(player).setLine(Hide.stats.getKilledSeekers(player), "§bKills as Hider", false);
-		sidebars.get(player).addReceiver(player);
-		seekerQueueNPC.spawnFor(player);
-	}
-	
-	public void updatePlayerScoreboard(Player player) {
-		sidebars.get(player).setLine(Hide.stats.getPoints(player), "§bPoints", false);
-		sidebars.get(player).setLine(Hide.cosmeticManager.getTokens(player), "§aTokens", false);
-		sidebars.get(player).setLine(Hide.stats.getGamesPlayed(player), "§bGames Played", false);
-		sidebars.get(player).setLine(Hide.stats.getDeaths(player), "§bTotal Deaths", false);
-		sidebars.get(player).setLine(Hide.stats.getKills(player), "§bTotal Kills", false);
-		sidebars.get(player).setLine(Hide.stats.getKilledHiders(player), "§bKills as Seeker", false);
-		sidebars.get(player).setLine(Hide.stats.getVictories(player), "§bVictories", false);
-		sidebars.get(player).setLine(Hide.stats.getKilledSeekers(player), "§bKills as Hider", false);
-		sidebars.get(player).addReceiver(player);
 	}
 }

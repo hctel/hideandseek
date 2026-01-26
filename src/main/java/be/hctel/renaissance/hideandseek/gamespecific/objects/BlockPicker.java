@@ -17,20 +17,18 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 
 import be.hctel.renaissance.hideandseek.Hide;
-import be.hctel.renaissance.hideandseek.nongame.sql.Stats;
 import be.hctel.renaissance.hideandseek.nongame.utils.Utils;
 
 public class BlockPicker {
 	HideGameMap map;
-	Stats stats;
 	HashMap<Player, ItemStack> playerBlock = new HashMap<Player, ItemStack>();
 	HashMap<Player, Inventory> playerBlockSelector = new HashMap<Player, Inventory>();
 	HashMap<Player, Material> playerItem = new HashMap<Player, Material>();
+	private final static Material[] availableBlocks = {Material.OBSIDIAN, Material.NETHER_QUARTZ_ORE, Material.REDSTONE_BLOCK, Material.REDSTONE_ORE, Material.SOUL_SAND, Material.JACK_O_LANTERN, Material.JUKEBOX, Material.LAPIS_BLOCK, Material.ICE, Material.BOOKSHELF, Material.MELON, Material.PUMPKIN, Material.REDSTONE_LAMP, Material.OAK_LEAVES, Material.END_PORTAL_FRAME, Material.ENCHANTING_TABLE, Material.IRON_BLOCK, Material.DIAMOND_BLOCK, Material.EMERALD_BLOCK, Material.TNT};
 	private Plugin plugin;
 	
-	public BlockPicker(HideGameMap map, Stats stats, Plugin plugin) {
+	public BlockPicker(HideGameMap map, Plugin plugin) {
 		this.map = map;
-		this.stats = stats;
 		this.plugin = plugin;
 	}
 	
@@ -38,7 +36,7 @@ public class BlockPicker {
 		Random r = new Random();
 		ArrayList<ItemStack> def = map.getDefaultBlocksItem();
 		ArrayList<ItemStack> cus = new ArrayList<ItemStack>();
-		for(Material M : stats.getUnlockedBlocks(player)) cus.add(new ItemStack(M));
+		for(Material M : availableBlocks) cus.add(new ItemStack(M));
 		ArrayList<ItemStack> dis = map.getDisabledBlocksItem();
 		for(int o = 0; o < cus.size(); o++) {
 			ItemStack i = cus.get(o);
@@ -70,8 +68,6 @@ public class BlockPicker {
 			lore.add("§7Will this " + Utils.getUserItemName(aA) + " block");
 			lore.add("§7be a good choice?");
 			lore.add("");
-			lore.add(Hide.stats.getSmallLevelProgressBar(player, a));
-			lore.add("");
 			b.setLore(lore);
 			a.setItemMeta(b);
 			inv.setItem(i, a);
@@ -93,8 +89,6 @@ public class BlockPicker {
 			lore.add("");
 			lore.add("§7Will this " + Utils.getUserItemName(a) + " block");
 			lore.add("§7be a good choice?");
-			lore.add("");
-			lore.add(Hide.stats.getSmallLevelProgressBar(player, a));
 			lore.add("");
 			b.setLore(lore);
 			a.setItemMeta(b);

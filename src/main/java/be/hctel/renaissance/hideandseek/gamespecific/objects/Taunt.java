@@ -27,9 +27,6 @@ public class Taunt {
 		this.type = type;
 	}
 	public int perform() {
-		Hide.stats.addPoints(player, type.getPoints());
-		Hide.gameEngine.addPoints(player, type.getPoints());
-		Hide.stats.addBlockExperience(player, type.getPoints(), Hide.blockPicker.playerBlock.get(player));
 		switch(type) {
 		case BARK:
 			player.getWorld().playSound(player.getLocation(), Sound.ENTITY_WOLF_AMBIENT, 1.0f, 1.0f);
